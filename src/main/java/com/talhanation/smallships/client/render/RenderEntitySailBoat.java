@@ -18,13 +18,15 @@ public class RenderEntitySailBoat extends EntityRenderer<SailBoatEntity>{
     protected static final ResourceLocation[] SAILBOAT_TEXTURES = new ResourceLocation[]{
             new ResourceLocation(Main.MOD_ID,"textures/entity/oak_sailboat.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/spruce_sailboat.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/_entity_2.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/camel_entity_3.png")};
-    protected final ModelSailBoat ModelSailBoat = new ModelSailBoat<>();
+            new ResourceLocation(Main.MOD_ID,"textures/entity/brich_sailboat.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/jungle_sailboat.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/acacia_sailboat.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/dark_oak_sailboat.png")};
     public RenderEntitySailBoat(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);
-        this.shadowSize = 0.5F;
+        this.shadowSize = 1.5F;
     }
+    private final ModelSailBoat model = new ModelSailBoat<>();
 
     public void render(SailBoatEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
@@ -39,11 +41,12 @@ public class RenderEntitySailBoat extends EntityRenderer<SailBoatEntity>{
         float f2 = entityIn.getRockingAngle(partialTicks);
         if (!MathHelper.epsilonEquals(f2, 0.0F))
             matrixStackIn.rotate(new Quaternion(new Vector3f(1.0F, 0.0F, 1.0F), entityIn.getRockingAngle(partialTicks), true));
-        matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90.0F));
-        this.ModelSailBoat.setRotationAngles(entityIn, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.ModelSailBoat.getRenderType(getEntityTexture(entityIn)));
-        this.ModelSailBoat.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        matrixStackIn.scale(-1.5F, -1.5F, 1.5F);
+        matrixStackIn.translate(0.5D, -1.0D,-1.0D);
+        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(0F));
+        this.model.setRotationAngles(entityIn, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(getEntityTexture(entityIn)));
+        this.model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         matrixStackIn.pop();
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
