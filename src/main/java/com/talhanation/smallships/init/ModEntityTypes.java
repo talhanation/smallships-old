@@ -9,15 +9,18 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
+
+
 public class ModEntityTypes {
 
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.ENTITIES, Main.MOD_ID);
 
     public static final RegistryObject<EntityType<SailBoatEntity>> SAILBOAT_ENTITY = ENTITY_TYPES.register("sailboat",
             () -> EntityType.Builder.<SailBoatEntity>create(SailBoatEntity::new, EntityClassification.MISC)
-                    .size(1.375F, 0.5625F)
+                    .size(3.5F, 1.25F)
                     .trackingRange(10)
                     .setUpdateInterval(3)
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "sailboat").toString()));
+
 }

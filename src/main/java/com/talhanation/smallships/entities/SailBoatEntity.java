@@ -2,13 +2,17 @@ package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.items.ModItems;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
+import net.minecraft.entity.*;
 import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.entity.passive.WaterMobEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.play.client.CSteerBoatPacket;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.EntityPredicates;
+import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -18,6 +22,7 @@ import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class SailBoatEntity extends BoatEntity {
     private float momentum;
@@ -58,19 +63,103 @@ public class SailBoatEntity extends BoatEntity {
     }
 
     public SailBoatEntity(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {
-        this((EntityType<? extends SailBoatEntity>)ModEntityTypes.SAILBOAT_ENTITY.get(), worldIn);
+        this((EntityType<? extends SailBoatEntity>) ModEntityTypes.SAILBOAT_ENTITY.get(), worldIn);
     }
 
     public double getMountedYOffset() {
-        return 0.3D;
+        return 0.8D;
     }
 
+
     public void tick() {
+        this.previousStatus = this.status;
+        this.status = this.getBoatStatus();
+        if (this.status != BoatEntity.Status.UNDER_WATER && this.status != BoatEntity.Status.UNDER_FLOWING_WATER) {
+            this.outOfControlTicks = 0.0F;
+        } else {
+            ++this.outOfControlTicks;
+        }
+
+        if (!this.world.isRemote && this.outOfControlTicks >= 60.0F) {
+            this.removePassengers();
+        }
+
+        if (this.getTimeSinceHit() > 0) {
+            this.setTimeSinceHit(this.getTimeSinceHit() - 1);
+        }
+
+        if (this.getDamageTaken() > 0.0F) {
+            this.setDamageTaken(this.getDamageTaken() - 1.0F);
+        }
+
         super.tick();
-        if (getPassengers().size() > 1) {
-            Vector3d motion = getMotion();
-            double newY = motion.y - 0.035D;
-            setMotion(motion.x, newY, motion.z);
+        this.tickLerp();
+        if (this.canPassengerSteer()) {
+            if (this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof PlayerEntity)) {
+                this.setPaddleState(false, false);
+            }
+
+            this.updateMotion();
+            if (this.world.isRemote) {
+                this.controlBoat();
+                this.world.sendPacketToServer(new CSteerBoatPacket(this.getPaddleState(0), this.getPaddleState(1)));
+            }
+
+            this.move(MoverType.SELF, this.getMotion());
+        } else {
+            this.setMotion(Vector3d.ZERO);
+        }
+        for (int i = 0; i <= 1; ++i) {
+            if (this.getPaddleState(i)) {
+                if (!this.isSilent()) {
+                    SoundEvent soundevent = this.getPaddleSound();
+                    if (soundevent != null) {
+                        Vector3d vector3d = this.getLook(1.0F);
+                        double d0 = i == 1 ? -vector3d.z : vector3d.z;
+                        double d1 = i == 1 ? vector3d.x : -vector3d.x;
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat());
+                    }
+                }
+            } else {
+            }
+        }
+
+        this.doBlockCollisions();
+        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().grow((double) 0.2F, (double) -0.01F, (double) 0.2F), EntityPredicates.pushableBy(this));
+        if (!list.isEmpty()) {
+            boolean flag = !this.world.isRemote && !(this.getControllingPassenger() instanceof PlayerEntity);
+
+            for (int j = 0; j < list.size(); ++j) {
+                Entity entity = list.get(j);
+                if (!entity.isPassenger(this)) {
+                    if (flag && this.getPassengers().size() < 2 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
+                        entity.startRiding(this);
+                    } else {
+                        this.applyEntityCollision(entity);
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    private void tickLerp() {
+        if (this.canPassengerSteer()) {
+            this.lerpSteps = 0;
+            this.setPacketCoordinates(this.getPosX(), this.getPosY(), this.getPosZ());
+        }
+
+        if (this.lerpSteps > 0) {
+            double d0 = this.getPosX() + (this.lerpX - this.getPosX()) / (double) this.lerpSteps;
+            double d1 = this.getPosY() + (this.lerpY - this.getPosY()) / (double) this.lerpSteps;
+            double d2 = this.getPosZ() + (this.lerpZ - this.getPosZ()) / (double) this.lerpSteps;
+            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
+            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.lerpSteps);
+            this.rotationPitch = (float) ((double) this.rotationPitch + (this.lerpPitch - (double) this.rotationPitch) / (double) this.lerpSteps);
+            --this.lerpSteps;
+            this.setPosition(d0, d1, d2);
+            this.setRotation(this.rotationYaw, this.rotationPitch);
         }
     }
 
@@ -89,6 +178,7 @@ public class SailBoatEntity extends BoatEntity {
         }
         return BoatEntity.Status.IN_AIR;
     }
+
 
     public void updateMotion() {
         double d0 = -0.03999999910593033D;
@@ -132,16 +222,16 @@ public class SailBoatEntity extends BoatEntity {
         if (isBeingRidden()) {
             float f = 0.0F;
             if (this.leftInputDown)
-                this.deltaRotation = (float)(this.deltaRotation - 1.0D);
+                this.deltaRotation = (float) (this.deltaRotation - 1.0D);
             if (this.rightInputDown)
-                this.deltaRotation = (float)(this.deltaRotation + 1.0D);
+                this.deltaRotation = (float) (this.deltaRotation + 1.0D);
             if (this.rightInputDown != this.leftInputDown && !this.forwardInputDown && !this.backInputDown)
                 f += 0.005F;
             this.rotationYaw += this.deltaRotation;
             if (this.forwardInputDown)
-                f = (float)(f + 0.03999999910593033D);
+                f = (float) (f + 0.03999999910593033D);
             if (this.backInputDown)
-                f = (float)(f - 0.004999999888241291D);
+                f = (float) (f - 0.004999999888241291D);
             setMotion(getMotion().add((MathHelper.sin(-this.rotationYaw * 0.017453292F) * f), 0.0D, (MathHelper.cos(this.rotationYaw * 0.017453292F) * f)));
             setPaddleState(((this.rightInputDown && !this.leftInputDown) || this.forwardInputDown), ((this.leftInputDown && !this.rightInputDown) || this.forwardInputDown));
         }
@@ -149,7 +239,7 @@ public class SailBoatEntity extends BoatEntity {
 
 
     public Item getItemBoat() {
-        switch(this.getBoatType()) {
+        switch (this.getBoatType()) {
             case OAK:
             default:
                 return ModItems.OAK_SAILBOAT_ITEM.get();
@@ -167,7 +257,7 @@ public class SailBoatEntity extends BoatEntity {
     }
 
     public IPacket<?> createSpawnPacket() {
-        return NetworkHooks.getEntitySpawningPacket((Entity)this);
+        return NetworkHooks.getEntitySpawningPacket((Entity) this);
     }
 
     @Nullable
@@ -183,12 +273,12 @@ public class SailBoatEntity extends BoatEntity {
         boolean flag = false;
         BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
 
-        for(int k1 = i; k1 < j; ++k1) {
-            for(int l1 = k; l1 < l; ++l1) {
-                for(int i2 = i1; i2 < j1; ++i2) {
+        for (int k1 = i; k1 < j; ++k1) {
+            for (int l1 = k; l1 < l; ++l1) {
+                for (int i2 = i1; i2 < j1; ++i2) {
                     blockpos$mutable.setPos(k1, l1, i2);
                     FluidState fluidstate = this.world.getFluidState(blockpos$mutable);
-                    if (fluidstate.isTagged(FluidTags.WATER) && d0 < (double)((float)blockpos$mutable.getY() + fluidstate.getActualHeight(this.world, blockpos$mutable))) {
+                    if (fluidstate.isTagged(FluidTags.WATER) && d0 < (double) ((float) blockpos$mutable.getY() + fluidstate.getActualHeight(this.world, blockpos$mutable))) {
                         if (!fluidstate.isSource()) {
                             return BoatEntity.Status.UNDER_FLOWING_WATER;
                         }
@@ -214,20 +304,25 @@ public class SailBoatEntity extends BoatEntity {
         this.waterLevel = Double.MIN_VALUE;
         BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
 
-        for(int k1 = i; k1 < j; ++k1) {
-            for(int l1 = k; l1 < l; ++l1) {
-                for(int i2 = i1; i2 < j1; ++i2) {
+        for (int k1 = i; k1 < j; ++k1) {
+            for (int l1 = k; l1 < l; ++l1) {
+                for (int i2 = i1; i2 < j1; ++i2) {
                     blockpos$mutable.setPos(k1, l1, i2);
                     FluidState fluidstate = this.world.getFluidState(blockpos$mutable);
                     if (fluidstate.isTagged(FluidTags.WATER)) {
-                        float f = (float)l1 + fluidstate.getActualHeight(this.world, blockpos$mutable);
-                        this.waterLevel = Math.max((double)f, this.waterLevel);
-                        flag |= axisalignedbb.minY < (double)f;
+                        float f = (float) l1 + fluidstate.getActualHeight(this.world, blockpos$mutable);
+                        this.waterLevel = Math.max((double) f, this.waterLevel);
+                        flag |= axisalignedbb.minY < (double) f;
                     }
                 }
             }
         }
 
         return flag;
+    }
+
+    @Override
+    public boolean canBePushed() {
+        return false;
     }
 }

@@ -41,8 +41,8 @@ public class RenderEntitySailBoat extends EntityRenderer<SailBoatEntity>{
         float f2 = entityIn.getRockingAngle(partialTicks);
         if (!MathHelper.epsilonEquals(f2, 0.0F))
             matrixStackIn.rotate(new Quaternion(new Vector3f(1.0F, 0.0F, 1.0F), entityIn.getRockingAngle(partialTicks), true));
-        matrixStackIn.scale(-1.5F, -1.5F, 1.5F);
-        matrixStackIn.translate(0.5D, -1.0D,-1.0D);
+        matrixStackIn.scale(-1.3F, -1.3F, 1.3F);
+        matrixStackIn.translate(0.0D, -1.5D,0.0D); //x= 0.5, z = -1 for steer pos
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(0F));
         this.model.setRotationAngles(entityIn, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(getEntityTexture(entityIn)));
