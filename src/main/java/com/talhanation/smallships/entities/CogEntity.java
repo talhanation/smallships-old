@@ -23,7 +23,6 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -118,15 +117,19 @@ public class CogEntity extends AbstractSailBoatEntity {
     public void updatePassenger(Entity passenger) {
         if (isPassenger(passenger)) {
             Vector3d forward = getLookVec();
-            Vector3d origin = new Vector3d(0.0D, getMountedYOffset(), 0.0625D);
-            Vector3d pos = origin.add(forward.scale(-0.68D));
+            Vector3d origin = new Vector3d(0.0D, getMountedYOffset(), 0.0D);
+            //Vector3d origin = new Vector3d(0.0D, getMountedYOffset(), 0.0625D);
+            Vector3d pos = origin.add(forward.scale(-1.25D)); //x pos driver
+            //Vector3d pos = origin.add(forward.scale(-0.68D));
             passenger.setPosition(getPosX() + pos.x, getPosY() + pos.y - 0.1D + passenger.getYOffset(), getPosZ() + pos.z);
             passenger.setRenderYawOffset(this.rotationYaw + 180.0F);
+            /*
             float f2 = MathHelper.wrapDegrees(passenger.rotationYaw - this.rotationYaw + 180.0F);
             float f1 = MathHelper.clamp(f2, -105.0F, 105.0F);
             passenger.prevRotationYaw += f1 - f2;
             passenger.rotationYaw += f1 - f2;
             passenger.setRotationYawHead(passenger.rotationYaw);
+        */
         }
     }
 
@@ -168,5 +171,11 @@ public class CogEntity extends AbstractSailBoatEntity {
             case DARK_OAK:
                 return ModItems.DARK_OAK_COG_ITEM.get();
         }
+    }
+
+
+
+    protected boolean canFitPassenger(Entity passenger) {
+        return (getPassengers().size() < 6);
     }
 }
