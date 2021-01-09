@@ -7,29 +7,41 @@ import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.play.client.CSteerBoatPacket;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.Direction;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SailBoatEntity extends BoatEntity {
+public abstract class AbstractSailBoatEntity extends BoatEntity {
     private float momentum;
     private float outOfControlTicks;
     private float deltaRotation;
     private int lerpSteps;
     private double lerpX;
+    public boolean removed;
     private double lerpY;
     private double lerpZ;
     private double lerpYaw;
@@ -40,30 +52,23 @@ public class SailBoatEntity extends BoatEntity {
     private boolean backInputDown;
     private double waterLevel;
     private float boatGlide;
-    private SailBoatEntity.Status status;
-    private SailBoatEntity.Status previousStatus;
+    private AbstractSailBoatEntity.Status status;
+    private AbstractSailBoatEntity.Status previousStatus;
     private double lastYd;
     private boolean rocking;
     private boolean downwards;
     private float rockingIntensity;
     private float rockingAngle;
     private float prevRockingAngle;
+    public ItemStackHandler inventory = initInventory();
 
-    public SailBoatEntity(EntityType<? extends SailBoatEntity> entityType, World worldIn) {
+    protected abstract ItemStackHandler initInventory();
+
+
+    private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
+
+    public AbstractSailBoatEntity(EntityType<? extends AbstractSailBoatEntity> entityType, World worldIn) {
         super(entityType, worldIn);
-    }
-
-    public SailBoatEntity(World worldIn, double x, double y, double z) {
-        this((EntityType<? extends SailBoatEntity>) ModEntityTypes.SAILBOAT_ENTITY.get(), worldIn);
-        setPosition(x, y, z);
-        setMotion(Vector3d.ZERO);
-        this.prevPosX = x;
-        this.prevPosY = y;
-        this.prevPosZ = z;
-    }
-
-    public SailBoatEntity(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {
-        this((EntityType<? extends SailBoatEntity>) ModEntityTypes.SAILBOAT_ENTITY.get(), worldIn);
     }
 
     public double getMountedYOffset() {
@@ -181,10 +186,10 @@ public class SailBoatEntity extends BoatEntity {
 
 
     public void updateMotion() {
-        double d0 = -0.03999999910593033D;
+        double d0 = -0.04D;
         double d1 = hasNoGravity() ? 0.0D : d0;
         double d2 = 0.0D;
-        this.momentum = 0.05F;
+        this.momentum = 0.1F;
         if (this.previousStatus == BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.ON_LAND) {
             this.waterLevel = (getBoundingBox()).minY + getHeight();
             setPosition(getPosX(), (getWaterLevelAbove() - getHeight()) + 0.101D, getPosZ());
@@ -234,25 +239,6 @@ public class SailBoatEntity extends BoatEntity {
                 f = (float) (f - 0.004999999888241291D);
             setMotion(getMotion().add((MathHelper.sin(-this.rotationYaw * 0.017453292F) * f), 0.0D, (MathHelper.cos(this.rotationYaw * 0.017453292F) * f)));
             setPaddleState(((this.rightInputDown && !this.leftInputDown) || this.forwardInputDown), ((this.leftInputDown && !this.rightInputDown) || this.forwardInputDown));
-        }
-    }
-
-
-    public Item getItemBoat() {
-        switch (this.getBoatType()) {
-            case OAK:
-            default:
-                return ModItems.OAK_SAILBOAT_ITEM.get();
-            case SPRUCE:
-                return ModItems.SPRUCE_SAILBOAT_ITEM.get();
-            case BIRCH:
-                return ModItems.BRICH_SAILBOAT_ITEM.get();
-            case JUNGLE:
-                return ModItems.JUNGLE_SAILBOAT_ITEM.get();
-            case ACACIA:
-                return ModItems.ACACIA_SAILBOAT_ITEM.get();
-            case DARK_OAK:
-                return ModItems.DARK_OAK_SAILBOAT_ITEM.get();
         }
     }
 
@@ -325,4 +311,83 @@ public class SailBoatEntity extends BoatEntity {
     public boolean canBePushed() {
         return false;
     }
+
+    /**
+     * Called when the entity is attacked.
+     */
+    @Override
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (this.isInvulnerableTo(source)) {
+            return false;
+        } else if (!this.world.isRemote && !this.removed) {
+            this.setForwardDirection(-this.getForwardDirection());
+            this.setTimeSinceHit(1);
+            this.setDamageTaken(this.getDamageTaken() + amount * 10F);
+            this.markVelocityChanged();
+            boolean flag = source.getTrueSource() instanceof PlayerEntity && ((PlayerEntity) source.getTrueSource()).abilities.isCreativeMode;
+            if (flag || this.getDamageTaken() > 200.0F) {//heath
+                if (!flag && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
+                    this.entityDropItem(this.getItemBoat());
+                }
+
+                this.remove();
+            }
+            return true;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Applies a velocity to the entities, to push them away from eachother.
+     */
+    @Override
+    public void applyEntityCollision(Entity entityIn) {
+        if (entityIn instanceof BoatEntity) {
+            if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
+                super.applyEntityCollision(entityIn);
+            }
+        } else if (entityIn.getBoundingBox().minY <= this.getBoundingBox().minY) {
+            super.applyEntityCollision(entityIn);
+        }
+    }
+
+    //inventory
+    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
+        if (inventorySlot >= 0 && inventorySlot < this.inventory.getSlots()) {
+            this.inventory.setStackInSlot(inventorySlot, itemStackIn);
+            return true;
+        }
+        return false;
+    }
+
+    public void onDestroyedAndDoDrops(DamageSource source) {
+        for (int i = 0; i < this.inventory.getSlots(); i++)
+            InventoryHelper.spawnItemStack(this.world, getPosX(), getPosY(), getPosZ(), this.inventory.getStackInSlot(i));
+    }
+
+    protected void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+        this.inventory.deserializeNBT(compound.getCompound("Items"));
+    }
+
+    protected void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        compound.put("Items", (INBT)this.inventory.serializeNBT());
+    }
+
+    public void remove(boolean keepData) {
+        super.remove(keepData);
+        if (!keepData && this.itemHandler != null) {
+            this.itemHandler.invalidate();
+            this.itemHandler = null;
+        }
+    }
+
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (isAlive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.itemHandler != null)
+            return this.itemHandler.cast();
+        return super.getCapability(capability, facing);
+    }
+
 }

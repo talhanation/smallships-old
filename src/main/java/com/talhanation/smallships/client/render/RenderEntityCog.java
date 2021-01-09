@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.client.model.ModelSailBoat;
-import com.talhanation.smallships.entities.SailBoatEntity;
+import com.talhanation.smallships.entities.CogEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
@@ -14,21 +14,24 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
 
-public class RenderEntitySailBoat extends EntityRenderer<SailBoatEntity>{
-    protected static final ResourceLocation[] SAILBOAT_TEXTURES = new ResourceLocation[]{
-            new ResourceLocation(Main.MOD_ID,"textures/entity/oak_sailboat.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/spruce_sailboat.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/brich_sailboat.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/jungle_sailboat.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/acacia_sailboat.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/dark_oak_sailboat.png")};
-    public RenderEntitySailBoat(EntityRendererManager renderManagerIn) {
+public class RenderEntityCog extends EntityRenderer<CogEntity>{
+    private static final ResourceLocation[] COG_TEXTURES = new ResourceLocation[]{
+            new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/cog/spruce_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/cog/birch_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/cog/jungle_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/cog/acacia_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/cog/dark_oak_cog.png")};
+
+    private final ModelSailBoat model = new ModelSailBoat<>();
+
+    public RenderEntityCog(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);
         this.shadowSize = 1.5F;
     }
-    private final ModelSailBoat model = new ModelSailBoat<>();
 
-    public void render(SailBoatEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
+
+    public void render(CogEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
         matrixStackIn.translate(0.0D, 0.375D, 0.0D);
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
@@ -51,8 +54,8 @@ public class RenderEntitySailBoat extends EntityRenderer<SailBoatEntity>{
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
-    public ResourceLocation getEntityTexture(SailBoatEntity entity) {
-        return SAILBOAT_TEXTURES[entity.getBoatType().ordinal()];
+    public ResourceLocation getEntityTexture(CogEntity entity) {
+        return COG_TEXTURES[entity.getBoatType().ordinal()];
     }
 
 }

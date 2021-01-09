@@ -1,7 +1,7 @@
 package com.talhanation.smallships.util;
 
 import com.talhanation.smallships.Main;
-import com.talhanation.smallships.client.render.RenderEntitySailBoat;
+import com.talhanation.smallships.client.render.RenderEntityCog;
 import com.talhanation.smallships.init.ModEntityTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -14,7 +14,7 @@ public class ClientEventBusSubscriber {
 
     @SubscribeEvent
     public static void clientsetup(FMLClientSetupEvent event){
-        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.SAILBOAT_ENTITY.get(), RenderEntitySailBoat::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.COG_ENTITY.get(), RenderEntityCog::new);
     }
 
 }

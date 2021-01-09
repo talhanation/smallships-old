@@ -1,7 +1,7 @@
 package com.talhanation.smallships.items;
 
 
-import com.talhanation.smallships.entities.SailBoatEntity;
+import com.talhanation.smallships.entities.CogEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
@@ -19,11 +19,11 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class SailBoatItem  extends Item {
+public class CogItem extends Item {
     private static final Predicate<Entity> X = EntityPredicates.NOT_SPECTATING.and(Entity::canBeCollidedWith);
-    private final SailBoatEntity.Type type;
+    private final CogEntity.Type type;
 
-    public SailBoatItem(SailBoatEntity.Type typeIn, Item.Properties properties) {
+    public CogItem(CogEntity.Type typeIn, Item.Properties properties) {
         super(properties);
         this.type = typeIn;
     }
@@ -49,7 +49,7 @@ public class SailBoatItem  extends Item {
             }
 
             if (raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
-                SailBoatEntity boatentity = new SailBoatEntity(worldIn, raytraceresult.getHitVec().x, raytraceresult.getHitVec().y, raytraceresult.getHitVec().z);
+                CogEntity boatentity = new CogEntity(worldIn, raytraceresult.getHitVec().x, raytraceresult.getHitVec().y, raytraceresult.getHitVec().z);
                 boatentity.setBoatType(this.type);
                 boatentity.rotationYaw = playerIn.rotationYaw;
                 if (!worldIn.hasNoCollisions(boatentity, boatentity.getBoundingBox().grow(-0.1D))) {
