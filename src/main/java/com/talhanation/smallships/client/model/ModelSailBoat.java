@@ -3,6 +3,7 @@ package com.talhanation.smallships.client.model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.talhanation.smallships.entities.CogEntity;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -14,7 +15,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  * Created using Tabula 8.0.0
  */
 @OnlyIn(Dist.CLIENT)
-public class ModelSailBoat<T extends Entity> extends EntityModel<T> {
+public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
     public ModelRenderer botom_1;
     public ModelRenderer side_1;
     public ModelRenderer side_3;
@@ -294,7 +295,12 @@ public class ModelSailBoat<T extends Entity> extends EntityModel<T> {
     }
 
     @Override
-    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {}
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+
+
+    }
+
+
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts

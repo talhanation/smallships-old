@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
@@ -21,9 +22,12 @@ import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.Hand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -99,15 +103,22 @@ public class CogEntity extends AbstractSailBoatEntity {
 
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         if (player.isSecondaryUseActive()) {
-            openContainer(player);
+            if (this.isBeingRidden())
+                this.removePassengers();
+            else
+                openContainer(player);
             return ActionResultType.func_233537_a_(this.world.isRemote);
-        }
-        if (isBeingRidden())
+        } else if (this.outOfControlTicks < 60.0F) {
+            if (!this.world.isRemote) {
+                return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
+            } else {
+                return ActionResultType.SUCCESS;
+            }
+        } else {
             return ActionResultType.PASS;
-        if (!this.world.isRemote)
-            return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
-        return ActionResultType.SUCCESS;
+        }
     }
+
 
     @OnlyIn(Dist.CLIENT)
     public void handleStatusUpdate(byte id) {
@@ -115,7 +126,7 @@ public class CogEntity extends AbstractSailBoatEntity {
     }
 
     public void updatePassenger(Entity passenger) {
-        if (isPassenger(passenger)) {
+    /*    if (isPassenger(passenger)) { ////////////////////////////////////////////////
             Vector3d forward = getLookVec();
             Vector3d origin = new Vector3d(0.0D, getMountedYOffset(), 0.0D);
             //Vector3d origin = new Vector3d(0.0D, getMountedYOffset(), 0.0625D);
@@ -123,15 +134,84 @@ public class CogEntity extends AbstractSailBoatEntity {
             //Vector3d pos = origin.add(forward.scale(-0.68D));
             passenger.setPosition(getPosX() + pos.x, getPosY() + pos.y - 0.1D + passenger.getYOffset(), getPosZ() + pos.z);
             passenger.setRenderYawOffset(this.rotationYaw + 180.0F);
-            /*
-            float f2 = MathHelper.wrapDegrees(passenger.rotationYaw - this.rotationYaw + 180.0F);
-            float f1 = MathHelper.clamp(f2, -105.0F, 105.0F);
-            passenger.prevRotationYaw += f1 - f2;
-            passenger.rotationYaw += f1 - f2;
-            passenger.setRotationYawHead(passenger.rotationYaw);
-        */
+
         }
     }
+    */
+
+        Entity firstpassenger = getPassengers().get(0);
+        boolean flag = (firstpassenger instanceof net.minecraft.entity.player.PlayerEntity);
+        int i = getPassengers().indexOf(passenger);
+        if (isPassenger(passenger)) {
+            float f = -1.75F; //driver x pos
+            float d = 0.0F;   //driver z pos
+            float f1 = (float) ((this.removed ? 0.02D : getMountedYOffset()) + passenger.getYOffset());
+            if (getPassengers().size() == 2) {
+            if (i == 0) {
+                f = -1.75F;
+                d = 0.0F;
+            } else {
+                f = 1.25F;
+                d = 0.0F;
+                }
+            } else if (getPassengers().size() == 3) {
+                if (i == 0) {
+                    f = -1.75F;
+                    d = 0.0F;
+                } else if (i == 1) {
+                    f = 1.25F;
+                    d = 0.9F;
+                } else {
+                    f = 1.25F;
+                    d = -0.90F;
+                }
+            }else if (getPassengers().size() == 4) {
+                if (i == 0) {
+                    f = -1.75F;
+                    d = 0.0F;
+                } else if (i == 1) {
+                    f =  1.25F;
+                    d = -0.90F;
+                } else if (i == 2) {
+                    f = 1.25F;
+                    d = 0.90F;
+                } else {
+                    f = 0.45F;
+                    d = 0F;
+                }
+            } else if (getPassengers().size() == 5) {
+                if (i == 0) { // and flag?
+                    f = -1.75F;
+                    d = 0.0F;
+                } else if (i == 1) {
+                    f =  1.25F;
+                    d = -0.90F;
+                } else if (i == 2) {
+                    f = 1.25F;
+                    d = 0.90F;
+                } else if (i == 3){
+                    f =  0.45F;
+                    d = 0.90F;
+                } else {
+                    f =  0.45F;
+                    d = -0.90F;
+                }
+            }
+            if (passenger instanceof AnimalEntity)
+                d = (float)(d -0.15D);
+            Vector3d vector3d = (new Vector3d((double)f, 0.0D, 0.0D)).rotateYaw(-this.rotationYaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+            passenger.setPosition(this.getPosX() + vector3d.x, this.getPosY() + (double)f1, d + this.getPosZ() + vector3d.z);
+            passenger.rotationYaw += this.deltaRotation;
+            passenger.setRotationYawHead(passenger.getRotationYawHead() + this.deltaRotation);
+            applyYawToEntity(passenger);
+            if (passenger instanceof AnimalEntity && getPassengers().size() > 1) {
+                int j = (passenger.getEntityId() % 2 == 0) ? 90 : 270;
+                passenger.setRenderYawOffset(((AnimalEntity)passenger).renderYawOffset + j);
+                passenger.setRotationYawHead(passenger.getRotationYawHead() + j);
+            }
+        }
+    }
+
 
     public NonNullList<ItemStack> getCargo() {
         NonNullList<ItemStack> cargo = NonNullList.withSize(CARGO.size(), ItemStack.EMPTY);
@@ -146,6 +226,7 @@ public class CogEntity extends AbstractSailBoatEntity {
             DataParameter<ItemStack> parameter = unmodifiableIterator.next();
             this.dataManager.register(parameter, ItemStack.EMPTY);
         }
+
     }
 
     public void openContainer(PlayerEntity player) {
@@ -173,9 +254,8 @@ public class CogEntity extends AbstractSailBoatEntity {
         }
     }
 
-
-
     protected boolean canFitPassenger(Entity passenger) {
-        return (getPassengers().size() < 6);
+        return (getPassengers().size() < 5);
     }
+
 }

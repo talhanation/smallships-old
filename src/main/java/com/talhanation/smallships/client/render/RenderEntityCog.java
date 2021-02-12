@@ -33,7 +33,7 @@ public class RenderEntityCog extends EntityRenderer<CogEntity>{
 
     public void render(CogEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();
-        matrixStackIn.translate(0.0D, 0.375D, 0.0D);
+        matrixStackIn.translate(0.0D, 0.1D, 0.0D);
         matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
         float f = entityIn.getTimeSinceHit() - partialTicks;
         float f1 = entityIn.getDamageTaken() - partialTicks;

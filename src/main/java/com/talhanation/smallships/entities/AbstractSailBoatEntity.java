@@ -1,6 +1,7 @@
 package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.init.ModEntityTypes;
+import com.talhanation.smallships.items.CogItem;
 import com.talhanation.smallships.items.ModItems;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.BoatEntity;
@@ -13,18 +14,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CSteerBoatPacket;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.FMLPlayMessages;
@@ -37,8 +40,8 @@ import java.util.List;
 
 public abstract class AbstractSailBoatEntity extends BoatEntity {
     private float momentum;
-    private float outOfControlTicks;
-    private float deltaRotation;
+    public float outOfControlTicks;
+    public float deltaRotation;
     private int lerpSteps;
     private double lerpX;
     public boolean removed;
@@ -71,8 +74,16 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         super(entityType, worldIn);
     }
 
+
+    @OnlyIn(Dist.CLIENT)
+    public void performHurtAnimation() {
+        this.setForwardDirection(-this.getForwardDirection());
+        this.setTimeSinceHit(10);
+        this.setDamageTaken(this.getDamageTaken() * 11.0F);
+    }
+
     public double getMountedYOffset() {
-        return 0.8D;
+        return 0.75D;
     }
 
 
@@ -93,9 +104,6 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
         }
 
-        if (this.getDamageTaken() > 0.0F) {
-            this.setDamageTaken(this.getDamageTaken() - 1.0F);
-        }
 
         super.tick();
         this.tickLerp();
@@ -137,7 +145,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             for (int j = 0; j < list.size(); ++j) {
                 Entity entity = list.get(j);
                 if (!entity.isPassenger(this)) {
-                    if (flag && this.getPassengers().size() < 2 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
+                    if (flag && this.getPassengers().size() < 8 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
                         entity.startRiding(this);
                     } else {
                         this.applyEntityCollision(entity);
@@ -178,28 +186,27 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             return BoatEntity.Status.IN_WATER;
         float f = getBoatGlide();
         if (f > 0.0F) {
-            this.boatGlide = 1.0F;
+            this.boatGlide = 0F;
             return BoatEntity.Status.ON_LAND;
         }
         return BoatEntity.Status.IN_AIR;
     }
 
-
     public void updateMotion() {
-        double d0 = -0.04D;
+        double d0 = -0.04D; // down/up moment
         double d1 = hasNoGravity() ? 0.0D : d0;
-        double d2 = 0.0D;
-        this.momentum = 0.1F;
+        double d2 = 0.0D;  //
+        this.momentum = 1.0F;
         if (this.previousStatus == BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.ON_LAND) {
             this.waterLevel = (getBoundingBox()).minY + getHeight();
             setPosition(getPosX(), (getWaterLevelAbove() - getHeight()) + 0.101D, getPosZ());
-            setMotion(getMotion().mul(1.0D, 0.0D, 1.0D));
+            setMotion(getMotion().mul(10.0D, 0.0D, 10.0D));
             this.lastYd = 0.0D;
             this.status = BoatEntity.Status.IN_WATER;
         } else {
             if (this.status == BoatEntity.Status.IN_WATER) {
                 d2 = (this.waterLevel - (getBoundingBox()).minY + 0.1D) / getHeight();
-                this.momentum = 0.9F;
+                this.momentum = 0.9F * 1.0F; //speedfaktor
             } else if (this.status == BoatEntity.Status.UNDER_FLOWING_WATER) {
                 d1 = -7.0E-4D;
                 this.momentum = 0.9F;
@@ -209,36 +216,36 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             } else if (this.status == BoatEntity.Status.IN_AIR) {
                 this.momentum = 0.9F;
             } else if (this.status == BoatEntity.Status.ON_LAND) {
-                this.momentum = this.boatGlide;
+                this.momentum = this.boatGlide * 0.001F;
                 if (getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)
-                    this.boatGlide /= 2.0F;
+                    this.boatGlide /= 1.0F;
             }
             Vector3d vec3d = getMotion();
             setMotion(vec3d.x * this.momentum, vec3d.y + d1, vec3d.z * this.momentum);
             this.deltaRotation *= this.momentum;
             if (d2 > 0.0D) {
                 Vector3d vec3d1 = getMotion();
-                setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06153846016296973D) * 0.75D, vec3d1.z);
+                setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
             }
         }
     }
 
-    public void controlBoat() {
+    protected void controlBoat() {
         if (isBeingRidden()) {
             float f = 0.0F;
             if (this.leftInputDown)
-                this.deltaRotation = (float) (this.deltaRotation - 1.0D);
+                this.deltaRotation--;
             if (this.rightInputDown)
-                this.deltaRotation = (float) (this.deltaRotation + 1.0D);
+                this.deltaRotation++;
             if (this.rightInputDown != this.leftInputDown && !this.forwardInputDown && !this.backInputDown)
-                f += 0.005F;
+                f += 5F * 10e-10;
             this.rotationYaw += this.deltaRotation;
             if (this.forwardInputDown)
-                f = (float) (f + 0.03999999910593033D);
+                f += 3F * 10e-10;
             if (this.backInputDown)
-                f = (float) (f - 0.004999999888241291D);
-            setMotion(getMotion().add((MathHelper.sin(-this.rotationYaw * 0.017453292F) * f), 0.0D, (MathHelper.cos(this.rotationYaw * 0.017453292F) * f)));
-            setPaddleState(((this.rightInputDown && !this.leftInputDown) || this.forwardInputDown), ((this.leftInputDown && !this.rightInputDown) || this.forwardInputDown));
+                f -= 5F * 10e-10;
+            setMotion(getMotion().add((MathHelper.sin(-this.rotationYaw * 10.0F) * f), 0.0D,
+                    (MathHelper.cos(this.rotationYaw * 10.0F) * f)));
         }
     }
 
@@ -313,32 +320,6 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     }
 
     /**
-     * Called when the entity is attacked.
-     */
-    @Override
-    public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
-            return false;
-        } else if (!this.world.isRemote && !this.removed) {
-            this.setForwardDirection(-this.getForwardDirection());
-            this.setTimeSinceHit(1);
-            this.setDamageTaken(this.getDamageTaken() + amount * 10F);
-            this.markVelocityChanged();
-            boolean flag = source.getTrueSource() instanceof PlayerEntity && ((PlayerEntity) source.getTrueSource()).abilities.isCreativeMode;
-            if (flag || this.getDamageTaken() > 200.0F) {//heath
-                if (!flag && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-                    this.entityDropItem(this.getItemBoat());
-                }
-
-                this.remove();
-            }
-            return true;
-        } else {
-            return true;
-        }
-    }
-
-    /**
      * Applies a velocity to the entities, to push them away from eachother.
      */
     @Override
@@ -389,5 +370,35 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             return this.itemHandler.cast();
         return super.getCapability(capability, facing);
     }
+
+    public boolean attackEntityFrom(DamageSource source, float amount) {
+        if (isInvulnerableTo(source))
+            return false;
+        if (!this.world.isRemote && isAlive()) {
+            if (source == DamageSource.CACTUS)
+                return false;
+            if (source instanceof net.minecraft.util.IndirectEntityDamageSource && source.getTrueSource() != null && isPassenger(source.getTrueSource()))
+                return false;
+            setForwardDirection(-getForwardDirection());
+            setTimeSinceHit(10);
+            setDamageTaken(getDamageTaken() + amount * 10.0F);
+            boolean flag = (source.getTrueSource() instanceof PlayerEntity && ((PlayerEntity)source.getTrueSource()).abilities.isCreativeMode);
+            if (flag || getDamageTaken() > 40.0F) {
+                onDestroyed(source, flag);
+                remove();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public void onDestroyed(DamageSource source, boolean byCreativePlayer) {
+        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
+            if (!byCreativePlayer)
+                this.entityDropItem(this.getItemBoat());
+                onDestroyedAndDoDrops(source);
+        }
+    }
+
 
 }
