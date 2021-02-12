@@ -139,15 +139,15 @@ public class CogEntity extends AbstractSailBoatEntity {
     }
     */
 
-        Entity firstpassenger = getPassengers().get(0);
-        boolean flag = (firstpassenger instanceof net.minecraft.entity.player.PlayerEntity);
-        int i = getPassengers().indexOf(passenger);
+
         if (isPassenger(passenger)) {
             float f = -1.75F; //driver x pos
             float d = 0.0F;   //driver z pos
             float f1 = (float) ((this.removed ? 0.02D : getMountedYOffset()) + passenger.getYOffset());
             if (getPassengers().size() == 2) {
+                int i = getPassengers().indexOf(passenger);
             if (i == 0) {
+
                 f = -1.75F;
                 d = 0.0F;
             } else {
@@ -155,6 +155,7 @@ public class CogEntity extends AbstractSailBoatEntity {
                 d = 0.0F;
                 }
             } else if (getPassengers().size() == 3) {
+                int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
                     f = -1.75F;
                     d = 0.0F;
@@ -166,6 +167,7 @@ public class CogEntity extends AbstractSailBoatEntity {
                     d = -0.90F;
                 }
             }else if (getPassengers().size() == 4) {
+                int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
                     f = -1.75F;
                     d = 0.0F;
@@ -180,6 +182,9 @@ public class CogEntity extends AbstractSailBoatEntity {
                     d = 0F;
                 }
             } else if (getPassengers().size() == 5) {
+                int i = getPassengers().indexOf(passenger);
+                Entity firstpassenger = getPassengers().get(0);
+                boolean flag = (firstpassenger instanceof net.minecraft.entity.player.PlayerEntity);
                 if (i == 0) { // and flag?
                     f = -1.75F;
                     d = 0.0F;
@@ -199,8 +204,8 @@ public class CogEntity extends AbstractSailBoatEntity {
             }
             if (passenger instanceof AnimalEntity)
                 d = (float)(d -0.15D);
-            Vector3d vector3d = (new Vector3d((double)f, 0.0D, 0.0D)).rotateYaw(-this.rotationYaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
-            passenger.setPosition(this.getPosX() + vector3d.x, this.getPosY() + (double)f1, d + this.getPosZ() + vector3d.z);
+            Vector3d vector3d = (new Vector3d((double)f, 0.0D, 0.0D + d)).rotateYaw(-this.rotationYaw * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+            passenger.setPosition(this.getPosX() + vector3d.x, this.getPosY() + (double)f1, + this.getPosZ() + vector3d.z);
             passenger.rotationYaw += this.deltaRotation;
             passenger.setRotationYawHead(passenger.getRotationYawHead() + this.deltaRotation);
             applyYawToEntity(passenger);
