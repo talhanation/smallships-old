@@ -126,20 +126,6 @@ public class CogEntity extends AbstractSailBoatEntity {
     }
 
     public void updatePassenger(Entity passenger) {
-    /*    if (isPassenger(passenger)) { ////////////////////////////////////////////////
-            Vector3d forward = getLookVec();
-            Vector3d origin = new Vector3d(0.0D, getMountedYOffset(), 0.0D);
-            //Vector3d origin = new Vector3d(0.0D, getMountedYOffset(), 0.0625D);
-            Vector3d pos = origin.add(forward.scale(-1.25D)); //x pos driver
-            //Vector3d pos = origin.add(forward.scale(-0.68D));
-            passenger.setPosition(getPosX() + pos.x, getPosY() + pos.y - 0.1D + passenger.getYOffset(), getPosZ() + pos.z);
-            passenger.setRenderYawOffset(this.rotationYaw + 180.0F);
-
-        }
-    }
-    */
-
-
         if (isPassenger(passenger)) {
             float f = -1.75F; //driver x pos
             float d = 0.0F;   //driver z pos
@@ -260,7 +246,10 @@ public class CogEntity extends AbstractSailBoatEntity {
     }
 
     protected boolean canFitPassenger(Entity passenger) {
-        return (getPassengers().size() < 5);
+        return (getPassengers().size() < 4);
     }
+
+
+
 
 }
