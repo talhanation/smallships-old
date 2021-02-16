@@ -12,6 +12,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -39,6 +40,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 
 public class CogEntity extends AbstractSailBoatEntity {
+
 
     private static final ImmutableList<DataParameter<ItemStack>> CARGO = ImmutableList.of(
             EntityDataManager.createKey(CogEntity.class, DataSerializers.ITEMSTACK),
@@ -246,7 +248,7 @@ public class CogEntity extends AbstractSailBoatEntity {
     }
 
     protected boolean canFitPassenger(Entity passenger) {
-        return (getPassengers().size() < 4);
+        return (getPassengers().size() < 5);
     }
 
 

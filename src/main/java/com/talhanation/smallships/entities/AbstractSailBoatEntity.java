@@ -4,6 +4,10 @@ import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.items.CogItem;
 import com.talhanation.smallships.items.ModItems;
 import net.minecraft.entity.*;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifierManager;
+import net.minecraft.entity.ai.attributes.Attributes;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -39,7 +43,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class AbstractSailBoatEntity extends BoatEntity {
-    private float momentum;
+    public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
     private int lerpSteps;
@@ -67,20 +71,12 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
 
     protected abstract ItemStackHandler initInventory();
 
-
     private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
 
     public AbstractSailBoatEntity(EntityType<? extends AbstractSailBoatEntity> entityType, World worldIn) {
         super(entityType, worldIn);
     }
 
-
-    @OnlyIn(Dist.CLIENT)
-    public void performHurtAnimation() {
-        this.setForwardDirection(-this.getForwardDirection());
-        this.setTimeSinceHit(10);
-        this.setDamageTaken(this.getDamageTaken() * 11.0F);
-    }
 
     public double getMountedYOffset() {
         return 0.75D;
@@ -222,7 +218,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             }
             Vector3d vec3d = getMotion();
             setMotion(vec3d.x * this.momentum, vec3d.y + d1, vec3d.z * this.momentum);
-            this.deltaRotation *= this.momentum *10e-3;
+            this.deltaRotation *= this.momentum *0.04;
             if (d2 > 0.0D) {
                 Vector3d vec3d1 = getMotion();
                 setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
@@ -361,6 +357,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     protected void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
         compound.put("Items", (INBT)this.inventory.serializeNBT());
+
     }
 
     public void remove(boolean keepData) {
@@ -386,10 +383,10 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             if (source instanceof net.minecraft.util.IndirectEntityDamageSource && source.getTrueSource() != null && isPassenger(source.getTrueSource()))
                 return false;
             setForwardDirection(-getForwardDirection());
-            setTimeSinceHit(10);
+            setTimeSinceHit(3);
             setDamageTaken(getDamageTaken() + amount * 10.0F);
             boolean flag = (source.getTrueSource() instanceof PlayerEntity && ((PlayerEntity)source.getTrueSource()).abilities.isCreativeMode);
-            if (flag || getDamageTaken() > 40.0F) {
+            if (flag || getDamageTaken() > 300.0F) {
                 onDestroyed(source, flag);
                 remove();
             }
