@@ -206,7 +206,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         } else {
             if (this.status == BoatEntity.Status.IN_WATER) {
                 d2 = (this.waterLevel - (getBoundingBox()).minY + 0.1D) / getHeight();
-                this.momentum = 0.9F * 1.0F; //speedfaktor
+                this.momentum = 0.9F * 1.0F;
             } else if (this.status == BoatEntity.Status.UNDER_FLOWING_WATER) {
                 d1 = -7.0E-4D;
                 this.momentum = 0.9F;
@@ -222,7 +222,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             }
             Vector3d vec3d = getMotion();
             setMotion(vec3d.x * this.momentum, vec3d.y + d1, vec3d.z * this.momentum);
-            this.deltaRotation *= this.momentum;
+            this.deltaRotation *= this.momentum *10e-3;
             if (d2 > 0.0D) {
                 Vector3d vec3d1 = getMotion();
                 setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
@@ -231,21 +231,27 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     }
 
     protected void controlBoat() {
-        if (isBeingRidden()) {
+        if (this.isBeingRidden()) {
             float f = 0.0F;
-            if (this.leftInputDown)
-                this.deltaRotation--;
-            if (this.rightInputDown)
-                this.deltaRotation++;
-            if (this.rightInputDown != this.leftInputDown && !this.forwardInputDown && !this.backInputDown)
-                f += 5F * 10e-10;
+            if (this.leftInputDown ) {
+                --this.deltaRotation;
+            }
+            if (this.rightInputDown) {
+                ++this.deltaRotation;
+            }
+            if (this.rightInputDown != this.leftInputDown && !this.forwardInputDown && !this.backInputDown) {
+                f += 0.005F;
+            }
             this.rotationYaw += this.deltaRotation;
-            if (this.forwardInputDown)
-                f += 3F * 10e-10;
-            if (this.backInputDown)
-                f -= 5F * 10e-10;
-            setMotion(getMotion().add((MathHelper.sin(-this.rotationYaw * 10.0F) * f), 0.0D,
-                    (MathHelper.cos(this.rotationYaw * 10.0F) * f)));
+            if (this.forwardInputDown) {
+                f += 0.05F; // speed
+            }
+            if (this.backInputDown) {
+                f -= 0.005F;
+            }
+
+            this.setMotion(this.getMotion().add((double)(MathHelper.sin(-this.rotationYaw * ((float)Math.PI / 180F)) * f), 0.0D, (double)(MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * f)));
+            this.setPaddleState(this.rightInputDown && !this.leftInputDown || this.forwardInputDown, this.leftInputDown && !this.rightInputDown || this.forwardInputDown);
         }
     }
 
@@ -400,5 +406,12 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         }
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void updateInputs(boolean leftInputDown, boolean rightInputDown, boolean forwardInputDown, boolean backInputDown) {
+        this.leftInputDown = leftInputDown;
+        this.rightInputDown = rightInputDown;
+        this.forwardInputDown = forwardInputDown;
+        this.backInputDown = backInputDown;
+    }
 
 }
