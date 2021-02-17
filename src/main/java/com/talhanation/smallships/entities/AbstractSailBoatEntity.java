@@ -1,26 +1,17 @@
 package com.talhanation.smallships.entities;
 
-import com.talhanation.smallships.init.ModEntityTypes;
-import com.talhanation.smallships.items.CogItem;
-import com.talhanation.smallships.items.ModItems;
+
+import com.talhanation.smallships.init.SoundInit;
 import net.minecraft.entity.*;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifierManager;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CSteerBoatPacket;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
@@ -34,7 +25,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
@@ -68,6 +58,11 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     private float rockingAngle;
     private float prevRockingAngle;
     public ItemStackHandler inventory = initInventory();
+    public int passengerwaittime;
+    public int controltimer;
+    public float passengerfaktor;
+    public int playFirstSailSoundcounter;
+
 
     protected abstract ItemStackHandler initInventory();
 
@@ -84,6 +79,8 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
 
 
     public void tick() {
+        passengerwaittime--;
+        playFirstSailSoundcounter--;
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
         if (this.status != BoatEntity.Status.UNDER_WATER && this.status != BoatEntity.Status.UNDER_FLOWING_WATER) {
@@ -106,7 +103,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         if (this.canPassengerSteer()) {
             if (this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof PlayerEntity)) {
                 this.setPaddleState(false, false);
-            }
+                }
 
             this.updateMotion();
             if (this.world.isRemote) {
@@ -118,6 +115,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         } else {
             this.setMotion(Vector3d.ZERO);
         }
+
         for (int i = 0; i <= 1; ++i) {
             if (this.getPaddleState(i)) {
                 if (!this.isSilent()) {
@@ -133,6 +131,11 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             }
         }
 
+
+        if (playFirstSailSoundcounter == 0) {
+                playFirstSailSound();
+        }
+
         this.doBlockCollisions();
         List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().grow((double) 0.2F, (double) -0.01F, (double) 0.2F), EntityPredicates.pushableBy(this));
         if (!list.isEmpty()) {
@@ -142,7 +145,9 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
                 Entity entity = list.get(j);
                 if (!entity.isPassenger(this)) {
                     if (flag && this.getPassengers().size() < 8 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
-                        entity.startRiding(this);
+                        if (passengerwaittime < 0) {
+                            entity.startRiding(this);
+                        }
                     } else {
                         this.applyEntityCollision(entity);
                     }
@@ -193,6 +198,12 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         double d1 = hasNoGravity() ? 0.0D : d0;
         double d2 = 0.0D;  //
         this.momentum = 1.0F;
+        if (this.getPassengers().size() == 2) this.passengerfaktor = 0.1F;
+        if (this.getPassengers().size() == 4) this.passengerfaktor = 0.2F;
+        if (this.getPassengers().size() == 6) this.passengerfaktor = 0.4F;
+        if (this.getPassengers().size() == 8) this.passengerfaktor = 0.6F;
+        if (this.getPassengers().size() >  8) this.passengerfaktor = 0.8F;
+
         if (this.previousStatus == BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.ON_LAND) {
             this.waterLevel = (getBoundingBox()).minY + getHeight();
             setPosition(getPosX(), (getWaterLevelAbove() - getHeight()) + 0.101D, getPosZ());
@@ -217,8 +228,8 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
                     this.boatGlide /= 1.0F;
             }
             Vector3d vec3d = getMotion();
-            setMotion(vec3d.x * this.momentum, vec3d.y + d1, vec3d.z * this.momentum);
-            this.deltaRotation *= this.momentum *0.04;
+            setMotion(vec3d.x * (this.momentum - this.passengerfaktor), vec3d.y + d1, vec3d.z * (this.momentum - this.passengerfaktor));
+            this.deltaRotation *= (this.momentum - this.passengerfaktor) *0.1;
             if (d2 > 0.0D) {
                 Vector3d vec3d1 = getMotion();
                 setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
@@ -411,4 +422,14 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         this.backInputDown = backInputDown;
     }
 
+    public boolean isSailDown(){
+        if (getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity) {
+            return true;
+        }
+        return false;
+    }
+    @Nullable
+    private void playFirstSailSound() {
+        this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), SoundCategory.NEUTRAL, 10.0F, 1.0F, true);
+    }
 }

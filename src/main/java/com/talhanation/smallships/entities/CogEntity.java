@@ -3,6 +3,7 @@ package com.talhanation.smallships.entities;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.UnmodifiableIterator;
 import com.talhanation.smallships.init.ModEntityTypes;
+import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.inventory.CogContainer;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.util.SailBoatItemStackHandler;
@@ -12,7 +13,6 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
@@ -22,19 +22,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -105,15 +101,21 @@ public class CogEntity extends AbstractSailBoatEntity {
 
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         if (player.isSecondaryUseActive()) {
-            if (this.isBeingRidden())
-                this.removePassengers();
-            else
-                openContainer(player);
-            return ActionResultType.func_233537_a_(this.world.isRemote);
+            if (this.isBeingRidden() && !(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)){
+                    this.removePassengers();
+                    this.passengerwaittime = 100;
+            }
+            else {
+                if (!(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)) {
+                    openContainer(player);
+                } return ActionResultType.func_233537_a_(this.world.isRemote);
+            } return ActionResultType.PASS;
         } else if (this.outOfControlTicks < 60.0F) {
             if (!this.world.isRemote) {
                 return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
+
             } else {
+                this.playFirstSailSoundcounter = 5;
                 return ActionResultType.SUCCESS;
             }
         } else {
@@ -202,9 +204,10 @@ public class CogEntity extends AbstractSailBoatEntity {
                 passenger.setRenderYawOffset(((AnimalEntity)passenger).renderYawOffset + j);
                 passenger.setRotationYawHead(passenger.getRotationYawHead() + j);
             }
-        }
-    }
 
+        }
+
+    }
 
     public NonNullList<ItemStack> getCargo() {
         NonNullList<ItemStack> cargo = NonNullList.withSize(CARGO.size(), ItemStack.EMPTY);
@@ -250,8 +253,6 @@ public class CogEntity extends AbstractSailBoatEntity {
     protected boolean canFitPassenger(Entity passenger) {
         return (getPassengers().size() < 5);
     }
-
-
 
 
 }

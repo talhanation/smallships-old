@@ -6,6 +6,8 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.talhanation.smallships.entities.CogEntity;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.entity.item.BoatEntity;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -597,26 +599,25 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
 
     @Override
     public void setRotationAngles(T entityln, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if( entityln.canPassengerSteer()) {
-            this.sail_0.showModel = false;
-            this.sail_1.showModel = true;
-            this.sail_2.showModel = true;
-            this.sail_3.showModel = true;
-            this.sail_4.showModel = true;
-            this.sail_5.showModel = true;
-            this.sail_6.showModel = true;
-            this.sail_7.showModel = true;
-        }else {
-            this.sail_0.showModel = true;
-            this.sail_1.showModel = false;
-            this.sail_2.showModel = false;
-            this.sail_3.showModel = false;
-            this.sail_4.showModel = false;
-            this.sail_5.showModel = false;
-            this.sail_6.showModel = false;
-            this.sail_7.showModel = false;
-        }
-
+            if (entityln.isSailDown()) {
+                this.sail_0.showModel = false;
+                this.sail_1.showModel = true;
+                this.sail_2.showModel = true;
+                this.sail_3.showModel = true;
+                this.sail_4.showModel = true;
+                this.sail_5.showModel = true;
+                this.sail_6.showModel = true;
+                this.sail_7.showModel = true;
+            } else {
+                this.sail_0.showModel = true;
+                this.sail_1.showModel = false;
+                this.sail_2.showModel = false;
+                this.sail_3.showModel = false;
+                this.sail_4.showModel = false;
+                this.sail_5.showModel = false;
+                this.sail_6.showModel = false;
+                this.sail_7.showModel = false;
+            }
     }
 
     /**

@@ -1,15 +1,11 @@
 {
 
-  "entity.camel.ambient":{
+  "sail_0":{
     "category": "entity",
-    "subtitle": "entity.camel.ambient",
+    "subtitle": "Sail goes down",
     "sounds": [
       {
-        "name": "camels:entity/entity.camel.ambient",
-        "stream":true
-      },
-      {
-        "name": "camels:entity/entity.camel.ambient1",
+        "name": "smallships:entity/sail_0",
         "stream":true
       }
     ]
@@ -21,85 +17,7 @@
       {
         "name": "camels:entity/entity.camel.hurt",
         "stream":true
-      },
-      {
-        "name": "camels:entity/entity.camel.hurt1",
-        "stream":true
-      },
-      {
-        "name": "camels:entity/entity.camel.hurt2",
-        "stream":true
-      }
-
-      ]
-  },
-  "entity.camel.death":{
-    "category": "entity",
-    "subtitle": "entity.camel.death",
-    "sounds": [
-      {
-        "name": "camels:entity/entity.camel.death",
-        "stream":true
       }
     ]
-  },
-  "entity.camel.angry":{
-    "category": "entity",
-    "subtitle": "entity.camel.angry",
-    "sounds": [
-      {
-        "name": "camels:entity/entity.camel.angry",
-        "stream":true
-      }
-    ]
-  },
-      "entity.camel.ambient.baby":{
-        "category": "entity",
-        "subtitle": "entity.camel.ambient.baby",
-        "sounds": [
-          {
-            "name": "camels:entity/entity.camel.ambient.baby",
-            "stream":true
-          },
-          {
-            "name": "camels:entity/entity.camel.ambient1.baby",
-            "stream":true
-          }
-        ]
-      },
-
-      "entity.camel.hurt.baby":{
-        "category": "entity",
-        "subtitle": "entity.camel.hurt.baby",
-        "sounds": [
-          {
-            "name": "camels:entity/entity.camel.hurt.baby",
-            "stream":true
-          },
-          {
-            "name": "camels:entity/entity.camel.hurt1.baby",
-            "stream":true
-          }
-        ]
-      },
-      "entity.camel.death.baby":{
-        "category": "entity",
-        "subtitle": "entity.camel.death.baby",
-        "sounds": [
-          {
-            "name": "camels:entity/entity.camel.death.baby",
-            "stream":true
-          }
-        ]
-      },
-      "entity.camel.angry.baby":{
-        "category": "entity",
-        "subtitle": "entity.camel.angry.baby",
-        "sounds": [
-          {
-            "name": "camels:entity/entity.camel.angry.baby",
-            "stream":true
-          }
-        ]
-      }
+  }
 }
