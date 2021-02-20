@@ -1,16 +1,9 @@
 package com.talhanation.smallships.entities;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.UnmodifiableIterator;
 import com.talhanation.smallships.init.ModEntityTypes;
-import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.inventory.CogContainer;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.util.SailBoatItemStackHandler;
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -18,7 +11,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -30,18 +22,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-
 public class CogEntity extends AbstractSailBoatEntity {
 
 
-    private static final ImmutableList<DataParameter<ItemStack>> CARGO = ImmutableList.of(
-            EntityDataManager.createKey(CogEntity.class, DataSerializers.ITEMSTACK),
-            EntityDataManager.createKey(CogEntity.class, DataSerializers.ITEMSTACK),
-            EntityDataManager.createKey(CogEntity.class, DataSerializers.ITEMSTACK),
-            EntityDataManager.createKey(CogEntity.class, DataSerializers.ITEMSTACK));
+    private static final DataParameter<Integer> CARGO = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.VARINT);
 
     public CogEntity(EntityType<? extends AbstractSailBoatEntity> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -49,38 +33,24 @@ public class CogEntity extends AbstractSailBoatEntity {
 
     protected ItemStackHandler initInventory() {
         return (ItemStackHandler)new SailBoatItemStackHandler<CogEntity>(54, this) {
-            protected void onLoad() {
-                super.onLoad();
-                onContentsChanged(0);
-            }
-
-            @Override
-            protected void onContentsChanged(final int slot) {
-                final Object2IntMap<Item> totals = new Object2IntLinkedOpenHashMap<>();
-                final Object2ObjectMap<Item, ItemStack> stacks = new Object2ObjectOpenHashMap<>();
-                for (int i = 0; i < this.getSlots(); i++) {
-                    final ItemStack stack = this.getStackInSlot(i);
-                    if (!stack.isEmpty()) {
-                        totals.mergeInt(stack.getItem(), 1, Integer::sum);
-                        stacks.putIfAbsent(stack.getItem(), stack);
-                    }
+            protected void onContentsChanged(int slot) {
+                int newValue, tempload = 0;
+                for (int i = 0; i < getSlots(); i++) {
+                    if (!getStackInSlot(i).isEmpty())
+                        tempload++;
                 }
-                Iterator<Object2IntMap.Entry<Item>> topTotals = totals.object2IntEntrySet().stream().sorted(Comparator.<Object2IntMap.Entry<Item>>comparingInt(e ->
-                        (e.getKey() instanceof net.minecraft.item.BlockItem) ? 0 : 1).thenComparingInt(e -> -e.getIntValue())).limit(CogEntity.CARGO.size()).iterator();
-                ItemStack[] items = new ItemStack[CogEntity.CARGO.size()];
-                Arrays.fill((Object[])items, ItemStack.EMPTY);
-                int forth = getSlots() / CogEntity.CARGO.size();
-                for (int pos = 0; topTotals.hasNext() && pos < CogEntity.CARGO.size(); ) {
-                    Object2IntMap.Entry<Item> entry = topTotals.next();
-                    int count = Math.max(1, (entry.getIntValue() + forth / 2) / forth);
-                    for (int n = 1; n <= count && pos < CogEntity.CARGO.size(); n++) {
-                        ItemStack stack = ((ItemStack)stacks.getOrDefault(entry.getKey(), ItemStack.EMPTY)).copy();
-                        stack.setCount(Math.min(stack.getMaxStackSize(), entry.getIntValue() / n));
-                        items[pos++] = stack;
-                    }
+                if (tempload > 31) {
+                    newValue = 4;
+                } else if (tempload > 16) {
+                    newValue = 3;
+                } else if (tempload > 8) {
+                    newValue = 2;
+                } else if (tempload > 3) {
+                    newValue = 1;
+                } else {
+                    newValue = 0;
                 }
-                for (int j = 0; j < CogEntity.CARGO.size(); j++)
-                    ((CogEntity)this.sailboat).getDataManager().set((DataParameter)CogEntity.CARGO.get(j), items[j]);
+                ((CogEntity)this.sailboat).getDataManager().set(CogEntity.CARGO, Integer.valueOf(newValue));
             }
         };
     }
@@ -207,27 +177,19 @@ public class CogEntity extends AbstractSailBoatEntity {
 
     }
 
-    public NonNullList<ItemStack> getCargo() {
-        NonNullList<ItemStack> cargo = NonNullList.withSize(CARGO.size(), ItemStack.EMPTY);
-        for (int i = 0; i < CARGO.size(); i++)
-            cargo.set(i, this.dataManager.get((DataParameter<ItemStack>) CARGO.get(i)));
-        return cargo;
+    public int getCargo() {
+        return ((Integer)this.dataManager.get(CARGO)).intValue();
     }
 
     protected void registerData() {
         super.registerData();
-        for (UnmodifiableIterator<DataParameter<ItemStack>> unmodifiableIterator = CARGO.iterator(); unmodifiableIterator.hasNext(); ) {
-            DataParameter<ItemStack> parameter = unmodifiableIterator.next();
-            this.dataManager.register(parameter, ItemStack.EMPTY);
-        }
-
+        this.dataManager.register(CARGO, Integer.valueOf(0));
     }
 
     public void openContainer(PlayerEntity player) {
-        if (!this.world.isRemote)
-            player.openContainer((INamedContainerProvider)new SimpleNamedContainerProvider((id, inv, plyr) -> new CogContainer(id, inv, this),
+        player.openContainer((INamedContainerProvider)new SimpleNamedContainerProvider((id, inv, plyr) -> new CogContainer(id, inv, this),
 
-                    getDisplayName()));
+                getDisplayName()));
     }
 
     public Item getItemBoat() {

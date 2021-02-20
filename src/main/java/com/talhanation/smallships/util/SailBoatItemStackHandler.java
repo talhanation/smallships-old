@@ -12,8 +12,4 @@ public class SailBoatItemStackHandler<T extends AbstractSailBoatEntity> extends 
         this.sailboat = sailboat;
     }
 
-    public void deserializeNBT(CompoundNBT nbt) {
-        nbt.remove("Size");
-        super.deserializeNBT(nbt);
-    }
 }
