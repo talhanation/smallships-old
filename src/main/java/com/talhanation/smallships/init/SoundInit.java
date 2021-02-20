@@ -15,6 +15,9 @@ public class SoundInit {
     public static final RegistryObject<SoundEvent> SHIP_SAIL_0 = SOUNDS.register("sail_0",
             () -> new SoundEvent(new ResourceLocation(Main.MOD_ID,"sail_0")));
 
+    public static final RegistryObject<SoundEvent> SHIP_SAIL_1 = SOUNDS.register("sail_1",
+            () -> new SoundEvent(new ResourceLocation(Main.MOD_ID,"sail_1")));
+
     public static final RegistryObject<SoundEvent> SHIP_AMBIENT = SOUNDS.register("shipambient",
             () -> new SoundEvent(new ResourceLocation(Main.MOD_ID,"shipambient")));
 

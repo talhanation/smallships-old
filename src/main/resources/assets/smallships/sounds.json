@@ -10,12 +10,12 @@
       }
     ]
   },
-  "entity.camel.hurt":{
+  "sail_1":{
     "category": "entity",
-    "subtitle": "entity.camel.hurt",
+    "subtitle": "Sail goes up",
     "sounds": [
       {
-        "name": "camels:entity/entity.camel.hurt",
+        "name": "smallships:entity/sail_1",
         "stream":true
       }
     ]

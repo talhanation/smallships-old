@@ -30,7 +30,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -115,7 +114,6 @@ public class CogEntity extends AbstractSailBoatEntity {
                 return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
 
             } else {
-                this.playFirstSailSoundcounter = 5;
                 return ActionResultType.SUCCESS;
             }
         } else {
