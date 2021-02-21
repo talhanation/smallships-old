@@ -1,24 +1,16 @@
 package com.talhanation.smallships.entities;
 
-
-import com.google.common.collect.Maps;
 import com.talhanation.smallships.init.SoundInit;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CSteerBoatPacket;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
@@ -37,10 +29,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public abstract class AbstractSailBoatEntity extends BoatEntity {
     public float momentum;
@@ -53,8 +42,8 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     private double lerpZ;
     private double lerpYaw;
     private double lerpPitch;
-    private boolean leftInputDown;
-    private boolean rightInputDown;
+    public boolean leftInputDown;
+    public boolean rightInputDown;
     private boolean forwardInputDown;
     private boolean backInputDown;
     private double waterLevel;
@@ -73,6 +62,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     public float passengerfaktor;
     public int playFirstSailSoundcounter;
     public int playLastSailSoundcounter;
+
 
     protected abstract ItemStackHandler initInventory();
 
@@ -212,11 +202,11 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         double d1 = hasNoGravity() ? 0.0D : d0;
         double d2 = 0.0D;  //
         this.momentum = 1.0F;
-        if (this.getPassengers().size() == 2) this.passengerfaktor = 0.1F;
-        if (this.getPassengers().size() == 4) this.passengerfaktor = 0.2F;
-        if (this.getPassengers().size() == 6) this.passengerfaktor = 0.4F;
-        if (this.getPassengers().size() == 8) this.passengerfaktor = 0.6F;
-        if (this.getPassengers().size() >  8) this.passengerfaktor = 0.8F;
+        if (this.getPassengers().size() == 2) this.passengerfaktor = 0.05F;
+        if (this.getPassengers().size() == 4) this.passengerfaktor = 0.1F;
+        if (this.getPassengers().size() == 6) this.passengerfaktor = 0.2F;
+        if (this.getPassengers().size() == 8) this.passengerfaktor = 0.3F;
+        if (this.getPassengers().size() >  8) this.passengerfaktor = 0.4F;
 
         if (this.previousStatus == BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.ON_LAND) {
             this.waterLevel = (getBoundingBox()).minY + getHeight();

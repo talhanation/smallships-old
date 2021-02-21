@@ -710,12 +710,16 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
                 this.sail_7.showModel = false;
             }
 
-            this.Cargo0.showModel = (1 < entityln.getCargo());
-            this.Cargo1.showModel = (2 < entityln.getCargo());
-            this.Cargo2.showModel = (3 < entityln.getCargo());
-            this.Cargo3.showModel = (4 < entityln.getCargo());
+            this.Cargo0.showModel = entityln.Cargo_0;
+            this.Cargo1.showModel = entityln.Cargo_1;
+            this.Cargo2.showModel = entityln.Cargo_2;
+            this.Cargo3.showModel = entityln.Cargo_3;
 
-    }
+
+            if(entityln.leftsteer) this.steer.rotateAngleY = -MathHelper.cos( 0.6F + 3.1415927F);
+            else if(entityln.rightsteer) this.steer.rotateAngleY = MathHelper.cos(0.6F + 3.1415927F);
+            else this.steer.rotateAngleY = 0;
+        }
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts
@@ -724,5 +728,7 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
+
+
     }
 }

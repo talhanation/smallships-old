@@ -11,6 +11,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -23,12 +24,28 @@ import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class CogEntity extends AbstractSailBoatEntity {
-
-
+    public boolean Cargo_0;
+    public boolean Cargo_1;
+    public boolean Cargo_2;
+    public boolean Cargo_3;
+    public boolean leftsteer;
+    public boolean rightsteer;
     private static final DataParameter<Integer> CARGO = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.VARINT);
 
     public CogEntity(EntityType<? extends AbstractSailBoatEntity> entityType, World worldIn) {
         super(entityType, worldIn);
+    }
+
+    public void tick(){
+        super.tick();
+
+        if(0 < this.getCargo()) Cargo_0 = true;
+        if(1 < this.getCargo()) Cargo_1 = true;
+        if(2 < this.getCargo()) Cargo_2 = true;
+        if(3 < this.getCargo()) Cargo_3 = true;
+
+        this.leftsteer = this.leftInputDown;
+        this.rightsteer = this.rightInputDown;
     }
 
     protected ItemStackHandler initInventory() {
@@ -181,16 +198,28 @@ public class CogEntity extends AbstractSailBoatEntity {
         return ((Integer)this.dataManager.get(CARGO)).intValue();
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(CARGO, Integer.valueOf(0));
-    }
-
     public void openContainer(PlayerEntity player) {
         player.openContainer((INamedContainerProvider)new SimpleNamedContainerProvider((id, inv, plyr) -> new CogContainer(id, inv, this),
 
                 getDisplayName()));
     }
+
+
+    protected void registerData() {
+        super.registerData();
+        this.dataManager.register(CARGO, Integer.valueOf(0));
+    }
+
+    protected void readAdditional(CompoundNBT compound) {
+        super.readAdditional(compound);
+        this.dataManager.set(CARGO, Integer.valueOf(compound.getInt("Cargo")));
+    }
+
+    protected void writeAdditional(CompoundNBT compound) {
+        super.writeAdditional(compound);
+        compound.putInt("Cargo", ((Integer)this.dataManager.get(CARGO)).intValue());
+    }
+
 
     public Item getItemBoat() {
         switch (this.getBoatType()) {
