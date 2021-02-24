@@ -716,8 +716,8 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
             this.Cargo3.showModel = entityln.Cargo_3;
 
 
-            if(entityln.leftsteer) this.steer.rotateAngleY = -MathHelper.cos( 0.6F + 3.1415927F);
-            else if(entityln.rightsteer) this.steer.rotateAngleY = MathHelper.cos(0.6F + 3.1415927F);
+            if(entityln.leftsteer) this.steer.rotateAngleY = -MathHelper.cos( 3.1415927F);
+            else if(entityln.rightsteer) this.steer.rotateAngleY = MathHelper.cos(3.1415927F);
             else this.steer.rotateAngleY = 0;
         }
 

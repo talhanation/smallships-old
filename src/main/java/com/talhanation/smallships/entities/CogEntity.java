@@ -28,8 +28,7 @@ public class CogEntity extends AbstractSailBoatEntity {
     public boolean Cargo_1;
     public boolean Cargo_2;
     public boolean Cargo_3;
-    public boolean leftsteer;
-    public boolean rightsteer;
+
     private static final DataParameter<Integer> CARGO = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.VARINT);
 
     public CogEntity(EntityType<? extends AbstractSailBoatEntity> entityType, World worldIn) {
@@ -44,8 +43,6 @@ public class CogEntity extends AbstractSailBoatEntity {
         if(2 < this.getCargo()) Cargo_2 = true;
         if(3 < this.getCargo()) Cargo_3 = true;
 
-        this.leftsteer = this.leftInputDown;
-        this.rightsteer = this.rightInputDown;
     }
 
     protected ItemStackHandler initInventory() {

@@ -62,7 +62,8 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     public float passengerfaktor;
     public int playFirstSailSoundcounter;
     public int playLastSailSoundcounter;
-
+    public boolean leftsteer;
+    public boolean rightsteer;
 
     protected abstract ItemStackHandler initInventory();
 
@@ -79,6 +80,15 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
 
 
     public void tick() {
+        if (this.rotationYaw < 0)
+            this.leftsteer = true;
+        else if (this.rotationYaw > 0)
+            this.rightsteer = true;
+        else {
+            this.rightsteer = false;
+            this.leftsteer = false;
+        }
+
         passengerwaittime--;
         playFirstSailSoundcounter--;
         playLastSailSoundcounter--;
@@ -97,7 +107,6 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         if (this.getTimeSinceHit() > 0) {
             this.setTimeSinceHit(this.getTimeSinceHit() - 1);
         }
-
 
         super.tick();
         this.tickLerp();

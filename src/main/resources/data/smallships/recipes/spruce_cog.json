@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "xyx",
+    "bbb"
+  ],
+  "key": {
+    "y": {
+      "item": "smallships:sail_item"
+    },
+    "x": {
+      "item": "minecraft:chest"
+    },
+    "s": {
+      "item": "minecraft:string"
+    },
+    "b": {
+      "item": "minecraft:spruce_boat"
+    }
+  },
+  "result": {
+    "item": "smallships:spruce_cog"
+  }
+}

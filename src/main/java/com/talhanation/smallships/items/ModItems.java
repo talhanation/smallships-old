@@ -9,8 +9,6 @@ import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-
-@SuppressWarnings("deprecation")
 public class ModItems {
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Main.MOD_ID);
 
@@ -32,5 +30,7 @@ public class ModItems {
     public static final RegistryObject<Item> DARK_OAK_COG_ITEM = ITEMS.register("dark_oak_cog", () ->
             new CogItem(AbstractSailBoatEntity.Type.DARK_OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
 
+    public static final RegistryObject<Item> SAIL_ITEM = ITEMS.register("sail_item", () ->
+            new Item((new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION))));
 }
 
