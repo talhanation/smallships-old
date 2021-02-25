@@ -37,11 +37,15 @@ public class CogEntity extends AbstractSailBoatEntity {
 
     public void tick(){
         super.tick();
-
-        if(0 < this.getCargo()) Cargo_0 = true;
-        if(1 < this.getCargo()) Cargo_1 = true;
-        if(2 < this.getCargo()) Cargo_2 = true;
-        if(3 < this.getCargo()) Cargo_3 = true;
+        this.getCargo();
+        if (0 < this.getCargo()) Cargo_0 = true;
+        else Cargo_0 = false;
+        if (1 < this.getCargo()) Cargo_1 = true;
+        else Cargo_1 = false;
+        if (2 < this.getCargo()) Cargo_2 = true;
+        else Cargo_2 = false;
+        if (3 < this.getCargo()) Cargo_3 = true;
+        else Cargo_3 = false;
 
     }
 
@@ -86,7 +90,7 @@ public class CogEntity extends AbstractSailBoatEntity {
         if (player.isSecondaryUseActive()) {
             if (this.isBeingRidden() && !(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)){
                     this.removePassengers();
-                    this.passengerwaittime = 100;
+                    this.passengerwaittime = 200;
             }
             else {
                 if (!(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)) {

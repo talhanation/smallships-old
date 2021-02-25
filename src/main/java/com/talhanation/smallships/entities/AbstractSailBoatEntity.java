@@ -80,15 +80,18 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
 
 
     public void tick() {
+
+
+      /* try to make steer server side
         if (this.rotationYaw < 0)
             this.leftsteer = true;
-        else if (this.rotationYaw > 0)
+        else if (this. > 0)
             this.rightsteer = true;
         else {
             this.rightsteer = false;
             this.leftsteer = false;
         }
-
+*/
         passengerwaittime--;
         playFirstSailSoundcounter--;
         playLastSailSoundcounter--;
