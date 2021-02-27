@@ -52,23 +52,23 @@ public class CogEntity extends AbstractSailBoatEntity {
     protected ItemStackHandler initInventory() {
         return (ItemStackHandler)new SailBoatItemStackHandler<CogEntity>(54, this) {
             protected void onContentsChanged(int slot) {
-                int newValue, tempload = 0;
+                int sigma, tempload = 0;
                 for (int i = 0; i < getSlots(); i++) {
                     if (!getStackInSlot(i).isEmpty())
                         tempload++;
                 }
                 if (tempload > 31) {
-                    newValue = 4;
+                    sigma = 4;
                 } else if (tempload > 16) {
-                    newValue = 3;
+                    sigma = 3;
                 } else if (tempload > 8) {
-                    newValue = 2;
+                    sigma = 2;
                 } else if (tempload > 3) {
-                    newValue = 1;
+                    sigma = 1;
                 } else {
-                    newValue = 0;
+                    sigma = 0;
                 }
-                ((CogEntity)this.sailboat).getDataManager().set(CogEntity.CARGO, Integer.valueOf(newValue));
+                ((CogEntity)this.sailboat).getDataManager().set(CogEntity.CARGO, Integer.valueOf(sigma));
             }
         };
     }
