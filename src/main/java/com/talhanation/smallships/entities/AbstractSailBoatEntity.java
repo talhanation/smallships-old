@@ -357,7 +357,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
                 super.applyEntityCollision(entityIn);
             }
-        } else if (entityIn.getBoundingBox().minY <= this.getBoundingBox().minY) {
+        } else if (entityIn.getBoundingBox().minY <= this.getBoundingBox().minY && ! (entityIn instanceof WaterMobEntity)) {
             super.applyEntityCollision(entityIn);
         }
     }
