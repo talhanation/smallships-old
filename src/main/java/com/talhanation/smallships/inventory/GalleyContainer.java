@@ -1,6 +1,6 @@
 package com.talhanation.smallships.inventory;
 
-import com.talhanation.smallships.entities.AbstractSailBoatEntity;
+import com.talhanation.smallships.entities.AbstractGalleyEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;
@@ -8,13 +8,14 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public final class CogContainer extends SailBoatContainer {
-    public CogContainer(int id, PlayerInventory playerInv, AbstractSailBoatEntity sailBoatEntity) {
-        super(ContainerType.GENERIC_9X6, id, sailBoatEntity);
+public final class GalleyContainer extends AbstractGalleyContainer {
 
-        for (int i = 0; i < 6; i++) {
+    public GalleyContainer(int id, PlayerInventory playerInv, AbstractGalleyEntity galleyEntity) {
+        super(ContainerType.GENERIC_9X1, id, galleyEntity);
+
+        for (int i = 0; i < 1; i++) {// row/reihe
             for (int j = 0; j < 9; j++)
-                addSlot((Slot)new SlotItemHandler((IItemHandler)this.sailboatInv, j + i * 9, 8 + j * 18, 18 + i * 18));
+                addSlot((Slot)new SlotItemHandler((IItemHandler)this.galleyInv, j + i * 9, 8 + j * 18, 18 + i * 18));
         }
         for (int k = 0; k < 3; k++) {
             for (int l = 0; l < 9; l++)

@@ -2,6 +2,7 @@ package com.talhanation.smallships.init;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.CogEntity;
+import com.talhanation.smallships.entities.GalleyEntity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -22,5 +23,13 @@ public class ModEntityTypes {
                     .setUpdateInterval(3)
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "cog").toString()));
+
+    public static final RegistryObject<EntityType<GalleyEntity>> GALLEY_ENTITY = ENTITY_TYPES.register("galley",
+            () -> EntityType.Builder.<GalleyEntity>create(GalleyEntity::new, EntityClassification.MISC)
+                    .size(4.0F, 1.25F)
+                    .trackingRange(10)
+                    .setUpdateInterval(3)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .build(new ResourceLocation(Main.MOD_ID, "galley").toString()));
 
 }

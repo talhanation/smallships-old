@@ -159,9 +159,7 @@ public class CogEntity extends AbstractSailBoatEntity {
                 }
             } else if (getPassengers().size() == 5) {
                 int i = getPassengers().indexOf(passenger);
-                Entity firstpassenger = getPassengers().get(0);
-                boolean flag = (firstpassenger instanceof net.minecraft.entity.player.PlayerEntity);
-                if (i == 0) { // and flag?
+                if (i == 0) {
                     f = -1.75F;
                     d = 0.0F;
                 } else if (i == 1) {

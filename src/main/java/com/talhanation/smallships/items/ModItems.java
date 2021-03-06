@@ -1,6 +1,7 @@
 package com.talhanation.smallships.items;
 
 import com.talhanation.smallships.Main;
+import com.talhanation.smallships.entities.AbstractGalleyEntity;
 import com.talhanation.smallships.entities.AbstractSailBoatEntity;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.item.Item;
@@ -32,5 +33,24 @@ public class ModItems {
 
     public static final RegistryObject<Item> SAIL_ITEM = ITEMS.register("sail_item", () ->
             new Item((new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION))));
+
+    public static final RegistryObject<Item> OAK_GALLEY_ITEM = ITEMS.register("oak_galley", () ->
+            new GalleyItem(AbstractGalleyEntity.Type.OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> SPRUCE_GALLEY_ITEM = ITEMS.register("spruce_galley", () ->
+            new GalleyItem(AbstractGalleyEntity.Type.SPRUCE, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> BIRCH_GALLEY_ITEM = ITEMS.register("birch_galley", () ->
+            new GalleyItem(AbstractGalleyEntity.Type.BIRCH, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> JUNGLE_GALLEY_ITEM = ITEMS.register("jungle_galley", () ->
+            new GalleyItem(AbstractGalleyEntity.Type.JUNGLE, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> ACACIA_GALLEY_ITEM = ITEMS.register("acacia_galley", () ->
+            new GalleyItem(AbstractGalleyEntity.Type.ACACIA, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> DARK_OAK_GALLEY_ITEM = ITEMS.register("dark_oak_galley", () ->
+            new GalleyItem(AbstractGalleyEntity.Type.DARK_OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
 }
 
