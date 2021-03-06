@@ -453,4 +453,37 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.playFirstSailSoundcounter = 5;
     }
 
+
+    @Override
+    public Vector3d func_230268_c_(final LivingEntity rider) {
+        for (final float angle : rider.getPrimaryHand() == HandSide.RIGHT ? new float[] { 90.0F, -90.0F } : new float[] { -90.0F, 90.0F }) {
+            final Vector3d pos = this.dismount(func_233559_a_(this.getWidth(), rider.getWidth(), this.rotationYaw + angle), rider);
+            if (pos != null) return pos;
+        }
+        return this.getPositionVec();
+    }
+
+    private Vector3d dismount(final Vector3d dir, LivingEntity rider) {
+        final double x = this.getPosX() + dir.x;
+        final double y = this.getBoundingBox().minY;
+        final double z = this.getPosZ() + dir.z;
+        final double limit = this.getBoundingBox().maxY + 0.75D;
+        final BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        for (final Pose pose : rider.getAvailablePoses()) {
+            blockPos.setPos(x, y, z);
+            while (blockPos.getY() < limit) {
+                final double ground = this.world.func_242403_h(blockPos);
+                if (blockPos.getY() + ground > limit) break;
+                if (TransportationHelper.func_234630_a_(ground)) {
+                    final Vector3d pos = new Vector3d(x, blockPos.getY() + ground, z);
+                    if (TransportationHelper.func_234631_a_(this.world, rider, rider.getPoseAABB(pose).offset(pos))) {
+                        rider.setPose(pose);
+                        return pos;
+                    }
+                }
+                blockPos.move(Direction.UP);
+            }
+        }
+        return null;
+    }
 }
