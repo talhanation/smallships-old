@@ -10,13 +10,13 @@
       "item": "smallships:sail_item"
     },
     "x": {
-      "item": "minecraft:chest"
+      "tag": "minecraft:chest"
     },
     "s": {
       "item": "minecraft:string"
     },
     "b": {
-      "item": "minecraft:spruce_galley"
+      "item": "minecraft:spruce_boat"
     }
   },
   "result": {
