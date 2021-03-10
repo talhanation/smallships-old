@@ -19,16 +19,16 @@ public class ModEntityTypes {
     public static final RegistryObject<EntityType<CogEntity>> COG_ENTITY = ENTITY_TYPES.register("cog",
             () -> EntityType.Builder.<CogEntity>create(CogEntity::new, EntityClassification.MISC)
                     .size(3.5F, 1.25F)
-                    .trackingRange(10)
-                    .setUpdateInterval(3)
+                    .trackingRange(20)
+                    .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "cog").toString()));
 
     public static final RegistryObject<EntityType<GalleyEntity>> GALLEY_ENTITY = ENTITY_TYPES.register("galley",
             () -> EntityType.Builder.<GalleyEntity>create(GalleyEntity::new, EntityClassification.MISC)
                     .size(4.0F, 1.25F)
-                    .trackingRange(10)
-                    .setUpdateInterval(3)
+                    .trackingRange(20)
+                    .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "galley").toString()));
 
