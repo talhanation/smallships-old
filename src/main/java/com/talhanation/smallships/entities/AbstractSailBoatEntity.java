@@ -32,6 +32,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class AbstractSailBoatEntity extends BoatEntity {
+    private final float[] paddlePositions = new float[2];
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -129,18 +130,20 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.setMotion(Vector3d.ZERO);
         }
 
-        for (int i = 0; i <= 1; ++i) {
+        for(int i = 0; i <= 1; ++i) {
             if (this.getPaddleState(i)) {
-                if (!this.isSilent()) {
+                if (!this.isSilent() && (double)(this.paddlePositions[i] % ((float)Math.PI * 2F)) <= (double)((float)Math.PI / 4F) && ((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F)) % (double)((float)Math.PI * 2F) >= (double)((float)Math.PI / 4F)) {
                     SoundEvent soundevent = this.getPaddleSound();
                     if (soundevent != null) {
                         Vector3d vector3d = this.getLook(1.0F);
                         double d0 = i == 1 ? -vector3d.z : vector3d.z;
                         double d1 = i == 1 ? vector3d.x : -vector3d.x;
-                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat());
-                    }
+                        }
                 }
+
+                this.paddlePositions[i] = (float)((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F));
             } else {
+                this.paddlePositions[i] = 0.0F;
             }
         }
 
