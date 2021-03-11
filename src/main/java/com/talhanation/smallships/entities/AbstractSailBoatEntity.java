@@ -489,4 +489,5 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         }
         return null;
     }
+
 }

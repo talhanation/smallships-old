@@ -242,17 +242,13 @@ public class GalleyEntity extends AbstractGalleyEntity {
                     d = -0.75F;
                 }
             }
-            if (passenger instanceof AnimalEntity)
-                d = (float) (d - 0.15D);
-            Vector3d vector3d = (new Vector3d((double) f, 0.0D, 0.0D + d)).rotateYaw(-this.rotationYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+            Vector3d vector3d = (new Vector3d((double) f, 0.0D, d)).rotateYaw(-this.rotationYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
             passenger.setPosition(this.getPosX() + vector3d.x, this.getPosY() + (double) f1, +this.getPosZ() + vector3d.z);
             passenger.rotationYaw += this.deltaRotation;
-            passenger.setRotationYawHead(passenger.getRotationYawHead() + this.deltaRotation);
             applyYawToEntity(passenger);
             if (passenger instanceof AnimalEntity && getPassengers().size() > 1) {
                 int j = (passenger.getEntityId() % 2 == 0) ? 90 : 270;
                 passenger.setRenderYawOffset(((AnimalEntity) passenger).renderYawOffset + j);
-                passenger.setRotationYawHead(passenger.getRotationYawHead() + j);
             }
         }
     }
