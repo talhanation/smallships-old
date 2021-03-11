@@ -10,7 +10,7 @@
       "item": "smallships:sail_item"
     },
     "x": {
-      "tag": "minecraft:chest"
+      "tag": "forge:chests/wooden"
     },
     "l": {
       "item": "minecraft:lead"
