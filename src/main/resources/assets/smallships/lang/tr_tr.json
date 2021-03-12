@@ -1,0 +1,18 @@
+{
+  "entity.smallships.cog": "Yelkenli Tekne",
+  "item.smallships.acacia_cog": "Akasya Yelkenli Tekne ",
+  "item.smallships.birch_cog": "Huş Yelkenli Tekne ",
+  "item.smallships.jungle_cog": "Orman Ağaçı Yelkenli Tekne ",
+  "item.smallships.spruce_cog": "Ladin Yelkenli Tekne ",
+  "item.smallships.oak_cog": "Meşe Yelkenli Tekne",
+  "item.smallships.dark_oak_cog": "Koyu Meşe Yelkenli Tekne",
+  "item.smallships.sail_item": "Yelken",
+
+  "entity.smallships.galley": "Kadırga",
+  "item.smallships.acacia_galley": "Akasya Kadırga",
+  "item.smallships.birch_galley": "Huş Kadırga",
+  "item.smallships.jungle_galley": "Orman Ağaçı Kadırga",
+  "item.smallships.spruce_galley": "Ladin Kadırga",
+  "item.smallships.oak_galley": "Meşe Kadırga",
+  "item.smallships.dark_oak_galley": "Koyu Meşe Kadırga"
+}

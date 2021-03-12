@@ -1,0 +1,18 @@
+{
+  "entity.smallships.cog": "Kogge ",
+  "item.smallships.acacia_cog": "Akazienholzkogge ",
+  "item.smallships.birch_cog": "Birkenholzkogge ",
+  "item.smallships.jungle_cog": "Tropenholzkogge ",
+  "item.smallships.spruce_cog": "Fichtenholzkogge ",
+  "item.smallships.oak_cog": "Eichenholzkogge",
+  "item.smallships.dark_oak_cog": "Schwarzeichenholzkogge",
+  "item.smallships.sail_item": "Segel",
+
+  "entity.smallships.galley": "Galeere",
+  "item.smallships.acacia_galley": "Akazienholzgaleere",
+  "item.smallships.birch_galley": "Birkenholtzgaleere",
+  "item.smallships.jungle_galley": "Tropenholzgaleere",
+  "item.smallships.spruce_galley": "Fichtenholzgaleere",
+  "item.smallships.oak_galley": "Eichenholzgaleere",
+  "item.smallships.dark_oak_galley": "Schwarzeichenholzgaleere"
+}
