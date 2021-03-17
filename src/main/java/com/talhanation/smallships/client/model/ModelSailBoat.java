@@ -689,36 +689,39 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
 
     @Override
     public void setRotationAngles(T entityln, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (entityln.isSailDown()) {
-                this.sail_0.showModel = false;
-                this.sail_1.showModel = true;
-                this.sail_2.showModel = true;
-                this.sail_3.showModel = true;
-                this.sail_4.showModel = true;
-                this.sail_5.showModel = true;
-                this.sail_6.showModel = true;
-                this.sail_7.showModel = true;
-            } else {
-                this.sail_0.showModel = true;
-                this.sail_1.showModel = false;
-                this.sail_2.showModel = false;
-                this.sail_3.showModel = false;
-                this.sail_4.showModel = false;
-                this.sail_5.showModel = false;
-                this.sail_6.showModel = false;
-                this.sail_7.showModel = false;
-            }
-
-            this.Cargo0.showModel = entityln.Cargo_0;
-            this.Cargo1.showModel = entityln.Cargo_1;
-            this.Cargo2.showModel = entityln.Cargo_2;
-            this.Cargo3.showModel = entityln.Cargo_3;
-
-
-            if(entityln.leftInputDown) this.steer.rotateAngleY = -MathHelper.cos( 3.1415927F);
-            else if(entityln.rightInputDown) this.steer.rotateAngleY = MathHelper.cos(3.1415927F);
-            else this.steer.rotateAngleY = 0;
+        if (entityln.isSailDown()) {
+            this.sail_0.showModel = false;
+            this.sail_1.showModel = true;
+            this.sail_2.showModel = true;
+            this.sail_3.showModel = true;
+            this.sail_4.showModel = true;
+            this.sail_5.showModel = true;
+            this.sail_6.showModel = true;
+            this.sail_7.showModel = true;
+        } else {
+            this.sail_0.showModel = true;
+            this.sail_1.showModel = false;
+            this.sail_2.showModel = false;
+            this.sail_3.showModel = false;
+            this.sail_4.showModel = false;
+            this.sail_5.showModel = false;
+            this.sail_6.showModel = false;
+            this.sail_7.showModel = false;
         }
+
+        this.Cargo0.showModel = entityln.Cargo_0;
+        this.Cargo1.showModel = entityln.Cargo_1;
+        this.Cargo2.showModel = entityln.Cargo_2;
+        this.Cargo3.showModel = entityln.Cargo_3;
+
+
+        if(entityln.leftInputDown) this.steer.rotateAngleY = -MathHelper.cos( 3.1415927F);
+        else if(entityln.rightInputDown) this.steer.rotateAngleY = MathHelper.cos(3.1415927F);
+        else this.steer.rotateAngleY = 0;
+    }
+
+
+
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts

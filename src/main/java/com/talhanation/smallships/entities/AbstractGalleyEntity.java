@@ -1,6 +1,8 @@
 package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.init.SoundInit;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
@@ -73,6 +75,9 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
     public int playLastSailSoundcounter;
     public boolean leftsteer;
     public boolean rightsteer;
+    public int sailtick;
+    private boolean bindingToggled;
+    private boolean bindingDownOnLast;
 
     public AbstractGalleyEntity(EntityType<? extends AbstractGalleyEntity> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -86,20 +91,10 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
 
     public void tick() {
 
-
-      /* try to make steer server side
-        if (this.rotationYaw < 0)
-            this.leftsteer = true;
-        else if (this. > 0)
-            this.rightsteer = true;
-        else {
-            this.rightsteer = false;
-            this.leftsteer = false;
-        }
-*/
         passengerwaittime--;
         playFirstSailSoundcounter--;
         playLastSailSoundcounter--;
+        sailtick--;
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
         if (this.status != BoatEntity.Status.UNDER_WATER && this.status != BoatEntity.Status.UNDER_FLOWING_WATER) {
@@ -273,11 +268,19 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
                 f += 0.005F;
             }
             this.rotationYaw += this.deltaRotation;
-            if (this.forwardInputDown) {
-                f += 0.06F; // speed
-            }
+
+            if (this.isSailDown()) {
+                 f += 0.04F;
+                 if (this.forwardInputDown) {
+                     f += 0.06F; // speed
+                 }
+             }
             if (this.backInputDown) {
                 f -= 0.005F;
+            }
+
+            if (this.forwardInputDown && !this.isSailDown()) {
+                f += 0.045F; // speed
             }
 
             this.setMotion(this.getMotion().add((double)(MathHelper.sin(-this.rotationYaw * ((float)Math.PI / 180F)) * f), 0.0D, (double)(MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * f)));
@@ -444,19 +447,42 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
         this.forwardInputDown = forwardInputDown;
         this.backInputDown = backInputDown;
     }
-    public boolean isSailDown(){
-        if (this.getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity) {
-            this.playLastSailSoundcounter = 5;
-            return true;
+    public boolean isSailDown() {
+        final Minecraft mc = Minecraft.getInstance();
+        final KeyBinding binding = mc.gameSettings.keyBindSprint;
+        boolean flag = this.getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity;
+
+        if (flag){
+            if (binding.isPressed()) {
+                bindingDownOnLast = true;
+            } else if (!binding.isPressed()&& bindingDownOnLast && !bindingToggled ) {
+                bindingDownOnLast = false;
+                bindingToggled = true;
+                sailtick = 10;
+                this.playFirstSailSoundcounter = 2;
+            } else if (!binding.isPressed() && bindingDownOnLast && bindingToggled && sailtick <= 0) {
+                bindingDownOnLast = false;
+                bindingToggled = false;
+                this.playLastSailSoundcounter = 2;
+            }
+            if (this.bindingToggled) {
+                return true;
+            }
+            return false;
         }
         return false;
+    }
+
+    public float WaveMotion(){
+        float wavestr = 2.0F;
+        if (world.isRaining()) return 1.5F * wavestr;
+        else return wavestr;
     }
 
     @Override
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
-        if (this.getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)
-            this.playFirstSailSoundcounter = 5;
+
     }
 
     @Nullable
