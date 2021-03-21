@@ -69,6 +69,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     public boolean rightsteer;
     private boolean bindingToggled;
     private boolean bindingDownOnLast;
+    private boolean keyBindSprint;
 
     protected abstract ItemStackHandler initInventory();
 
@@ -110,43 +111,26 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         this.isSailDown();
         this.tickLerp();
         if (this.canPassengerSteer()) {
-            /*if (this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof PlayerEntity)) {
-                this.setPaddleState(false, false);
-                }
-            */
             this.updateMotion();
             if (this.world.isRemote) {
                 this.controlBoat();
-                //this.world.sendPacketToServer(new CSteerBoatPacket(this.getPaddleState(0), this.getPaddleState(1)));
             }
             this.move(MoverType.SELF, this.getMotion());
         } else {
             this.setMotion(Vector3d.ZERO);
         }
-        /*
-        for(int i = 0; i <= 1; ++i) {
-            if (this.getPaddleState(i)) {
-                if (!this.isSilent() && (double)(this.paddlePositions[i] % ((float)Math.PI * 2F)) <= (double)((float)Math.PI / 4F) && ((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F)) % (double)((float)Math.PI * 2F) >= (double)((float)Math.PI / 4F)) {
-                    SoundEvent soundevent = this.getPaddleSound();
-                    if (soundevent != null) {
-                        Vector3d vector3d = this.getLook(1.0F);
-                        double d0 = i == 1 ? -vector3d.z : vector3d.z;
-                        double d1 = i == 1 ? vector3d.x : -vector3d.x;
-                        }
-                }
 
-                this.paddlePositions[i] = (float)((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F));
-            } else {
-                this.paddlePositions[i] = 0.0F;
-            }
+        if (this.isSailDown() && this.getControllingPassenger() instanceof PlayerEntity){
+            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat(), false);
+
         }
-        */
+
         if (playFirstSailSoundcounter == 0) {
-            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
+            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
         }
 
         if (playLastSailSoundcounter == 0) {
-            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 8.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
+            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
         }
 
         this.doBlockCollisions();
@@ -274,7 +258,6 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
                 f += 0.007F;
             }
             this.setMotion(this.getMotion().add((double)(MathHelper.sin(-this.rotationYaw * ((float)Math.PI / 180F)) * f), 0.0D, (double)(MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * f)));
-            //this.setPaddleState(this.rightInputDown && !this.leftInputDown || this.forwardInputDown, this.leftInputDown && !this.rightInputDown || this.forwardInputDown);
         }
     }
 
@@ -435,28 +418,40 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         this.rightInputDown = rightInputDown;
         this.forwardInputDown = forwardInputDown;
         this.backInputDown = backInputDown;
+
+        Minecraft mc = Minecraft.getInstance();
+        KeyBinding binding = mc.gameSettings.keyBindSprint;
+        if (this.getControllingPassenger() instanceof PlayerEntity){
+            if (binding.isPressed()) {
+                this.keyBindSprint = true;
+            } else
+                this.keyBindSprint = false;
+        }
     }
 
-    public boolean isSailDown(){
-        final Minecraft mc = Minecraft.getInstance();
-        final KeyBinding binding = mc.gameSettings.keyBindSprint;
-        boolean flag = this.getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity;
+    public boolean isSailDown() {
 
-        if (flag){
-            if (binding.isPressed()) {
-                bindingDownOnLast = true;
-            } else if (!binding.isPressed()&& bindingDownOnLast && !bindingToggled ) {
-                bindingDownOnLast = false;
-                bindingToggled = true;
-                sailtick = 10;
-                this.playFirstSailSoundcounter = 2;
-            } else if (!binding.isPressed() && bindingDownOnLast && bindingToggled && sailtick <= 0){
-                bindingDownOnLast = false;
-                bindingToggled = false;
-                this.playLastSailSoundcounter = 2;
-            }
-            if (this.bindingToggled) {
-                return true;
+        if (this.isBeingRidden() && this.getControllingPassenger() instanceof PlayerEntity)
+        {
+            boolean flag = this.getControllingPassenger() instanceof PlayerEntity;
+
+            if (flag) {
+                if (this.keyBindSprint) {
+                    bindingDownOnLast = true;
+                } else if (!keyBindSprint && bindingDownOnLast && !bindingToggled) {
+                    bindingDownOnLast = false;
+                    bindingToggled = true;
+                    sailtick = 10;
+                    this.playFirstSailSoundcounter = 2;
+                } else if (!keyBindSprint && bindingDownOnLast && bindingToggled && sailtick <= 0) {
+                    bindingDownOnLast = false;
+                    bindingToggled = false;
+                    this.playLastSailSoundcounter = 2;
+                }
+                if (this.bindingToggled) {
+                    return true;
+                }
+                return false;
             }
             return false;
         }

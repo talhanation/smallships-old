@@ -40,6 +40,8 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
 
     private static final DataParameter<Boolean> LEFT_PADDLE = EntityDataManager.createKey(AbstractGalleyEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> RIGHT_PADDLE = EntityDataManager.createKey(AbstractGalleyEntity.class, DataSerializers.BOOLEAN);
+    private boolean keyBindSprint;
+
     protected abstract ItemStackHandler initInventory();
     private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
     private final float[] paddlePositions = new float[2];
@@ -129,6 +131,11 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
             this.setMotion(Vector3d.ZERO);
         }
 
+        if (this.isSailDown() && this.getControllingPassenger() instanceof PlayerEntity){
+            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat(), false);
+        }
+
+
         for(int i = 0; i <= 1; ++i) {
             if (this.getPaddleState(i)) {
                 if (!this.isSilent() && (double)(this.paddlePositions[i] % ((float)Math.PI * 2F)) <= (double)((float)Math.PI / 4F) && ((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F)) % (double)((float)Math.PI * 2F) >= (double)((float)Math.PI / 4F)) {
@@ -150,11 +157,11 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
             }
         }
         if (playFirstSailSoundcounter == 0) {
-            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
+            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
         }
 
         if (playLastSailSoundcounter == 0) {
-            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 8.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
+            this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat(), false);
         }
 
         this.doBlockCollisions();
@@ -446,27 +453,40 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
         this.rightInputDown = rightInputDown;
         this.forwardInputDown = forwardInputDown;
         this.backInputDown = backInputDown;
-    }
-    public boolean isSailDown() {
-        final Minecraft mc = Minecraft.getInstance();
-        final KeyBinding binding = mc.gameSettings.keyBindSprint;
-        boolean flag = this.getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity;
 
-        if (flag){
+        Minecraft mc = Minecraft.getInstance();
+        KeyBinding binding = mc.gameSettings.keyBindSprint;
+        if (this.getControllingPassenger() instanceof PlayerEntity){
             if (binding.isPressed()) {
-                bindingDownOnLast = true;
-            } else if (!binding.isPressed()&& bindingDownOnLast && !bindingToggled ) {
-                bindingDownOnLast = false;
-                bindingToggled = true;
-                sailtick = 10;
-                this.playFirstSailSoundcounter = 2;
-            } else if (!binding.isPressed() && bindingDownOnLast && bindingToggled && sailtick <= 0) {
-                bindingDownOnLast = false;
-                bindingToggled = false;
-                this.playLastSailSoundcounter = 2;
-            }
-            if (this.bindingToggled) {
-                return true;
+                this.keyBindSprint = true;
+            } else
+                this.keyBindSprint = false;
+        }
+    }
+
+    public boolean isSailDown() {
+
+        if (this.isBeingRidden() && this.getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)
+        {
+            boolean flag = this.getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity;
+
+            if (flag) {
+                if (this.keyBindSprint) {
+                    bindingDownOnLast = true;
+                } else if (!keyBindSprint && bindingDownOnLast && !bindingToggled) {
+                    bindingDownOnLast = false;
+                    bindingToggled = true;
+                    sailtick = 10;
+                    this.playFirstSailSoundcounter = 2;
+                } else if (!keyBindSprint && bindingDownOnLast && bindingToggled && sailtick <= 0) {
+                    bindingDownOnLast = false;
+                    bindingToggled = false;
+                    this.playLastSailSoundcounter = 2;
+                }
+                if (this.bindingToggled) {
+                    return true;
+                }
+                return false;
             }
             return false;
         }
