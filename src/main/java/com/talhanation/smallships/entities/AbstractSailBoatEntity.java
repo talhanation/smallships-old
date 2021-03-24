@@ -1,5 +1,6 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -120,7 +121,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.setMotion(Vector3d.ZERO);
         }
 
-        if (this.isSailDown() && this.getControllingPassenger() instanceof PlayerEntity){
+        if (this.isSailDown() && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
             this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat(), false);
 
         }
@@ -193,6 +194,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         double d0 = -0.04D; // down/up moment
         double d1 = hasNoGravity() ? 0.0D : d0;
         double d2 = 0.0D;  //
+        double CogTurnFactor = SmallShipsConfig.CogTurnFactor.get();
         this.momentum = 1.0F;
 
         if (this.getPassengers().size() == 2) this.passengerfaktor = 0.05F;
@@ -210,7 +212,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         } else {
             if (this.status == BoatEntity.Status.IN_WATER) {
                 d2 = (this.waterLevel - (getBoundingBox()).minY + 0.1D) / getHeight();
-                this.momentum = 0.9F * 1.0F;
+                this.momentum = 0.9F;
             } else if (this.status == BoatEntity.Status.UNDER_FLOWING_WATER) {
                 d1 = -7.0E-4D;
                 this.momentum = 0.9F;
@@ -221,12 +223,12 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
                 this.momentum = 0.9F;
             } else if (this.status == BoatEntity.Status.ON_LAND) {
                 this.momentum = this.boatGlide * 0.001F;
-                if (getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)
+                if (getControllingPassenger() instanceof PlayerEntity)
                     this.boatGlide /= 1.0F;
             }
             Vector3d vec3d = getMotion();
             setMotion(vec3d.x * (this.momentum - this.passengerfaktor), vec3d.y + d1, vec3d.z * (this.momentum - this.passengerfaktor));
-            this.deltaRotation *= (this.momentum - this.passengerfaktor) *0.1;
+            this.deltaRotation *= (this.momentum - this.passengerfaktor) * CogTurnFactor;
             if (d2 > 0.0D) {
                 Vector3d vec3d1 = getMotion();
                 setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
@@ -235,6 +237,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     }
 
     protected void controlBoat() {
+        double CogSpeedFactor = SmallShipsConfig.CogSpeedFactor.get();
         if (this.isBeingRidden()) {
             float f = 0.0F;
             if (this.leftInputDown ) {
@@ -244,18 +247,18 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
                 ++this.deltaRotation;
             }
             if (this.rightInputDown != this.leftInputDown && !this.forwardInputDown && !this.backInputDown) {
-                f += 0.007F;
+                f += 0.005F;
             }
             this.rotationYaw += this.deltaRotation;
 
             if (this.isSailDown()) {
-                f += 0.045F;
+                f += (0.04F * CogSpeedFactor);
             }
             if (this.backInputDown) {
-                f -= 0.007F;
+                f -= (0.005F * CogSpeedFactor);
             }
             if (this.forwardInputDown) {
-                f += 0.007F;
+                f += (0.005F * CogSpeedFactor);
             }
             this.setMotion(this.getMotion().add((double)(MathHelper.sin(-this.rotationYaw * ((float)Math.PI / 180F)) * f), 0.0D, (double)(MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * f)));
         }

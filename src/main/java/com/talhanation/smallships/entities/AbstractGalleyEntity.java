@@ -1,5 +1,6 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -131,7 +132,7 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
             this.setMotion(Vector3d.ZERO);
         }
 
-        if (this.isSailDown() && this.getControllingPassenger() instanceof PlayerEntity){
+        if (this.isSailDown() && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
             this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat(), false);
         }
 
@@ -223,6 +224,8 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
         double d0 = -0.03D; // down/up moment
         double d1 = hasNoGravity() ? 0.0D : d0;
         double d2 = 0.0D;  //
+        double GalleyTurnFactor = SmallShipsConfig.GalleyTurnFactor.get();
+
         this.momentum = 1.0F;
         this.passengerfaktor = 0;
         if (this.previousStatus == BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.IN_AIR && this.status != BoatEntity.Status.ON_LAND) {
@@ -234,7 +237,7 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
         } else {
             if (this.status == BoatEntity.Status.IN_WATER) {
                 d2 = (this.waterLevel - (getBoundingBox()).minY + 0.1D) / getHeight();
-                this.momentum = 0.9F * 1.0F;
+                this.momentum = 0.9F;
             } else if (this.status == BoatEntity.Status.UNDER_FLOWING_WATER) {
                 d1 = -7.0E-4D;
                 this.momentum = 0.9F;
@@ -250,7 +253,8 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
             }
             Vector3d vec3d = getMotion();
             setMotion(vec3d.x * (this.momentum - this.passengerfaktor), vec3d.y + d1, vec3d.z * (this.momentum - this.passengerfaktor));
-            this.deltaRotation *= (this.momentum - this.passengerfaktor) *0.5;
+            this.deltaRotation *= (this.momentum - this.passengerfaktor) * GalleyTurnFactor;
+
             if (d2 > 0.0D) {
                 Vector3d vec3d1 = getMotion();
                 setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
@@ -263,6 +267,7 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
     }
 
     protected void controlBoat() {
+        double GalleySpeedFactor = SmallShipsConfig.GalleySpeedFactor.get();
         if (this.isBeingRidden()) {
             float f = 0.0F;
             if (this.leftInputDown ) {
@@ -277,17 +282,17 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
             this.rotationYaw += this.deltaRotation;
 
             if (this.isSailDown()) {
-                 f += 0.04F;
+                 f += (0.04F * GalleySpeedFactor);
                  if (this.forwardInputDown) {
-                     f += 0.06F; // speed
+                     f += (0.02F * GalleySpeedFactor); // speed
                  }
              }
             if (this.backInputDown) {
-                f -= 0.005F;
+                f -= (0.005F * GalleySpeedFactor);
             }
 
             if (this.forwardInputDown && !this.isSailDown()) {
-                f += 0.045F; // speed
+                f += (0.04F* GalleySpeedFactor); // speed
             }
 
             this.setMotion(this.getMotion().add((double)(MathHelper.sin(-this.rotationYaw * ((float)Math.PI / 180F)) * f), 0.0D, (double)(MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * f)));
