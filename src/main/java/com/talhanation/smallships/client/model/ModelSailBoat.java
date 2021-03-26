@@ -689,7 +689,7 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
 
     @Override
     public void setRotationAngles(T entityln, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityln.isSailDown()) {
+        if (entityln.getSailState(1)) {
             this.sail_0.showModel = false;
             this.sail_1.showModel = true;
             this.sail_2.showModel = true;

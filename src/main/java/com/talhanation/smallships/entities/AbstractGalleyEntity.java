@@ -132,7 +132,8 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
             this.setMotion(Vector3d.ZERO);
         }
 
-        if (this.isSailDown() && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
+        this.isSailDown();
+        if (this.isSailDown() && SmallShipsConfig.PlaySwimmSound.get()){
             this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat(), false);
         }
 
@@ -459,9 +460,10 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
         this.forwardInputDown = forwardInputDown;
         this.backInputDown = backInputDown;
 
+        boolean flag = this.isBeingRidden();
         Minecraft mc = Minecraft.getInstance();
         KeyBinding binding = mc.gameSettings.keyBindSprint;
-        if (this.getControllingPassenger() instanceof PlayerEntity){
+        if (flag){
             if (binding.isPressed()) {
                 this.keyBindSprint = true;
             } else
@@ -471,27 +473,22 @@ public abstract class AbstractGalleyEntity extends BoatEntity {
 
     public boolean isSailDown() {
 
-        if (this.isBeingRidden() && this.getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)
-        {
-            boolean flag = this.getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity;
-
-            if (flag) {
-                if (this.keyBindSprint) {
-                    bindingDownOnLast = true;
-                } else if (!keyBindSprint && bindingDownOnLast && !bindingToggled) {
-                    bindingDownOnLast = false;
-                    bindingToggled = true;
-                    sailtick = 10;
-                    this.playFirstSailSoundcounter = 2;
-                } else if (!keyBindSprint && bindingDownOnLast && bindingToggled && sailtick <= 0) {
-                    bindingDownOnLast = false;
-                    bindingToggled = false;
-                    this.playLastSailSoundcounter = 2;
-                }
-                if (this.bindingToggled) {
-                    return true;
-                }
-                return false;
+        boolean flag = this.isBeingRidden();
+        if (flag) {
+            if (this.keyBindSprint) {
+                bindingDownOnLast = true;
+            } else if (!keyBindSprint && bindingDownOnLast && !bindingToggled) {
+                bindingDownOnLast = false;
+                bindingToggled = true;
+                sailtick = 10;
+                this.playFirstSailSoundcounter = 2;
+            } else if (!keyBindSprint && bindingDownOnLast && bindingToggled && sailtick <= 0) {
+                bindingDownOnLast = false;
+                bindingToggled = false;
+                this.playLastSailSoundcounter = 2;
+            }
+            if (this.bindingToggled) {
+                return true;
             }
             return false;
         }

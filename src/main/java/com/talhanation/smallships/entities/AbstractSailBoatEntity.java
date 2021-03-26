@@ -2,6 +2,7 @@ package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
+import com.talhanation.smallships.network.CSailStatePacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.*;
@@ -14,6 +15,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.network.IPacket;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CSteerBoatPacket;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
@@ -36,6 +40,9 @@ import java.util.List;
 
 public abstract class AbstractSailBoatEntity extends BoatEntity {
     //private final float[] paddlePositions = new float[2];
+
+    private static final DataParameter<Boolean> SAIL_STATE_UP = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> SAIL_STATE_DOWN = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.BOOLEAN);
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -70,7 +77,8 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     public boolean rightsteer;
     private boolean bindingToggled;
     private boolean bindingDownOnLast;
-    private boolean keyBindSprint;
+    public boolean keyBindSprint;
+
 
     protected abstract ItemStackHandler initInventory();
 
@@ -79,19 +87,42 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     public AbstractSailBoatEntity(EntityType<? extends AbstractSailBoatEntity> entityType, World worldIn) {
         super(entityType, worldIn);
     }
-
+    protected void registerData() {
+        super.registerData();
+        this.dataManager.register(SAIL_STATE_UP, true);
+        this.dataManager.register(SAIL_STATE_DOWN, false);
+    }
 
     public double getMountedYOffset() {
         return 0.75D;
     }
 
-
     public void tick() {
-
         passengerwaittime--;
         playFirstSailSoundcounter--;
         playLastSailSoundcounter--;
         sailtick--;
+
+        if (this.isBeingRidden()) {
+            if (this.forwardInputDown) {
+                bindingDownOnLast = true;
+            } else if (!forwardInputDown && bindingDownOnLast && !bindingToggled) {
+                bindingDownOnLast = false;
+                bindingToggled = true;
+                sailtick = 10;
+                this.playFirstSailSoundcounter = 2;
+            } else if (!forwardInputDown && bindingDownOnLast && bindingToggled && sailtick <= 0) {
+                bindingDownOnLast = false;
+                bindingToggled = false;
+                this.playLastSailSoundcounter = 2;
+            }
+
+            if (this.bindingToggled) {
+                this.setSailState(false, true);
+            }
+            else this.setSailState(true, false);
+        }
+
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
         if (this.status != BoatEntity.Status.UNDER_WATER && this.status != BoatEntity.Status.UNDER_FLOWING_WATER) {
@@ -109,19 +140,18 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         }
 
         super.tick();
-        this.isSailDown();
         this.tickLerp();
         if (this.canPassengerSteer()) {
             this.updateMotion();
             if (this.world.isRemote) {
                 this.controlBoat();
+                this.world.sendPacketToServer(new CSailStatePacket(this.getSailState(0), this.getSailState(1)));
             }
             this.move(MoverType.SELF, this.getMotion());
         } else {
             this.setMotion(Vector3d.ZERO);
         }
-
-        if (this.isSailDown() && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
+        if (this.getSailState(1) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
             this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat(), false);
 
         }
@@ -172,6 +202,15 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.setPosition(d0, d1, d2);
             this.setRotation(this.rotationYaw, this.rotationPitch);
         }
+    }
+
+    public void setSailState(boolean up, boolean down){
+        this.dataManager.set(SAIL_STATE_UP, up);
+        this.dataManager.set(SAIL_STATE_DOWN, down);
+    }
+
+    public boolean getSailState(int state) {
+        return this.dataManager.<Boolean>get(state == 0 ? SAIL_STATE_UP : SAIL_STATE_DOWN) && this.getControllingPassenger() != null;
     }
 
     public BoatEntity.Status getBoatStatus() {
@@ -251,7 +290,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             }
             this.rotationYaw += this.deltaRotation;
 
-            if (this.isSailDown()) {
+            if (this.getSailState(1)) {
                 f += (0.04F * CogSpeedFactor);
             }
             if (this.backInputDown) {
@@ -422,43 +461,16 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         this.forwardInputDown = forwardInputDown;
         this.backInputDown = backInputDown;
 
+        boolean flag = this.isBeingRidden();
         Minecraft mc = Minecraft.getInstance();
         KeyBinding binding = mc.gameSettings.keyBindSprint;
-        if (this.getControllingPassenger() instanceof PlayerEntity){
+        if (flag){
             if (binding.isPressed()) {
                 this.keyBindSprint = true;
             } else
                 this.keyBindSprint = false;
         }
-    }
 
-    public boolean isSailDown() {
-
-        if (this.isBeingRidden() && this.getControllingPassenger() instanceof PlayerEntity)
-        {
-            boolean flag = this.getControllingPassenger() instanceof PlayerEntity;
-
-            if (flag) {
-                if (this.keyBindSprint) {
-                    bindingDownOnLast = true;
-                } else if (!keyBindSprint && bindingDownOnLast && !bindingToggled) {
-                    bindingDownOnLast = false;
-                    bindingToggled = true;
-                    sailtick = 10;
-                    this.playFirstSailSoundcounter = 2;
-                } else if (!keyBindSprint && bindingDownOnLast && bindingToggled && sailtick <= 0) {
-                    bindingDownOnLast = false;
-                    bindingToggled = false;
-                    this.playLastSailSoundcounter = 2;
-                }
-                if (this.bindingToggled) {
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        }
-        return false;
     }
 
     public float WaveMotion(){
@@ -471,7 +483,6 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
     }
-
 
     @Override
     public Vector3d func_230268_c_(final LivingEntity rider) {
