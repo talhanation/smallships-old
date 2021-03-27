@@ -4,6 +4,8 @@ import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.items.ModItems;
+import com.talhanation.smallships.network.MessageSailState;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DeferredWorkQueue;
@@ -13,6 +15,8 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,6 +25,7 @@ public class Main
 {
     private static final Logger LOGGER = LogManager.getLogger();
     public static final String MOD_ID = "smallships";
+    public static SimpleChannel SIMPLE_CHANNEL;
 
     public Main() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SmallShipsConfig.CONFIG);
@@ -37,10 +42,9 @@ public class Main
     }
 
     private void setup(final FMLCommonSetupEvent event) {
-        DeferredWorkQueue.runLater(() -> {
-            //GlobalEntityTypeAttributes.put(ModEntityTypes.SAIL_BOAT.get(), Sail_BoatEntity.setCustomAttributes().create());
-                });
-
+        MinecraftForge.EVENT_BUS.register(this);
+        SIMPLE_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation("smallships", "default"), () -> "1.0.0", s -> true, s -> true);
+        SIMPLE_CHANNEL.registerMessage(0, MessageSailState.class, (msg, buf) -> msg.toBytes(buf), buf -> (new MessageSailState()).fromBytes(buf), (msg, fun) -> msg.executeServerSide(fun.get()));
     }
 
 }

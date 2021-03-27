@@ -1,8 +1,9 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
-import com.talhanation.smallships.network.CSailStatePacket;
+import com.talhanation.smallships.network.MessageSailState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.*;
@@ -18,7 +19,6 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.client.CSteerBoatPacket;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -75,7 +75,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     public int sailtick;
     public boolean leftsteer;
     public boolean rightsteer;
-    private boolean bindingToggled;
+    public boolean bindingToggled;
     private boolean bindingDownOnLast;
     public boolean keyBindSprint;
 
@@ -145,7 +145,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.updateMotion();
             if (this.world.isRemote) {
                 this.controlBoat();
-                this.world.sendPacketToServer(new CSailStatePacket(this.getSailState(0), this.getSailState(1)));
+                Main.SIMPLE_CHANNEL.sendToServer(new MessageSailState(this.getSailState(0), this.getSailState(1)));
             }
             this.move(MoverType.SELF, this.getMotion());
         } else {
@@ -517,4 +517,13 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         return null;
     }
 
+
+    public PlayerEntity getDriver() {
+        List<Entity> passengers = getPassengers();
+        if (passengers.size() <= 0)
+            return null;
+        if (passengers.get(0) instanceof PlayerEntity)
+            return (PlayerEntity)passengers.get(0);
+        return null;
+    }
 }
