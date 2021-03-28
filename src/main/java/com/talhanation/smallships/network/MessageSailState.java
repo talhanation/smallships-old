@@ -13,15 +13,14 @@ import java.io.IOException;
 import java.util.function.Supplier;
 
 public class MessageSailState implements Message<MessageSailState> {
-    private boolean up;
-    private boolean down;
+    private boolean state;
+
 
     public MessageSailState() {
     }
 
-    public MessageSailState(boolean up, boolean down){
-        this.up = up;
-        this.down = down;
+    public MessageSailState(boolean state){
+        this.state = state;
     }
 
     public Dist getExecutingSide() {
@@ -35,20 +34,18 @@ public class MessageSailState implements Message<MessageSailState> {
         AbstractSailBoatEntity sailboat = (AbstractSailBoatEntity) riding;
         if (context.getSender() == (sailboat.getDriver()))
             if (sailboat.bindingToggled) {
-                sailboat.setSailState(false, true);
+                sailboat.SailState = true;
             }
-            else sailboat.setSailState(true, false);
+            else sailboat.SailState = false;
     }
 
     public MessageSailState fromBytes(PacketBuffer buf) {
-        this.up = buf.readBoolean();
-        this.down = buf.readBoolean();
+        this.state = buf.readBoolean();
         return this;
     }
 
     public void toBytes(PacketBuffer buf) {
-        buf.writeBoolean(this.up);
-        buf.writeBoolean(this.down);
+        buf.writeBoolean(this.state);
     }
 
 }

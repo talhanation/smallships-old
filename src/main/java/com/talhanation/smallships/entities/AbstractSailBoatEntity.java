@@ -78,6 +78,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     public boolean bindingToggled;
     private boolean bindingDownOnLast;
     public boolean keyBindSprint;
+    public boolean SailState;
 
 
     protected abstract ItemStackHandler initInventory();
@@ -118,9 +119,9 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             }
 
             if (this.bindingToggled) {
-                this.setSailState(false, true);
+                this.SailState = true;
             }
-            else this.setSailState(true, false);
+            else this.SailState = false;
         }
 
         this.previousStatus = this.status;
@@ -145,13 +146,13 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.updateMotion();
             if (this.world.isRemote) {
                 this.controlBoat();
-                Main.SIMPLE_CHANNEL.sendToServer(new MessageSailState(this.getSailState(0), this.getSailState(1)));
+                Main.SIMPLE_CHANNEL.sendToServer(new MessageSailState(this.SailState));
             }
             this.move(MoverType.SELF, this.getMotion());
         } else {
             this.setMotion(Vector3d.ZERO);
         }
-        if (this.getSailState(1) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
+        if (this.SailState && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
             this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat(), false);
 
         }
@@ -203,7 +204,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.setRotation(this.rotationYaw, this.rotationPitch);
         }
     }
-
+/*
     public void setSailState(boolean up, boolean down){
         this.dataManager.set(SAIL_STATE_UP, up);
         this.dataManager.set(SAIL_STATE_DOWN, down);
@@ -212,7 +213,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     public boolean getSailState(int state) {
         return this.dataManager.<Boolean>get(state == 0 ? SAIL_STATE_UP : SAIL_STATE_DOWN) && this.getControllingPassenger() != null;
     }
-
+*/
     public BoatEntity.Status getBoatStatus() {
         BoatEntity.Status boatentity$status = getUnderwaterStatus();
         if (boatentity$status != null) {
@@ -290,7 +291,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             }
             this.rotationYaw += this.deltaRotation;
 
-            if (this.getSailState(1)) {
+            if (this.SailState) {
                 f += (0.04F * CogSpeedFactor);
             }
             if (this.backInputDown) {
