@@ -41,8 +41,7 @@ import java.util.List;
 public abstract class AbstractSailBoatEntity extends BoatEntity {
     //private final float[] paddlePositions = new float[2];
 
-    private static final DataParameter<Boolean> SAIL_STATE_UP = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SAIL_STATE_DOWN = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.BOOLEAN);
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -78,7 +77,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     public boolean bindingToggled;
     private boolean bindingDownOnLast;
     public boolean keyBindSprint;
-    public boolean SailState;
+    private boolean sailState;
 
 
     protected abstract ItemStackHandler initInventory();
@@ -90,12 +89,19 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
     }
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(SAIL_STATE_UP, true);
-        this.dataManager.register(SAIL_STATE_DOWN, false);
+        this.dataManager.register(SAIL_STATE, false);
     }
 
     public double getMountedYOffset() {
         return 0.75D;
+    }
+
+    public boolean getSailState(){
+        return dataManager.get(SAIL_STATE);
+    }
+
+    public void setSailState(boolean state){
+        dataManager.set(SAIL_STATE, state);
     }
 
     public void tick() {
@@ -119,9 +125,9 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             }
 
             if (this.bindingToggled) {
-                this.SailState = true;
+                this.sailState = true;
             }
-            else this.SailState = false;
+            else this.sailState = false;
         }
 
         this.previousStatus = this.status;
@@ -146,13 +152,13 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.updateMotion();
             if (this.world.isRemote) {
                 this.controlBoat();
-                Main.SIMPLE_CHANNEL.sendToServer(new MessageSailState(this.SailState));
+                Main.SIMPLE_CHANNEL.sendToServer(new MessageSailState(this.sailState));
             }
             this.move(MoverType.SELF, this.getMotion());
         } else {
             this.setMotion(Vector3d.ZERO);
         }
-        if (this.SailState && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
+        if (this.sailState && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
             this.world.playSound(this.getPosX(), this.getPosY(),this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat(), false);
 
         }
@@ -291,7 +297,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             }
             this.rotationYaw += this.deltaRotation;
 
-            if (this.SailState) {
+            if (this.sailState) {
                 f += (0.04F * CogSpeedFactor);
             }
             if (this.backInputDown) {
