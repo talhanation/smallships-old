@@ -28,6 +28,10 @@ public class MessageSailState implements Message<MessageSailState> {
         AbstractSailBoatEntity sailboat = (AbstractSailBoatEntity) riding;
         if (context.getSender() == (sailboat.getDriver()))
             sailboat.setSailState(state);
+        if (sailboat.getSailState()){
+            sailboat.playFirstSailSoundcounter = 2;
+        }else
+            sailboat.playLastSailSoundcounter = 2;
     }
 
     public MessageSailState fromBytes(PacketBuffer buf) {
