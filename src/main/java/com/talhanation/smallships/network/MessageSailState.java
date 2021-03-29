@@ -2,15 +2,9 @@ package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.entities.AbstractSailBoatEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.NetworkHooks;
-
-import java.io.IOException;
-import java.util.function.Supplier;
 
 public class MessageSailState implements Message<MessageSailState> {
     private boolean state;
@@ -33,10 +27,7 @@ public class MessageSailState implements Message<MessageSailState> {
             return;
         AbstractSailBoatEntity sailboat = (AbstractSailBoatEntity) riding;
         if (context.getSender() == (sailboat.getDriver()))
-            if (sailboat.bindingToggled) {
-                sailboat.SailState = true;
-            }
-            else sailboat.SailState = false;
+            sailboat.setSailState(state);
     }
 
     public MessageSailState fromBytes(PacketBuffer buf) {
