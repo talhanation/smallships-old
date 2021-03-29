@@ -194,6 +194,10 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             }
         }
 
+        if (this.getControllingPassenger() == null && getSailState()) {
+            this.sailState = false;
+            setSailState(false);
+        }
     }
 
     public void tickLerp() {
