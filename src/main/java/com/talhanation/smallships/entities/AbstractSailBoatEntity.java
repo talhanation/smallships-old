@@ -109,26 +109,30 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         playFirstSailSoundcounter--;
         playLastSailSoundcounter--;
         sailtick--;
-
-        if (this.isBeingRidden()) {
-            if (this.forwardInputDown) {
+        boolean flag3 = this.isBeingRidden() && this.canPassengerSteer();
+        if(!flag3){
+            bindingDownOnLast = false;
+            bindingToggled = false;
+        }
+        if (flag3) {
+            if (this.keyBindSprint) {
                 bindingDownOnLast = true;
-            } else if (!forwardInputDown && bindingDownOnLast && !bindingToggled) {
+            } else if (!keyBindSprint && bindingDownOnLast && !bindingToggled) {
                 bindingDownOnLast = false;
                 bindingToggled = true;
                 sailtick = 10;
                 this.playFirstSailSoundcounter = 2;
-            } else if (!forwardInputDown && bindingDownOnLast && bindingToggled && sailtick <= 0) {
+            } else if (!keyBindSprint && bindingDownOnLast && bindingToggled && sailtick <= 0) {
                 bindingDownOnLast = false;
                 bindingToggled = false;
                 this.playLastSailSoundcounter = 2;
             }
-
-            if (this.bindingToggled) {
-                this.sailState = true;
-            }
-            else this.sailState = false;
         }
+        if (this.bindingToggled) {
+            this.sailState = true;
+        }else this.sailState= false;
+
+
 
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
@@ -468,16 +472,14 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         this.forwardInputDown = forwardInputDown;
         this.backInputDown = backInputDown;
 
-        boolean flag = this.isBeingRidden();
+        boolean flag = this.isBeingRidden() && canPassengerSteer() && this.getControllingPassenger() instanceof  PlayerEntity;
         Minecraft mc = Minecraft.getInstance();
         KeyBinding binding = mc.gameSettings.keyBindSprint;
-        if (flag){
-            if (binding.isPressed()) {
-                this.keyBindSprint = true;
-            } else
-                this.keyBindSprint = false;
-        }
 
+        if (binding.isPressed() && flag) {
+            this.keyBindSprint = true;
+        } else
+            this.keyBindSprint = false;
     }
 
     public float WaveMotion(){
