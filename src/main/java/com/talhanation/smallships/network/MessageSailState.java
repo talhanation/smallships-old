@@ -7,13 +7,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageSailState implements Message<MessageSailState> {
-    private boolean state;
 
+    private boolean state;
 
     public MessageSailState() {
     }
 
-    public MessageSailState(boolean state){
+    public MessageSailState(boolean state) {
         this.state = state;
     }
 
@@ -26,12 +26,9 @@ public class MessageSailState implements Message<MessageSailState> {
         if (!(riding instanceof AbstractSailBoatEntity))
             return;
         AbstractSailBoatEntity sailboat = (AbstractSailBoatEntity) riding;
-        if (context.getSender() == (sailboat.getDriver()))
+        if (context.getSender() == (sailboat.getDriver())) {
             sailboat.setSailState(state);
-        if (sailboat.getSailState()){
-            sailboat.playSailSounds(true);
-        }else
-            sailboat.playSailSounds(false);
+        }
     }
 
     public MessageSailState fromBytes(PacketBuffer buf) {
