@@ -29,9 +29,9 @@ public class MessageSailState implements Message<MessageSailState> {
         if (context.getSender() == (sailboat.getDriver()))
             sailboat.setSailState(state);
         if (sailboat.getSailState()){
-            sailboat.playFirstSailSoundcounter = 2;
+            sailboat.playSailSounds(true);
         }else
-            sailboat.playLastSailSoundcounter = 2;
+            sailboat.playSailSounds(false);
     }
 
     public MessageSailState fromBytes(PacketBuffer buf) {

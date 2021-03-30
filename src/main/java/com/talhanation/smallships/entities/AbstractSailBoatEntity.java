@@ -121,12 +121,12 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             } else if (!keyBindSprint && bindingDownOnLast && !bindingToggled) {
                 bindingDownOnLast = false;
                 bindingToggled = true;
-                sailtick = 10;
-                this.playFirstSailSoundcounter = 2;
+                sailtick = 15;
+
             } else if (!keyBindSprint && bindingDownOnLast && bindingToggled && sailtick <= 0) {
                 bindingDownOnLast = false;
                 bindingToggled = false;
-                this.playLastSailSoundcounter = 2;
+
             }
         }
         if (this.bindingToggled) {
@@ -137,7 +137,6 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
             this.sailState = false;
             this.keyBindSprint = false;
             setSailState(false);
-            this.playLastSailSoundcounter = 2;
         }
 
 
@@ -169,7 +168,7 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         } else {
             this.setMotion(Vector3d.ZERO);
         }
-        if (this.sailState && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
+        if (getSailState() && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()){
             this.world.playSound(null, this.getPosX(), this.getPosY(),this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat());
 
         }
@@ -532,5 +531,14 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         if (passengers.get(0) instanceof PlayerEntity)
             return (PlayerEntity)passengers.get(0);
         return null;
+    }
+
+    public void playSailSounds(boolean sate){
+        if (sate){
+            this.playFirstSailSoundcounter = 2;
+        }
+        else
+            this.playLastSailSoundcounter = 2;
+
     }
 }
