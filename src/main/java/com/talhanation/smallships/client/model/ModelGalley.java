@@ -616,7 +616,7 @@ public class ModelGalley<T extends GalleyEntity> extends EntityModel<T> {
 
     @Override
     public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityIn.isSailDown()) {
+        if (entityIn.getSailState()) {
         this.Segel_0.showModel = false;
         this.Segel_1_main.showModel = true;
     } else {

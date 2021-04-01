@@ -84,10 +84,6 @@ public abstract class AbstractSailBoatEntity extends BoatEntity {
         this.dataManager.register(SAIL_STATE, false);
     }
 
-    public double getMountedYOffset() {
-        return 0.75D;
-    }
-
     public boolean getSailState() {
         return dataManager.get(SAIL_STATE);
     }

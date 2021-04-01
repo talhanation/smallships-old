@@ -80,6 +80,10 @@ public class GalleyEntity extends AbstractGalleyEntity {
         super.handleStatusUpdate(id);
     }
 
+    public double getMountedYOffset() {
+        return 0.75D;
+    }
+
     public void updatePassenger(Entity passenger) {
         if (isPassenger(passenger)) {
             float f = -2.75F; //driver x pos
