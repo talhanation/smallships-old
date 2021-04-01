@@ -250,10 +250,6 @@ public class GalleyEntity extends AbstractGalleyEntity {
             passenger.setPosition(this.getPosX() + vector3d.x, this.getPosY() + (double) f1, +this.getPosZ() + vector3d.z);
             passenger.rotationYaw += this.deltaRotation;
             applyYawToEntity(passenger);
-            if (passenger instanceof AnimalEntity && getPassengers().size() > 1) {
-                int j = (passenger.getEntityId() % 2 == 0) ? 90 : 270;
-                passenger.setRenderYawOffset(((AnimalEntity) passenger).renderYawOffset + j);
-            }
         }
     }
 

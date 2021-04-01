@@ -187,12 +187,6 @@ public class CogEntity extends AbstractSailBoatEntity {
             passenger.rotationYaw += this.deltaRotation;
             passenger.setRotationYawHead(passenger.getRotationYawHead() + this.deltaRotation);
             applyYawToEntity(passenger);
-            if (passenger instanceof AnimalEntity && getPassengers().size() > 1) {
-                int j = (passenger.getEntityId() % 2 == 0) ? 90 : 270;
-                passenger.setRenderYawOffset(((AnimalEntity)passenger).renderYawOffset + j);
-                passenger.setRotationYawHead(passenger.getRotationYawHead() + j);
-            }
-
         }
 
     }
