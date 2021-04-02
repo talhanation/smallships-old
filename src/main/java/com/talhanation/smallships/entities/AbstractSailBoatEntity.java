@@ -51,10 +51,6 @@ public abstract class AbstractSailBoatEntity extends tnBoatEntity {
     private double lerpZ;
     private double lerpYaw;
     private double lerpPitch;
-    public boolean leftInputDown;
-    public boolean rightInputDown;
-    private boolean forwardInputDown;
-    private boolean backInputDown;
     private double waterLevel;
     private float boatGlide;
     private AbstractSailBoatEntity.Status status;

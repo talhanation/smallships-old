@@ -58,10 +58,10 @@ public class tnBoatEntity extends Entity {
     private double lerpZ;
     private double lerpYaw;
     private double lerpPitch;
-    private boolean leftInputDown;
-    private boolean rightInputDown;
-    private boolean forwardInputDown;
-    private boolean backInputDown;
+    public boolean leftInputDown;
+    public boolean rightInputDown;
+    public boolean forwardInputDown;
+    public boolean backInputDown;
     private double waterLevel;
     private float boatGlide;
     private tnBoatEntity.Status status;
@@ -250,7 +250,6 @@ public class tnBoatEntity extends Entity {
      * Called to update the entity's position/logic.
      */
     public void tick() {
-        this.updateRidden();
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
         if (this.status != tnBoatEntity.Status.UNDER_WATER && this.status != tnBoatEntity.Status.UNDER_FLOWING_WATER) {
@@ -325,6 +324,9 @@ public class tnBoatEntity extends Entity {
             }
         }
 
+        if(world.isRemote){
+            updateClientControls();
+        }
     }
 
     private void updateRocking() {
@@ -864,7 +866,7 @@ public class tnBoatEntity extends Entity {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void updateRidden() {
+    public void updateClientControls() {
         ClientPlayerEntity player = Minecraft.getInstance().player;
         this.updateInputs(player.movementInput.leftKeyDown, player.movementInput.rightKeyDown, player.movementInput.forwardKeyDown, player.movementInput.backKeyDown);
 
