@@ -747,8 +747,6 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
     }
 
 
-
-
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
