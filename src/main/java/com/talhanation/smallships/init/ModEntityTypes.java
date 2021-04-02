@@ -3,7 +3,7 @@ package com.talhanation.smallships.init;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.CogEntity;
 import com.talhanation.smallships.entities.GalleyEntity;
-import com.talhanation.smallships.entities.tnBoatEntity;
+import com.talhanation.smallships.entities.TNBoatEntity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -33,8 +33,8 @@ public class ModEntityTypes {
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "galley").toString()));
 
-    public static final RegistryObject<EntityType<tnBoatEntity>> TNBOAT = ENTITY_TYPES.register("tnboat",
-            () -> EntityType.Builder.<tnBoatEntity>create(tnBoatEntity::new, EntityClassification.MISC)
+    public static final RegistryObject<EntityType<TNBoatEntity>> TNBOAT = ENTITY_TYPES.register("tnboat",
+            () -> EntityType.Builder.<TNBoatEntity>create(TNBoatEntity::new, EntityClassification.MISC)
                     .trackingRange(20)
                     .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)

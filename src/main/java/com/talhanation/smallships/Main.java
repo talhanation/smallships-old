@@ -4,6 +4,7 @@ import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.items.ModItems;
+import com.talhanation.smallships.network.MessagePaddleState;
 import com.talhanation.smallships.network.MessageSailState;
 import com.talhanation.smallships.network.MessageSailStateGalley;
 import net.minecraft.util.ResourceLocation;
@@ -48,6 +49,10 @@ public class Main
 
         SIMPLE_CHANNEL.registerMessage(1, MessageSailStateGalley.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessageSailStateGalley()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
+
+        SIMPLE_CHANNEL.registerMessage(2, MessagePaddleState.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessagePaddleState()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
     }
 

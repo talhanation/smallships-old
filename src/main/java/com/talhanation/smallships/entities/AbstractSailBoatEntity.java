@@ -37,9 +37,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractSailBoatEntity extends tnBoatEntity {
-    //private final float[] paddlePositions = new float[2];
-
+public abstract class AbstractSailBoatEntity extends TNBoatEntity {
     private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.BOOLEAN);
     public float momentum;
     public float outOfControlTicks;
@@ -52,6 +50,10 @@ public abstract class AbstractSailBoatEntity extends tnBoatEntity {
     private double lerpYaw;
     private double lerpPitch;
     private double waterLevel;
+    public boolean leftInputDown;
+    public boolean rightInputDown;
+    private boolean forwardInputDown;
+    private boolean backInputDown;
     private float boatGlide;
     private AbstractSailBoatEntity.Status status;
     private AbstractSailBoatEntity.Status previousStatus;
@@ -118,7 +120,7 @@ public abstract class AbstractSailBoatEntity extends tnBoatEntity {
 
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
-        if (this.status != tnBoatEntity.Status.UNDER_WATER && this.status != tnBoatEntity.Status.UNDER_FLOWING_WATER) {
+        if (this.status != TNBoatEntity.Status.UNDER_WATER && this.status != TNBoatEntity.Status.UNDER_FLOWING_WATER) {
             this.outOfControlTicks = 0.0F;
         } else {
             ++this.outOfControlTicks;
@@ -195,19 +197,19 @@ public abstract class AbstractSailBoatEntity extends tnBoatEntity {
     }
 
     public Status getBoatStatus() {
-        tnBoatEntity.Status boatentity$status = getUnderwaterStatus();
+        TNBoatEntity.Status boatentity$status = getUnderwaterStatus();
         if (boatentity$status != null) {
             this.waterLevel = (getBoundingBox()).maxY;
             return boatentity$status;
         }
         if (checkInWater())
-            return tnBoatEntity.Status.IN_WATER;
+            return TNBoatEntity.Status.IN_WATER;
         float f = getBoatGlide();
         if (f > 0.0F) {
             this.boatGlide = 0F;
-            return tnBoatEntity.Status.ON_LAND;
+            return TNBoatEntity.Status.ON_LAND;
         }
-        return tnBoatEntity.Status.IN_AIR;
+        return TNBoatEntity.Status.IN_AIR;
     }
 
     public void updateMotion() {
@@ -223,25 +225,25 @@ public abstract class AbstractSailBoatEntity extends tnBoatEntity {
         if (this.getPassengers().size() == 8) this.passengerfaktor = 0.3F;
         if (this.getPassengers().size() > 8) this.passengerfaktor = 0.4F;
 
-        if (this.previousStatus == tnBoatEntity.Status.IN_AIR && this.status != tnBoatEntity.Status.IN_AIR && this.status != tnBoatEntity.Status.ON_LAND) {
+        if (this.previousStatus == TNBoatEntity.Status.IN_AIR && this.status != TNBoatEntity.Status.IN_AIR && this.status != TNBoatEntity.Status.ON_LAND) {
             this.waterLevel = (getBoundingBox()).minY + getHeight();
             setPosition(getPosX(), (getWaterLevelAbove() - getHeight()) + 0.101D, getPosZ());
             setMotion(getMotion().mul(10.0D, 0.0D, 10.0D));
             this.lastYd = 0.0D;
-            this.status = tnBoatEntity.Status.IN_WATER;
+            this.status = TNBoatEntity.Status.IN_WATER;
         } else {
-            if (this.status == tnBoatEntity.Status.IN_WATER) {
+            if (this.status == TNBoatEntity.Status.IN_WATER) {
                 d2 = (this.waterLevel - (getBoundingBox()).minY + 0.1D) / getHeight();
                 this.momentum = 0.9F;
-            } else if (this.status == tnBoatEntity.Status.UNDER_FLOWING_WATER) {
+            } else if (this.status == TNBoatEntity.Status.UNDER_FLOWING_WATER) {
                 d1 = -7.0E-4D;
                 this.momentum = 0.9F;
-            } else if (this.status == tnBoatEntity.Status.UNDER_WATER) {
+            } else if (this.status == TNBoatEntity.Status.UNDER_WATER) {
                 d2 = 0.009999999776482582D;
                 this.momentum = 0.45F;
-            } else if (this.status == tnBoatEntity.Status.IN_AIR) {
+            } else if (this.status == TNBoatEntity.Status.IN_AIR) {
                 this.momentum = 0.9F;
-            } else if (this.status == tnBoatEntity.Status.ON_LAND) {
+            } else if (this.status == TNBoatEntity.Status.ON_LAND) {
                 this.momentum = this.boatGlide * 0.001F;
                 if (getControllingPassenger() instanceof PlayerEntity)
                     this.boatGlide /= 1.0F;
@@ -308,7 +310,7 @@ public abstract class AbstractSailBoatEntity extends tnBoatEntity {
                     FluidState fluidstate = this.world.getFluidState(blockpos$mutable);
                     if (fluidstate.isTagged(FluidTags.WATER) && d0 < (double) ((float) blockpos$mutable.getY() + fluidstate.getActualHeight(this.world, blockpos$mutable))) {
                         if (!fluidstate.isSource()) {
-                            return tnBoatEntity.Status.UNDER_FLOWING_WATER;
+                            return TNBoatEntity.Status.UNDER_FLOWING_WATER;
                         }
 
                         flag = true;
@@ -317,7 +319,7 @@ public abstract class AbstractSailBoatEntity extends tnBoatEntity {
             }
         }
 
-        return flag ? tnBoatEntity.Status.UNDER_WATER : null;
+        return flag ? TNBoatEntity.Status.UNDER_WATER : null;
     }
 
     private boolean checkInWater() {
