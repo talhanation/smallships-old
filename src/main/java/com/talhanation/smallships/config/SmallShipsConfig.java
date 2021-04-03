@@ -23,6 +23,8 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue SailSpeedFactor;
     public static ForgeConfigSpec.DoubleValue GalleySpeedFactor;
     public static ForgeConfigSpec.DoubleValue GalleyTurnFactor;
+    public static ForgeConfigSpec.DoubleValue WarGalleySpeedFactor;
+    public static ForgeConfigSpec.DoubleValue WarGalleyTurnFactor;
     public static ForgeConfigSpec.DoubleValue CogSpeedFactor;
     public static ForgeConfigSpec.DoubleValue CogTurnFactor;
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
@@ -56,7 +58,7 @@ public class SmallShipsConfig {
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: 0.5")
                 .worldRestart()
-                .defineInRange("GalleyTurnFactor", 0.5, 0.0, 2.0);
+                .defineInRange("GalleyTurnFactor", 0.5, 0.0, 1.0);
 
         CogSpeedFactor = BUILDER.comment("\n" +"----Cog Speed Factor.----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
@@ -68,12 +70,26 @@ public class SmallShipsConfig {
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: 0.1")
                 .worldRestart()
-                .defineInRange("CogTurnFactor", 0.1, 0.0, 2.0);
+                .defineInRange("CogTurnFactor", 0.1, 0.0, 1.0);
+
+        WarGalleySpeedFactor = BUILDER.comment("\n" +"----War Galley Speed Factor.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: 1.15")
+                .worldRestart()
+                .defineInRange("WarGalleySpeedFactor", 1.15, 0.0, 2.0);
+
+        WarGalleyTurnFactor = BUILDER.comment("\n" +"----War Galley Turn Factor.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: 0.5")
+                .worldRestart()
+                .defineInRange("WarGalleyTurnFactor", 0.4, 0.0, 1.0);
 
         PlaySwimmSound = BUILDER.comment("\n" + "----Should Ships Make Swimming sounds?----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: true")
                 .define("PlaySwimmSound", true);
+
+
 
         CONFIG = BUILDER.build();
     }

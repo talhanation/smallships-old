@@ -4,6 +4,7 @@ import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.CogEntity;
 import com.talhanation.smallships.entities.GalleyEntity;
 import com.talhanation.smallships.entities.TNBoatEntity;
+import com.talhanation.smallships.entities.WarGalleyEntity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -39,5 +40,14 @@ public class ModEntityTypes {
                     .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "tnboat").toString()));
+
+    public static final RegistryObject<EntityType<WarGalleyEntity>> WAR_GALLEY_ENTITY = ENTITY_TYPES.register("war_galley",
+            () -> EntityType.Builder.<WarGalleyEntity>create(WarGalleyEntity::new, EntityClassification.MISC)
+                    .size(5.5F, 1.50F)
+                    .trackingRange(20)
+                    .setUpdateInterval(10)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .build(new ResourceLocation(Main.MOD_ID, "war_galley").toString()));
+
 
 }

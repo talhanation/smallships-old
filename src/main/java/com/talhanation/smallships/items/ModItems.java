@@ -3,6 +3,7 @@ package com.talhanation.smallships.items;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.AbstractGalleyEntity;
 import com.talhanation.smallships.entities.AbstractSailBoatEntity;
+import com.talhanation.smallships.entities.AbstractWarGalleyEntity;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -31,8 +32,10 @@ public class ModItems {
     public static final RegistryObject<Item> DARK_OAK_COG_ITEM = ITEMS.register("dark_oak_cog", () ->
             new CogItem(AbstractSailBoatEntity.Type.DARK_OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
 
+
     public static final RegistryObject<Item> SAIL_ITEM = ITEMS.register("sail_item", () ->
             new Item((new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION))));
+
 
     public static final RegistryObject<Item> OAK_GALLEY_ITEM = ITEMS.register("oak_galley", () ->
             new GalleyItem(AbstractGalleyEntity.Type.OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
@@ -51,6 +54,25 @@ public class ModItems {
 
     public static final RegistryObject<Item> DARK_OAK_GALLEY_ITEM = ITEMS.register("dark_oak_galley", () ->
             new GalleyItem(AbstractGalleyEntity.Type.DARK_OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+
+    public static final RegistryObject<Item> OAK_WAR_GALLEY_ITEM = ITEMS.register("oak_war_galley", () ->
+            new WarGalleyItem(AbstractWarGalleyEntity.Type.OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> SPRUCE_WAR_GALLEY_ITEM = ITEMS.register("spruce_war_galley", () ->
+            new WarGalleyItem(AbstractWarGalleyEntity.Type.SPRUCE, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> BIRCH_WAR_GALLEY_ITEM = ITEMS.register("birch_war_galley", () ->
+            new WarGalleyItem(AbstractWarGalleyEntity.Type.BIRCH, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> JUNGLE_WAR_GALLEY_ITEM = ITEMS.register("jungle_war_galley", () ->
+            new WarGalleyItem(AbstractWarGalleyEntity.Type.JUNGLE, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> ACACIA_WAR_GALLEY_ITEM = ITEMS.register("acacia_war_galley", () ->
+            new WarGalleyItem(AbstractWarGalleyEntity.Type.ACACIA, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> DARK_OAK_WAR_GALLEY_ITEM = ITEMS.register("dark_oak_war_galley", () ->
+            new WarGalleyItem(AbstractWarGalleyEntity.Type.DARK_OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
 
 }
 

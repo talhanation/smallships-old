@@ -7,6 +7,7 @@ import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.network.MessagePaddleState;
 import com.talhanation.smallships.network.MessageSailState;
 import com.talhanation.smallships.network.MessageSailStateGalley;
+import com.talhanation.smallships.network.MessageSailStateWarGalley;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -53,6 +54,10 @@ public class Main
 
         SIMPLE_CHANNEL.registerMessage(2, MessagePaddleState.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessagePaddleState()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
+
+        SIMPLE_CHANNEL.registerMessage(3, MessageSailStateWarGalley.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessageSailStateWarGalley()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
     }
 
