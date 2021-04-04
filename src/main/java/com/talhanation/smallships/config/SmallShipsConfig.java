@@ -17,7 +17,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec CONFIG;
 
     public static ForgeConfigSpec.IntValue VERSION;
-    public static final int NEW_VERSION = 1;
+    public static final int NEW_VERSION = 2;
 
     public static ForgeConfigSpec.BooleanValue PlaySwimmSound;
     public static ForgeConfigSpec.DoubleValue SailSpeedFactor;
@@ -80,7 +80,7 @@ public class SmallShipsConfig {
 
         WarGalleyTurnFactor = BUILDER.comment("\n" +"----War Galley Turn Factor.----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
-                "\t" + "default: 0.5")
+                "\t" + "default: 0.4")
                 .worldRestart()
                 .defineInRange("WarGalleyTurnFactor", 0.4, 0.0, 1.0);
 
