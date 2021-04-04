@@ -59,10 +59,6 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
     private double lerpZ;
     private double lerpYaw;
     private double lerpPitch;
-    public boolean leftInputDown;
-    public boolean rightInputDown;
-    private boolean forwardInputDown;
-    private boolean backInputDown;
     private double waterLevel;
     private float boatGlide;
     private TNBoatEntity.Status status;
@@ -117,10 +113,6 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
 
     public void tick() {
         passengerwaittime--;
-
-        if (world.isRemote) {
-            checkKeyBinds();
-        }
 
         if (this.getControllingPassenger() == null && getSailState()) {
             setSailState(false);
@@ -208,11 +200,10 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
 
     }
 
-    @OnlyIn(Dist.CLIENT)
-    private void checkKeyBinds() {
-        if (Minecraft.getInstance().gameSettings.keyBindSprint.isPressed()) {
-            sendSailStateToServer(!getSailState());
-        }
+    @Override
+    public void onSprintPressed() {
+        super.onSprintPressed();
+        sendSailStateToServer(!getSailState());
     }
 
     public void tickLerp() {
@@ -473,14 +464,6 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
                 this.entityDropItem(this.getItemBoat());
             onDestroyedAndDoDrops(source);
         }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void updateInputs(boolean leftInputDown, boolean rightInputDown, boolean forwardInputDown, boolean backInputDown) {
-        this.leftInputDown = leftInputDown;
-        this.rightInputDown = rightInputDown;
-        this.forwardInputDown = forwardInputDown;
-        this.backInputDown = backInputDown;
     }
 
     public float WaveMotion(){

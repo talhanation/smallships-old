@@ -90,6 +90,10 @@ public class TNBoatEntity extends Entity {
         this.prevPosZ = z;
     }
 
+    public void onSprintPressed(){
+
+    }
+
     protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return sizeIn.height;
     }
@@ -863,6 +867,7 @@ public class TNBoatEntity extends Entity {
      * Pigs, Horses, and Boats are generally "steered" by the controlling passenger.
      */
     @Nullable
+    @Override
     public Entity getControllingPassenger() {
         List<Entity> list = this.getPassengers();
         return list.isEmpty() ? null : list.get(0);
