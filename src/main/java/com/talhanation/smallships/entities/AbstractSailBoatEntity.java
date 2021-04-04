@@ -5,7 +5,6 @@ import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessageSailState;
 import net.minecraft.entity.*;
-import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -25,6 +24,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -39,23 +40,15 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
-    private int lerpSteps;
-    private double lerpX;
     public boolean removed;
-    private double lerpY;
-    private double lerpZ;
-    private double lerpYaw;
-    private double lerpPitch;
     private double waterLevel;
+    public boolean leftInputDown;
+    public boolean rightInputDown;
+    public boolean forwardInputDown;
+    public boolean backInputDown;
     private float boatGlide;
-    private AbstractSailBoatEntity.Status status;
-    private AbstractSailBoatEntity.Status previousStatus;
-    private double lastYd;
-    private boolean rocking;
-    private boolean downwards;
-    private float rockingIntensity;
-    private float rockingAngle;
-    private float prevRockingAngle;
+    private Status status;
+    private Status previousStatus;
     public ItemStackHandler inventory = initInventory();
     public int passengerwaittime;
     public float passengerfaktor;
@@ -94,16 +87,16 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
 
     public void playSailSound(boolean state) {
         if (state) {
-            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.4F * this.rand.nextFloat());
+            this.world.playSound(null, this.getPosX(), this.getPosY() +4 , this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.4F * this.rand.nextFloat());
         } else {
-            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat());
+            this.world.playSound(null, this.getPosX(), this.getPosY() + 4, this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat());
         }
     }
 
     public void tick() {
         passengerwaittime--;
 
-        if (this.getControllingPassenger() == null && getSailState()) {
+        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& getSailState()) {
             setSailState(false);
         }
 
@@ -134,6 +127,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
         } else {
             this.setMotion(Vector3d.ZERO);
         }
+
         if (getSailState() && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()) {
             this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat());
 
@@ -147,7 +141,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
             for (int j = 0; j < list.size(); ++j) {
                 Entity entity = list.get(j);
                 if (!entity.isPassenger(this)) {
-                    if (flag && this.getPassengers().size() < 8 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
+                    if (flag && this.getPassengers().size() < 5 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
                         if (passengerwaittime < 0) {
                             entity.startRiding(this);
                         }
@@ -166,38 +160,23 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
     }
 
     public void tickLerp() {
-        if (this.canPassengerSteer()) {
-            this.lerpSteps = 0;
-            this.setPacketCoordinates(this.getPosX(), this.getPosY(), this.getPosZ());
-        }
-
-        if (this.lerpSteps > 0) {
-            double d0 = this.getPosX() + (this.lerpX - this.getPosX()) / (double) this.lerpSteps;
-            double d1 = this.getPosY() + (this.lerpY - this.getPosY()) / (double) this.lerpSteps;
-            double d2 = this.getPosZ() + (this.lerpZ - this.getPosZ()) / (double) this.lerpSteps;
-            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
-            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.lerpSteps);
-            this.rotationPitch = (float) ((double) this.rotationPitch + (this.lerpPitch - (double) this.rotationPitch) / (double) this.lerpSteps);
-            --this.lerpSteps;
-            this.setPosition(d0, d1, d2);
-            this.setRotation(this.rotationYaw, this.rotationPitch);
-        }
+        super.tickLerp();
     }
 
     public Status getBoatStatus() {
-        TNBoatEntity.Status boatentity$status = getUnderwaterStatus();
+        Status boatentity$status = getUnderwaterStatus();
         if (boatentity$status != null) {
             this.waterLevel = (getBoundingBox()).maxY;
             return boatentity$status;
         }
         if (checkInWater())
-            return TNBoatEntity.Status.IN_WATER;
+            return Status.IN_WATER;
         float f = getBoatGlide();
         if (f > 0.0F) {
             this.boatGlide = 0F;
-            return TNBoatEntity.Status.ON_LAND;
+            return Status.ON_LAND;
         }
-        return TNBoatEntity.Status.IN_AIR;
+        return Status.IN_AIR;
     }
 
     public void updateMotion() {
@@ -213,25 +192,24 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
         if (this.getPassengers().size() == 8) this.passengerfaktor = 0.3F;
         if (this.getPassengers().size() > 8) this.passengerfaktor = 0.4F;
 
-        if (this.previousStatus == TNBoatEntity.Status.IN_AIR && this.status != TNBoatEntity.Status.IN_AIR && this.status != TNBoatEntity.Status.ON_LAND) {
+        if (this.previousStatus == Status.IN_AIR && this.status != Status.IN_AIR && this.status != Status.ON_LAND) {
             this.waterLevel = (getBoundingBox()).minY + getHeight();
             setPosition(getPosX(), (getWaterLevelAbove() - getHeight()) + 0.101D, getPosZ());
             setMotion(getMotion().mul(10.0D, 0.0D, 10.0D));
-            this.lastYd = 0.0D;
-            this.status = TNBoatEntity.Status.IN_WATER;
+            this.status = Status.IN_WATER;
         } else {
-            if (this.status == TNBoatEntity.Status.IN_WATER) {
+            if (this.status == Status.IN_WATER) {
                 d2 = (this.waterLevel - (getBoundingBox()).minY + 0.1D) / getHeight();
                 this.momentum = 0.9F;
-            } else if (this.status == TNBoatEntity.Status.UNDER_FLOWING_WATER) {
+            } else if (this.status == Status.UNDER_FLOWING_WATER) {
                 d1 = -7.0E-4D;
                 this.momentum = 0.9F;
-            } else if (this.status == TNBoatEntity.Status.UNDER_WATER) {
+            } else if (this.status == Status.UNDER_WATER) {
                 d2 = 0.009999999776482582D;
                 this.momentum = 0.45F;
-            } else if (this.status == TNBoatEntity.Status.IN_AIR) {
+            } else if (this.status == Status.IN_AIR) {
                 this.momentum = 0.9F;
-            } else if (this.status == TNBoatEntity.Status.ON_LAND) {
+            } else if (this.status == Status.ON_LAND) {
                 this.momentum = this.boatGlide * 0.001F;
                 if (getControllingPassenger() instanceof PlayerEntity)
                     this.boatGlide /= 1.0F;
@@ -298,7 +276,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
                     FluidState fluidstate = this.world.getFluidState(blockpos$mutable);
                     if (fluidstate.isTagged(FluidTags.WATER) && d0 < (double) ((float) blockpos$mutable.getY() + fluidstate.getActualHeight(this.world, blockpos$mutable))) {
                         if (!fluidstate.isSource()) {
-                            return TNBoatEntity.Status.UNDER_FLOWING_WATER;
+                            return Status.UNDER_FLOWING_WATER;
                         }
 
                         flag = true;
@@ -349,13 +327,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
      */
     @Override
     public void applyEntityCollision(Entity entityIn) {
-        if (entityIn instanceof BoatEntity) {
-            if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
-                super.applyEntityCollision(entityIn);
-            }
-        } else if (entityIn.getBoundingBox().minY <= this.getBoundingBox().minY && !(entityIn instanceof WaterMobEntity)) {
-            super.applyEntityCollision(entityIn);
-        }
+        super.applyEntityCollision(entityIn);
     }
 
     public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
@@ -431,52 +403,23 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
         else return wavestr;
     }
 
-    @Override
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
     }
 
-    @Override
     public Vector3d func_230268_c_(final LivingEntity rider) {
-        for (final float angle : rider.getPrimaryHand() == HandSide.RIGHT ? new float[]{90.0F, -90.0F} : new float[]{-90.0F, 90.0F}) {
-            final Vector3d pos = this.dismount(func_233559_a_(this.getWidth(), rider.getWidth(), this.rotationYaw + angle), rider);
-            if (pos != null) return pos;
-        }
-        return this.getPositionVec();
+        return super.func_230268_c_(rider);
     }
-
-    private Vector3d dismount(final Vector3d dir, LivingEntity rider) {
-        final double x = this.getPosX() + dir.x;
-        final double y = this.getBoundingBox().minY;
-        final double z = this.getPosZ() + dir.z;
-        final double limit = this.getBoundingBox().maxY + 0.75D;
-        final BlockPos.Mutable blockPos = new BlockPos.Mutable();
-        for (final Pose pose : rider.getAvailablePoses()) {
-            blockPos.setPos(x, y, z);
-            while (blockPos.getY() < limit) {
-                final double ground = this.world.func_242403_h(blockPos);
-                if (blockPos.getY() + ground > limit) break;
-                if (TransportationHelper.func_234630_a_(ground)) {
-                    final Vector3d pos = new Vector3d(x, blockPos.getY() + ground, z);
-                    if (TransportationHelper.func_234631_a_(this.world, rider, rider.getPoseAABB(pose).offset(pos))) {
-                        rider.setPose(pose);
-                        return pos;
-                    }
-                }
-                blockPos.move(Direction.UP);
-            }
-        }
-        return null;
-    }
-
 
     public PlayerEntity getDriver() {
-        List<Entity> passengers = getPassengers();
-        if (passengers.size() <= 0)
-            return null;
-        if (passengers.get(0) instanceof PlayerEntity)
-            return (PlayerEntity) passengers.get(0);
-        return null;
+        return super.getDriver();
     }
 
+    @OnlyIn(Dist.CLIENT)
+    public void updateInputs(boolean leftInputDown, boolean rightInputDown, boolean forwardInputDown, boolean backInputDown) {
+        this.leftInputDown = leftInputDown;
+        this.rightInputDown = rightInputDown;
+        this.forwardInputDown = forwardInputDown;
+        this.backInputDown = backInputDown;
+    }
 }

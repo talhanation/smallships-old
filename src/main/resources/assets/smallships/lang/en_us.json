@@ -14,5 +14,13 @@
   "item.smallships.jungle_galley": "Jungle Galley",
   "item.smallships.spruce_galley": "Spruce Galley",
   "item.smallships.oak_galley": "Oak Galley",
-  "item.smallships.dark_oak_galley": "Dark Oak Galley"
+  "item.smallships.dark_oak_galley": "Dark Oak Galley",
+
+  "entity.smallships.war_galley": "War Galley",
+  "item.smallships.acacia_war_galley": "Acacia War Galley",
+  "item.smallships.birch_war_galley": "Birch War Galley",
+  "item.smallships.jungle_war_galley": "Jungle War Galley",
+  "item.smallships.spruce_war_galley": "Spruce War Galley",
+  "item.smallships.oak_war_galley": "Oak War Galley",
+  "item.smallships.dark_oak_war_galley": "Dark Oak War Galley"
 }

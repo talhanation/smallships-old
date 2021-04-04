@@ -5,9 +5,7 @@ import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessagePaddleState;
 import com.talhanation.smallships.network.MessageSailStateWarGalley;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.*;
-import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -51,28 +49,18 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
-    private int lerpSteps;
-    private double lerpX;
     public boolean removed;
-    private double lerpY;
-    private double lerpZ;
-    private double lerpYaw;
-    private double lerpPitch;
     private double waterLevel;
     private float boatGlide;
+    public boolean leftInputDown;
+    public boolean rightInputDown;
+    public boolean forwardInputDown;
+    public boolean backInputDown;
     private Status status;
     private Status previousStatus;
-    private double lastYd;
-    private boolean rocking;
-    private boolean downwards;
-    private float rockingIntensity;
-    private float rockingAngle;
-    private float prevRockingAngle;
     public ItemStackHandler inventory = initInventory();
     public int passengerwaittime;
     public float passengerfaktor;
-    public boolean leftsteer;
-    public boolean rightsteer;
 
     public AbstractWarGalleyEntity(EntityType<? extends AbstractWarGalleyEntity> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -115,7 +103,7 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
     public void tick() {
         passengerwaittime--;
 
-        if (this.getControllingPassenger() == null && getSailState()) {
+        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& getSailState()) {
             setSailState(false);
         }
 
@@ -141,7 +129,6 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
             if (this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof PlayerEntity)) {
                 this.setPaddleState(false, false);
             }
-
             this.updateMotion();
             if (this.world.isRemote) {
                 this.controlBoat();
@@ -210,22 +197,7 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
     }
 
     public void tickLerp() {
-        if (this.canPassengerSteer()) {
-            this.lerpSteps = 0;
-            this.setPacketCoordinates(this.getPosX(), this.getPosY(), this.getPosZ());
-        }
-
-        if (this.lerpSteps > 0) {
-            double d0 = this.getPosX() + (this.lerpX - this.getPosX()) / (double) this.lerpSteps;
-            double d1 = this.getPosY() + (this.lerpY - this.getPosY()) / (double) this.lerpSteps;
-            double d2 = this.getPosZ() + (this.lerpZ - this.getPosZ()) / (double) this.lerpSteps;
-            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.rotationYaw);
-            this.rotationYaw = (float) ((double) this.rotationYaw + d3 / (double) this.lerpSteps);
-            this.rotationPitch = (float) ((double) this.rotationPitch + (this.lerpPitch - (double) this.rotationPitch) / (double) this.lerpSteps);
-            --this.lerpSteps;
-            this.setPosition(d0, d1, d2);
-            this.setRotation(this.rotationYaw, this.rotationPitch);
-        }
+        super.tickLerp();
     }
 
     public Status getBoatStatus() {
@@ -251,12 +223,15 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
         double WarGalleyTurnFactor = SmallShipsConfig.WarGalleyTurnFactor.get();
 
         this.momentum = 1.0F;
-        this.passengerfaktor = 0;
+        if (this.getPassengers().size() == 4) this.passengerfaktor = 0.05F;
+        if (this.getPassengers().size() == 6) this.passengerfaktor = 0.1F;
+        if (this.getPassengers().size() == 10) this.passengerfaktor = 0.2F;
+        if (this.getPassengers().size() == 12) this.passengerfaktor = 0.3F;
+        if (this.getPassengers().size() > 12) this.passengerfaktor = 0.4F;
         if (this.previousStatus == Status.IN_AIR && this.status != Status.IN_AIR && this.status != Status.ON_LAND) {
             this.waterLevel = (getBoundingBox()).minY + getHeight();
             setPosition(getPosX(), (getWaterLevelAbove() - getHeight()) + 0.101D, getPosZ());
             setMotion(getMotion().mul(10.0D, 0.0D, 10.0D));
-            this.lastYd = 0.0D;
             this.status = Status.IN_WATER;
         } else {
             if (this.status == Status.IN_WATER) {
@@ -393,13 +368,7 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
 
     @Override
     public void applyEntityCollision(Entity entityIn) {
-        if (entityIn instanceof BoatEntity) {
-            if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
-                super.applyEntityCollision(entityIn);
-            }
-        } else if (entityIn.getBoundingBox().minY <= this.getBoundingBox().minY && ! (entityIn instanceof WaterMobEntity)) {
-            super.applyEntityCollision(entityIn);
-        }
+       super.applyEntityCollision(entityIn);
     }
 
     //inventory
@@ -511,43 +480,18 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
 
     @Override
     public Vector3d func_230268_c_(final LivingEntity rider) {
-        for (final float angle : rider.getPrimaryHand() == HandSide.RIGHT ? new float[] { 90.0F, -90.0F } : new float[] { -90.0F, 90.0F }) {
-            final Vector3d pos = this.dismount(func_233559_a_(this.getWidth(), rider.getWidth(), this.rotationYaw + angle), rider);
-            if (pos != null) return pos;
-        }
-        return this.getPositionVec();
-    }
-
-    private Vector3d dismount(final Vector3d dir, LivingEntity rider) {
-        final double x = this.getPosX() + dir.x;
-        final double y = this.getBoundingBox().minY;
-        final double z = this.getPosZ() + dir.z;
-        final double limit = this.getBoundingBox().maxY + 0.75D;
-        final BlockPos.Mutable blockPos = new BlockPos.Mutable();
-        for (final Pose pose : rider.getAvailablePoses()) {
-            blockPos.setPos(x, y, z);
-            while (blockPos.getY() < limit) {
-                final double ground = this.world.func_242403_h(blockPos);
-                if (blockPos.getY() + ground > limit) break;
-                if (TransportationHelper.func_234630_a_(ground)) {
-                    final Vector3d pos = new Vector3d(x, blockPos.getY() + ground, z);
-                    if (TransportationHelper.func_234631_a_(this.world, rider, rider.getPoseAABB(pose).offset(pos))) {
-                        rider.setPose(pose);
-                        return pos;
-                    }
-                }
-                blockPos.move(Direction.UP);
-            }
-        }
-        return null;
+       return super.func_230268_c_(rider);
     }
 
     public PlayerEntity getDriver() {
-        List<Entity> passengers = getPassengers();
-        if (passengers.size() <= 0)
-            return null;
-        if (passengers.get(0) instanceof PlayerEntity)
-            return (PlayerEntity) passengers.get(0);
-        return null;
+        return super.getDriver();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void updateInputs(boolean leftInputDown, boolean rightInputDown, boolean forwardInputDown, boolean backInputDown) {
+        this.leftInputDown = leftInputDown;
+        this.rightInputDown = rightInputDown;
+        this.forwardInputDown = forwardInputDown;
+        this.backInputDown = backInputDown;
     }
 }

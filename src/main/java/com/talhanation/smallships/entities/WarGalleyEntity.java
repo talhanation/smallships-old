@@ -46,7 +46,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
         if (player.isSecondaryUseActive()) {
             if (this.isBeingRidden() && !(getControllingPassenger() instanceof PlayerEntity)){
                 this.removePassengers();
-                this.passengerwaittime = 200;
+                this.passengerwaittime = 300;
             }
             else {
                 if (!(getControllingPassenger() instanceof PlayerEntity)) {
@@ -94,7 +94,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 }
             }
@@ -104,7 +104,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else {
                     f = -2.0F;
@@ -117,7 +117,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -133,7 +133,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -152,7 +152,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -174,7 +174,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -199,7 +199,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -227,7 +227,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -258,7 +258,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -292,7 +292,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -329,7 +329,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -369,7 +369,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -412,7 +412,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -458,7 +458,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -507,7 +507,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -559,7 +559,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
                     f = -3.25F;
                     d = 0.0F;
                 } else if (i == 1) {
-                    f =  0.0F;
+                    f =  0.5F;
                     d =  0.0F;
                 } else if (i == 2) {
                     f = -2.0F;
@@ -679,6 +679,6 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
     }
 
     protected boolean canFitPassenger(Entity passenger) {
-        return (getPassengers().size() < 15);
+        return (getPassengers().size() < 16);
     }
 }

@@ -271,10 +271,6 @@ public class GalleyEntity extends AbstractGalleyEntity {
         }
     }
 
-    protected boolean canFitPassenger(Entity passenger) {
-        return (getPassengers().size() < 9);
-    }
-
     protected ItemStackHandler initInventory() {
         return (ItemStackHandler)new GalleyItemStackHandler<GalleyEntity>(9, this) {
             protected void onContentsChanged(int slot) {
@@ -318,5 +314,9 @@ public class GalleyEntity extends AbstractGalleyEntity {
     protected void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
         compound.putInt("Cargo", ((Integer)this.dataManager.get(CARGO)).intValue());
+    }
+
+    protected boolean canFitPassenger(Entity passenger) {
+        return (getPassengers().size() < 9);
     }
 }

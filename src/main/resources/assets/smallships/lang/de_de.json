@@ -14,5 +14,13 @@
   "item.smallships.jungle_galley": "Tropenholzgaleere",
   "item.smallships.spruce_galley": "Fichtenholzgaleere",
   "item.smallships.oak_galley": "Eichenholzgaleere",
-  "item.smallships.dark_oak_galley": "Schwarzeichenholzgaleere"
+  "item.smallships.dark_oak_galley": "Schwarzeichenholzgaleere",
+
+  "entity.smallships.war_galley": "Kriegsgaleere",
+  "item.smallships.acacia_war_galley": "Akazienholzkriegsgaleere",
+  "item.smallships.birch_war_galley": "Birkenholtzkriegsgaleere",
+  "item.smallships.jungle_war_galley": "Tropenholzkriegsgaleere",
+  "item.smallships.spruce_war_galley": "Fichtenholzkriegsgaleere",
+  "item.smallships.oak_war_galley": "Eichenholzkriegsgaleere",
+  "item.smallships.dark_oak_war_galley": "Schwarzeichenholzkriegsgaleere"
 }

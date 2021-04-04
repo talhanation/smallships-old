@@ -510,10 +510,10 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
             this.Sail_1.showModel = false;
         }
 
-        this.Cargo0.showModel = ((CogEntity)entityln).Cargo_0;
-        this.Cargo1.showModel = ((CogEntity)entityln).Cargo_1;
-        this.Cargo2.showModel = ((CogEntity)entityln).Cargo_2;
-        this.Cargo3.showModel = ((CogEntity)entityln).Cargo_3;
+        this.Cargo0.showModel = (entityln).Cargo_0;
+        this.Cargo1.showModel = (entityln).Cargo_1;
+        this.Cargo2.showModel = (entityln).Cargo_2;
+        this.Cargo3.showModel = (entityln).Cargo_3;
 
         if (entityln.isBeingRidden()){
             if (entityln.leftInputDown) this.steer.rotateAngleY = -MathHelper.cos(3.1415927F);

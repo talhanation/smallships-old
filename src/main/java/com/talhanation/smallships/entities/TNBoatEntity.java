@@ -146,26 +146,7 @@ public class TNBoatEntity extends Entity {
      * Called when the entity is attacked.
      */
     public boolean attackEntityFrom(DamageSource source, float amount) {
-        if (this.isInvulnerableTo(source)) {
-            return false;
-        } else if (!this.world.isRemote && !this.removed) {
-            this.setForwardDirection(-this.getForwardDirection());
-            this.setTimeSinceHit(10);
-            this.setDamageTaken(this.getDamageTaken() + amount * 10.0F);
-            this.markVelocityChanged();
-            boolean flag = source.getTrueSource() instanceof PlayerEntity && ((PlayerEntity)source.getTrueSource()).abilities.isCreativeMode;
-            if (flag || this.getDamageTaken() > 40.0F) {
-                if (!flag && this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-                    this.entityDropItem(this.getItemBoat());
-                }
-
-                this.remove();
-            }
-
-            return true;
-        } else {
-            return true;
-        }
+       return super.attackEntityFrom(source,amount);
     }
 
     public void onEnterBubbleColumnWithAirAbove(boolean downwards) {
@@ -390,7 +371,7 @@ public class TNBoatEntity extends Entity {
         }
     }
 
-    private void tickLerp() {
+    public void tickLerp() {
         if (this.canPassengerSteer()) {
             this.lerpSteps = 0;
             this.setPacketCoordinates(this.getPosX(), this.getPosY(), this.getPosZ());
@@ -682,34 +663,6 @@ public class TNBoatEntity extends Entity {
         }
     }
 
-    public Vector3d func_230268_c_(LivingEntity livingEntity) {
-        Vector3d vector3d = func_233559_a_((double)(this.getWidth() * MathHelper.SQRT_2), (double)livingEntity.getWidth(), this.rotationYaw);
-        double d0 = this.getPosX() + vector3d.x;
-        double d1 = this.getPosZ() + vector3d.z;
-        BlockPos blockpos = new BlockPos(d0, this.getBoundingBox().maxY, d1);
-        BlockPos blockpos1 = blockpos.down();
-        if (!this.world.hasWater(blockpos1)) {
-            double d2 = (double)blockpos.getY() + this.world.func_242403_h(blockpos);
-            double d3 = (double)blockpos.getY() + this.world.func_242403_h(blockpos1);
-
-            for(Pose pose : livingEntity.getAvailablePoses()) {
-                Vector3d vector3d1 = TransportationHelper.func_242381_a(this.world, d0, d2, d1, livingEntity, pose);
-                if (vector3d1 != null) {
-                    livingEntity.setPose(pose);
-                    return vector3d1;
-                }
-
-                Vector3d vector3d2 = TransportationHelper.func_242381_a(this.world, d0, d3, d1, livingEntity, pose);
-                if (vector3d2 != null) {
-                    livingEntity.setPose(pose);
-                    return vector3d2;
-                }
-            }
-        }
-
-        return super.func_230268_c_(livingEntity);
-    }
-
     /**
      * Applies this boat's yaw to the given entity. Used to update the orientation of its passenger.
      */
@@ -905,15 +858,6 @@ public class TNBoatEntity extends Entity {
         }
     }
 
-    public PlayerEntity getDriver() {
-        List<Entity> passengers = getPassengers();
-        if (passengers.size() <= 0)
-            return null;
-        if (passengers.get(0) instanceof PlayerEntity)
-            return (PlayerEntity) passengers.get(0);
-        return null;
-    }
-
     public enum Status {
         IN_WATER,
         UNDER_WATER,
@@ -974,4 +918,46 @@ public class TNBoatEntity extends Entity {
             return aboatentity$type[0];
         }
     }
+
+    public Vector3d func_230268_c_(final LivingEntity rider) {
+        for (final float angle : rider.getPrimaryHand() == HandSide.RIGHT ? new float[] { 90.0F, -90.0F } : new float[] { -90.0F, 90.0F }) {
+            final Vector3d pos = this.dismount(func_233559_a_(this.getWidth(), rider.getWidth(), this.rotationYaw + angle), rider);
+            if (pos != null) return pos;
+        }
+        return this.getPositionVec();
+    }
+
+    private Vector3d dismount(final Vector3d dir, LivingEntity rider) {
+        final double x = this.getPosX() + dir.x;
+        final double y = this.getBoundingBox().minY;
+        final double z = this.getPosZ() + dir.z;
+        final double limit = this.getBoundingBox().maxY + 0.75D;
+        final BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        for (final Pose pose : rider.getAvailablePoses()) {
+            blockPos.setPos(x, y, z);
+            while (blockPos.getY() < limit) {
+                final double ground = this.world.func_242403_h(blockPos);
+                if (blockPos.getY() + ground > limit) break;
+                if (TransportationHelper.func_234630_a_(ground)) {
+                    final Vector3d pos = new Vector3d(x, blockPos.getY() + ground, z);
+                    if (TransportationHelper.func_234631_a_(this.world, rider, rider.getPoseAABB(pose).offset(pos))) {
+                        rider.setPose(pose);
+                        return pos;
+                    }
+                }
+                blockPos.move(Direction.UP);
+            }
+        }
+        return null;
+    }
+
+    public PlayerEntity getDriver() {
+        List<Entity> passengers = getPassengers();
+        if (passengers.size() <= 0)
+            return null;
+        if (passengers.get(0) instanceof PlayerEntity)
+            return (PlayerEntity) passengers.get(0);
+        return null;
+    }
+
 }
