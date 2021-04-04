@@ -80,7 +80,7 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
     }
 
     public double getMountedYOffset() {
-        return 0.75D;
+        return 0.85D;
     }
 
     public void updatePassenger(Entity passenger) {
