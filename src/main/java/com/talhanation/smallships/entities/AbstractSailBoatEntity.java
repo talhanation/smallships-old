@@ -4,7 +4,6 @@ import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessageSailState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
@@ -26,8 +25,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -50,10 +47,6 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
     private double lerpYaw;
     private double lerpPitch;
     private double waterLevel;
-    public boolean leftInputDown;
-    public boolean rightInputDown;
-    private boolean forwardInputDown;
-    private boolean backInputDown;
     private float boatGlide;
     private AbstractSailBoatEntity.Status status;
     private AbstractSailBoatEntity.Status previousStatus;
@@ -109,10 +102,6 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
 
     public void tick() {
         passengerwaittime--;
-
-        if (world.isRemote) {
-            checkKeyBinds();
-        }
 
         if (this.getControllingPassenger() == null && getSailState()) {
             setSailState(false);
@@ -170,11 +159,10 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    private void checkKeyBinds() {
-        if (Minecraft.getInstance().gameSettings.keyBindSprint.isPressed()) {
-            sendSailStateToServer(!getSailState());
-        }
+    @Override
+    public void onSprintPressed() {
+        super.onSprintPressed();
+        sendSailStateToServer(!getSailState());
     }
 
     public void tickLerp() {
@@ -435,14 +423,6 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
                 this.entityDropItem(this.getItemBoat());
             onDestroyedAndDoDrops(source);
         }
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public void updateInputs(boolean leftInputDown, boolean rightInputDown, boolean forwardInputDown, boolean backInputDown) {
-        this.leftInputDown = leftInputDown;
-        this.rightInputDown = rightInputDown;
-        this.forwardInputDown = forwardInputDown;
-        this.backInputDown = backInputDown;
     }
 
     public float WaveMotion() {
