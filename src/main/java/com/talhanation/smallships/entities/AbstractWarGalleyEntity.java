@@ -223,11 +223,11 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
         double WarGalleyTurnFactor = SmallShipsConfig.WarGalleyTurnFactor.get();
 
         this.momentum = 1.0F;
-        if (this.getPassengers().size() == 4) this.passengerfaktor = 0.05F;
-        if (this.getPassengers().size() == 6) this.passengerfaktor = 0.1F;
-        if (this.getPassengers().size() == 10) this.passengerfaktor = 0.2F;
-        if (this.getPassengers().size() == 12) this.passengerfaktor = 0.3F;
-        if (this.getPassengers().size() > 12) this.passengerfaktor = 0.4F;
+        if (this.getPassengers().size() == 4) this.passengerfaktor = 0.0125F;
+        if (this.getPassengers().size() == 6) this.passengerfaktor = 0.025F;
+        if (this.getPassengers().size() == 10) this.passengerfaktor = 0.05F;
+        if (this.getPassengers().size() == 12) this.passengerfaktor = 0.075F;
+        if (this.getPassengers().size() > 12) this.passengerfaktor = 0.15F;
         if (this.previousStatus == Status.IN_AIR && this.status != Status.IN_AIR && this.status != Status.ON_LAND) {
             this.waterLevel = (getBoundingBox()).minY + getHeight();
             setPosition(getPosX(), (getWaterLevelAbove() - getHeight()) + 0.101D, getPosZ());
