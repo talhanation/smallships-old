@@ -1,10 +1,7 @@
 package com.talhanation.smallships.init;
 
 import com.talhanation.smallships.Main;
-import com.talhanation.smallships.entities.CogEntity;
-import com.talhanation.smallships.entities.GalleyEntity;
-import com.talhanation.smallships.entities.TNBoatEntity;
-import com.talhanation.smallships.entities.WarGalleyEntity;
+import com.talhanation.smallships.entities.*;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -49,5 +46,11 @@ public class ModEntityTypes {
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "war_galley").toString()));
 
-
+    public static final RegistryObject<EntityType<DrakkarEntity>> DRAKKAR_ENTITY = ENTITY_TYPES.register("drakkar",
+            () -> EntityType.Builder.<DrakkarEntity>create(DrakkarEntity::new, EntityClassification.MISC)
+                    .size(4.0F, 1.50F)
+                    .trackingRange(20)
+                    .setUpdateInterval(10)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .build(new ResourceLocation(Main.MOD_ID, "drakkar").toString()));
 }

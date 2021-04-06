@@ -1,7 +1,6 @@
 package com.talhanation.smallships.items;
 
-
-import com.talhanation.smallships.entities.CogEntity;
+import com.talhanation.smallships.entities.DrakkarEntity;
 import com.talhanation.smallships.entities.TNBoatEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,11 +17,12 @@ import net.minecraft.world.World;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class CogItem extends Item {
-    private static final Predicate<Entity> X = EntityPredicates.NOT_SPECTATING.and(Entity::canBeCollidedWith);
-    private final CogEntity.Type type;
 
-    public CogItem(CogEntity.Type typeIn, Item.Properties properties) {
+public class DrakkarItem extends Item {
+    private static final Predicate<Entity> X = EntityPredicates.NOT_SPECTATING.and(Entity::canBeCollidedWith);
+    private final DrakkarEntity.Type type;
+
+    public DrakkarItem(DrakkarEntity.Type typeIn, Properties properties) {
         super(properties);
         this.type = typeIn;
     }
@@ -48,7 +48,7 @@ public class CogItem extends Item {
             }
 
             if (raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
-                CogEntity boatentity = new CogEntity(worldIn, raytraceresult.getHitVec().x, raytraceresult.getHitVec().y, raytraceresult.getHitVec().z);
+                DrakkarEntity boatentity = new DrakkarEntity(worldIn, raytraceresult.getHitVec().x, raytraceresult.getHitVec().y, raytraceresult.getHitVec().z);
                 boatentity.setBoatType(this.type);
                 boatentity.rotationYaw = playerIn.rotationYaw + 90F;
                 if (!worldIn.hasNoCollisions(boatentity, boatentity.getBoundingBox().grow(-0.1D))) {
@@ -57,8 +57,8 @@ public class CogItem extends Item {
                     if (!worldIn.isRemote) {
                         worldIn.addEntity(boatentity);
                         if (boatentity.getBoatStatus().equals(TNBoatEntity.Status.IN_WATER)) {
-                            worldIn.playSound(null, boatentity.getPosX(), boatentity.getPosY(), boatentity.getPosZ(), SoundEvents.ENTITY_PLAYER_SPLASH, SoundCategory.BLOCKS, 0.75F, 0.8F);
-                            worldIn.playSound(null, boatentity.getPosX(), boatentity.getPosY(), boatentity.getPosZ(), SoundEvents.AMBIENT_UNDERWATER_ENTER, SoundCategory.BLOCKS, 0.75F, 0.8F);
+                            worldIn.playSound(null, boatentity.getPosX(), boatentity.getPosY(), boatentity.getPosZ(), SoundEvents.ENTITY_PLAYER_SPLASH_HIGH_SPEED, SoundCategory.BLOCKS, 0.75F, 0.8F);
+                            worldIn.playSound(null, boatentity.getPosX(), boatentity.getPosY(), boatentity.getPosZ(), SoundEvents.AMBIENT_UNDERWATER_ENTER, SoundCategory.BLOCKS, 0.85F, 0.8F);
                         }
                         if (!playerIn.abilities.isCreativeMode) {
                             itemstack.shrink(1);

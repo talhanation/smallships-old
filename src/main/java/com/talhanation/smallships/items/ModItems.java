@@ -1,6 +1,7 @@
 package com.talhanation.smallships.items;
 
 import com.talhanation.smallships.Main;
+import com.talhanation.smallships.entities.AbstractDrakkarEntity;
 import com.talhanation.smallships.entities.AbstractGalleyEntity;
 import com.talhanation.smallships.entities.AbstractSailBoatEntity;
 import com.talhanation.smallships.entities.AbstractWarGalleyEntity;
@@ -73,6 +74,25 @@ public class ModItems {
 
     public static final RegistryObject<Item> DARK_OAK_WAR_GALLEY_ITEM = ITEMS.register("dark_oak_war_galley", () ->
             new WarGalleyItem(AbstractWarGalleyEntity.Type.DARK_OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+
+    public static final RegistryObject<Item> OAK_DRAKKAR_ITEM = ITEMS.register("oak_drakkar", () ->
+            new DrakkarItem(AbstractDrakkarEntity.Type.OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> SPRUCE_DRAKKAR_ITEM = ITEMS.register("spruce_drakkar", () ->
+            new DrakkarItem(AbstractDrakkarEntity.Type.SPRUCE, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> BIRCH_DRAKKAR_ITEM = ITEMS.register("birch_drakkar", () ->
+            new DrakkarItem(AbstractDrakkarEntity.Type.BIRCH, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> JUNGLE_DRAKKAR_ITEM = ITEMS.register("jungle_drakkar", () ->
+            new DrakkarItem(AbstractDrakkarEntity.Type.JUNGLE, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> ACACIA_DRAKKAR_ITEM = ITEMS.register("acacia_drakkar", () ->
+            new DrakkarItem(AbstractDrakkarEntity.Type.ACACIA, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
+
+    public static final RegistryObject<Item> DARK_OAK_DRAKKAR_ITEM = ITEMS.register("dark_oak_drakkar", () ->
+            new DrakkarItem(AbstractDrakkarEntity.Type.DARK_OAK, (new Item.Properties()).maxStackSize(1).group(ItemGroup.TRANSPORTATION)));
 
 }
 

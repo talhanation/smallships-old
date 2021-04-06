@@ -1,8 +1,8 @@
 package com.talhanation.smallships.items;
 
+import com.talhanation.smallships.entities.TNBoatEntity;
 import com.talhanation.smallships.entities.WarGalleyEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -56,7 +56,7 @@ public class WarGalleyItem extends Item {
                 } else {
                     if (!worldIn.isRemote) {
                         worldIn.addEntity(boatentity);
-                        if (boatentity.getBoatStatus().equals(BoatEntity.Status.IN_WATER)) {
+                        if (boatentity.getBoatStatus().equals(TNBoatEntity.Status.IN_WATER)) {
                             worldIn.playSound(null, boatentity.getPosX(), boatentity.getPosY(), boatentity.getPosZ(), SoundEvents.ENTITY_PLAYER_SPLASH_HIGH_SPEED, SoundCategory.BLOCKS, 0.75F, 0.8F);
                             worldIn.playSound(null, boatentity.getPosX(), boatentity.getPosY(), boatentity.getPosZ(), SoundEvents.ENTITY_PLAYER_SPLASH_HIGH_SPEED, SoundCategory.BLOCKS, 0.9F, 0.8F);
                             worldIn.playSound(null, boatentity.getPosX(), boatentity.getPosY(), boatentity.getPosZ(), SoundEvents.AMBIENT_UNDERWATER_ENTER, SoundCategory.BLOCKS, 0.85F, 0.8F);

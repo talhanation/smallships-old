@@ -5,10 +5,7 @@ import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.items.ModItems;
-import com.talhanation.smallships.network.MessagePaddleState;
-import com.talhanation.smallships.network.MessageSailState;
-import com.talhanation.smallships.network.MessageSailStateGalley;
-import com.talhanation.smallships.network.MessageSailStateWarGalley;
+import com.talhanation.smallships.network.*;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -64,6 +61,10 @@ public class Main {
 
         SIMPLE_CHANNEL.registerMessage(3, MessageSailStateWarGalley.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessageSailStateWarGalley()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
+
+        SIMPLE_CHANNEL.registerMessage(4, MessageSailStateDrakkar.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessageSailStateDrakkar()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
     }
 
