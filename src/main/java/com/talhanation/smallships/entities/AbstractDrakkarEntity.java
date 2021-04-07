@@ -5,8 +5,8 @@ import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessagePaddleState;
 import com.talhanation.smallships.network.MessageSailStateDrakkar;
-import com.talhanation.smallships.network.MessageSailStateGalley;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.IceBlock;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
@@ -35,7 +35,6 @@ import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -53,6 +52,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
 
 
     protected abstract ItemStackHandler initInventory();
+
     private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
     private final float[] paddlePositions = new float[2];
     public float momentum;
@@ -107,7 +107,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
 
     public void tick() {
         passengerwaittime--;
-        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& getSailState()) {
+        if ((this.getControllingPassenger() == null || !(this.getControllingPassenger() instanceof PlayerEntity)) && getSailState()) {
             setSailState(false);
         }
         this.previousStatus = this.status;
@@ -145,22 +145,22 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
         }
 
 
-        for(int i = 0; i <= 1; ++i) {
+        for (int i = 0; i <= 1; ++i) {
             if (this.getPaddleState(i)) {
-                if (!this.isSilent() && (double)(this.paddlePositions[i] % ((float)Math.PI * 2F)) <= (double)((float)Math.PI / 4F) && ((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F)) % (double)((float)Math.PI * 2F) >= (double)((float)Math.PI / 4F)) {
+                if (!this.isSilent() && (double) (this.paddlePositions[i] % ((float) Math.PI * 2F)) <= (double) ((float) Math.PI / 4F) && ((double) this.paddlePositions[i] + (double) ((float) Math.PI / 8F)) % (double) ((float) Math.PI * 2F) >= (double) ((float) Math.PI / 4F)) {
                     SoundEvent soundevent = this.getPaddleSound();
                     if (soundevent != null) {
                         Vector3d vector3d = this.getLook(1.0F);
                         double d0 = i == 1 ? -vector3d.z : vector3d.z;
                         double d1 = i == 1 ? vector3d.x : -vector3d.x;
-                        this.world.playSound((PlayerEntity)null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat());
-                        this.world.playSound((PlayerEntity)null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.2F + 0.4F * this.rand.nextFloat());
-                        this.world.playSound((PlayerEntity)null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.3F + 0.4F * this.rand.nextFloat());
-                        this.world.playSound((PlayerEntity)null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.6F + 0.4F * this.rand.nextFloat());
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat());
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.2F + 0.4F * this.rand.nextFloat());
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.3F + 0.4F * this.rand.nextFloat());
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.6F + 0.4F * this.rand.nextFloat());
                     }
                 }
 
-                this.paddlePositions[i] = (float)((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F));
+                this.paddlePositions[i] = (float) ((double) this.paddlePositions[i] + (double) ((float) Math.PI / 8F));
             } else {
                 this.paddlePositions[i] = 0.0F;
             }
@@ -189,15 +189,33 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
                 }
             }
         }
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
-        for(int i = -5 ; i <= 5; ++i) {
-            for (int j = -5; j <= 5; ++j) {
-                //blockpos$mutable.(i + getPosX(), getPosY(), j + getPosZ());
-                BlockState blockstate = this.world.getBlockState(getPosX() + i, getPosY(), getPosZ()+ j);
-                if (blockstate.getBlock() instanceof IceBlock && world.isRemote) {
-                    world.destroyBlock(new BlockPos(, false);
+        breakIce();
+    }
+
+    private void breakIce() {
+        AxisAlignedBB boundingBox = getBoundingBox();
+        double offset = 1D;
+        BlockPos start = new BlockPos(boundingBox.minX - offset, boundingBox.minY - offset, boundingBox.minZ - offset);
+        BlockPos end = new BlockPos(boundingBox.maxX + offset, boundingBox.maxY + offset, boundingBox.maxZ + offset);
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+        boolean hasBroken = false;
+        if (world.isAreaLoaded(start, end)) {
+            for (int i = start.getX(); i <= end.getX(); ++i) {
+                for (int j = start.getY(); j <= end.getY(); ++j) {
+                    for (int k = start.getZ(); k <= end.getZ(); ++k) {
+                        pos.setPos(i, j, k);
+                        BlockState blockstate = world.getBlockState(pos);
+                        if (blockstate.getBlock() instanceof IceBlock) {
+                            world.setBlockState(pos, Blocks.WATER.getDefaultState());
+                            hasBroken = true;
+                        }
+                    }
                 }
             }
+        }
+
+        if (hasBroken) {
+            world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundEvents.BLOCK_GLASS_BREAK, SoundCategory.BLOCKS, 1F, 0.9F + 0.2F * rand.nextFloat());
         }
     }
 
@@ -272,7 +290,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
         double DrakkarSpeedFactor = SmallShipsConfig.DrakkarSpeedFactor.get();
         if (this.isBeingRidden()) {
             float f = 0.0F;
-            if (this.leftInputDown ) {
+            if (this.leftInputDown) {
                 --this.deltaRotation;
             }
             if (this.rightInputDown) {
@@ -284,20 +302,20 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
             this.rotationYaw += this.deltaRotation;
 
             if (this.getSailState()) {
-                 f += (0.04F * DrakkarSpeedFactor);
-                 if (this.forwardInputDown) {
-                     f += (0.02F * DrakkarSpeedFactor); // speed
-                 }
-             }
+                f += (0.04F * DrakkarSpeedFactor);
+                if (this.forwardInputDown) {
+                    f += (0.02F * DrakkarSpeedFactor); // speed
+                }
+            }
             if (this.backInputDown) {
                 f -= (0.005F * DrakkarSpeedFactor);
             }
 
             if (this.forwardInputDown && !this.getSailState()) {
-                f += (0.04F* DrakkarSpeedFactor); // speed
+                f += (0.04F * DrakkarSpeedFactor); // speed
             }
 
-            this.setMotion(this.getMotion().add((double)(MathHelper.sin(-this.rotationYaw * ((float)Math.PI / 180F)) * f), 0.0D, (double)(MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * f)));
+            this.setMotion(this.getMotion().add((double) (MathHelper.sin(-this.rotationYaw * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * f)));
             this.setPaddleState(this.rightInputDown && !this.leftInputDown || this.forwardInputDown, this.leftInputDown && !this.rightInputDown || this.forwardInputDown);
 
         }
@@ -399,7 +417,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
 
     protected void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
-        compound.put("Items", (INBT)this.inventory.serializeNBT());
+        compound.put("Items", (INBT) this.inventory.serializeNBT());
 
     }
 
@@ -410,6 +428,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
             this.itemHandler = null;
         }
     }
+
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (isAlive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.itemHandler != null)
             return this.itemHandler.cast();
@@ -427,7 +446,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
             setForwardDirection(-getForwardDirection());
             setTimeSinceHit(3);
             setDamageTaken(getDamageTaken() + amount * 10.0F);
-            boolean flag = (source.getTrueSource() instanceof PlayerEntity && ((PlayerEntity)source.getTrueSource()).abilities.isCreativeMode);
+            boolean flag = (source.getTrueSource() instanceof PlayerEntity && ((PlayerEntity) source.getTrueSource()).abilities.isCreativeMode);
             if (flag || getDamageTaken() > 600.0F) {
                 onDestroyed(source, flag);
                 remove();
@@ -445,7 +464,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
         }
     }
 
-    public float WaveMotion(){
+    public float WaveMotion() {
         float wavestr = 2.0F;
         if (world.isRaining()) return 1.5F * wavestr;
         else return wavestr;
@@ -458,7 +477,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
 
     @Nullable
     protected SoundEvent getPaddleSound() {
-        switch(this.getBoatStatus()) {
+        switch (this.getBoatStatus()) {
             case IN_WATER:
             case UNDER_WATER:
             case UNDER_FLOWING_WATER:
@@ -477,7 +496,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
 
     @OnlyIn(Dist.CLIENT)
     public float getRowingTime(int side, float limbSwing) {
-        return this.getPaddleState(side) ? (float)MathHelper.clampedLerp((double)this.paddlePositions[side] - (double)((float)Math.PI / 8F), (double)this.paddlePositions[side], (double)limbSwing) : 0.0F;
+        return this.getPaddleState(side) ? (float) MathHelper.clampedLerp((double) this.paddlePositions[side] - (double) ((float) Math.PI / 8F), (double) this.paddlePositions[side], (double) limbSwing) : 0.0F;
     }
 
     public boolean getPaddleState(int side) {
@@ -514,15 +533,15 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
         int k1 = 0;
         BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
 
-        for(int l1 = i; l1 < j; ++l1) {
-            for(int i2 = i1; i2 < j1; ++i2) {
+        for (int l1 = i; l1 < j; ++l1) {
+            for (int i2 = i1; i2 < j1; ++i2) {
                 int j2 = (l1 != i && l1 != j - 1 ? 0 : 1) + (i2 != i1 && i2 != j1 - 1 ? 0 : 1);
                 if (j2 != 2) {
-                    for(int k2 = k; k2 < l; ++k2) {
+                    for (int k2 = k; k2 < l; ++k2) {
                         if (j2 <= 0 || k2 != k && k2 != l - 1) {
                             blockpos$mutable.setPos(l1, k2, i2);
                             BlockState blockstate = this.world.getBlockState(blockpos$mutable);
-                            if (!(blockstate.getBlock() instanceof LilyPadBlock) && VoxelShapes.compare(blockstate.getCollisionShape(this.world, blockpos$mutable).withOffset((double)l1, (double)k2, (double)i2), voxelshape, IBooleanFunction.AND)) {
+                            if (!(blockstate.getBlock() instanceof LilyPadBlock) && VoxelShapes.compare(blockstate.getCollisionShape(this.world, blockpos$mutable).withOffset((double) l1, (double) k2, (double) i2), voxelshape, IBooleanFunction.AND)) {
                                 f += blockstate.getSlipperiness(this.world, blockpos$mutable, this);
                                 ++k1;
                             }
@@ -532,7 +551,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
             }
         }
 
-        return f / (float)k1;
+        return f / (float) k1;
     }
 
 }
