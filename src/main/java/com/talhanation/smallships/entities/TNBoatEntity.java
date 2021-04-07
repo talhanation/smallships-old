@@ -313,8 +313,35 @@ public class TNBoatEntity extends Entity {
         if(world.isRemote){
             updateClientControls();
         }
+
+        breakLily();
     }
 
+    private void breakLily() {
+        AxisAlignedBB boundingBox = getBoundingBox();
+        double offset = 0.75D;
+        BlockPos start = new BlockPos(boundingBox.minX - offset, boundingBox.minY - offset, boundingBox.minZ - offset);
+        BlockPos end = new BlockPos(boundingBox.maxX + offset, boundingBox.maxY + offset, boundingBox.maxZ + offset);
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+        boolean hasBroken = false;
+        if (world.isAreaLoaded(start, end)) {
+            for (int i = start.getX(); i <= end.getX(); ++i) {
+                for (int j = start.getY(); j <= end.getY(); ++j) {
+                    for (int k = start.getZ(); k <= end.getZ(); ++k) {
+                        pos.setPos(i, j, k);
+                        BlockState blockstate = world.getBlockState(pos);
+                        if (blockstate.getBlock() instanceof LilyPadBlock) {
+                            world.destroyBlock(pos, true);
+                            hasBroken = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (hasBroken) {
+            world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundEvents.BLOCK_CROP_BREAK, SoundCategory.BLOCKS, 1F, 0.9F + 0.2F * rand.nextFloat());
+        }
+    }
     private void updateRocking() {
         if (this.world.isRemote) {
             int i = this.getRockingTicks();
