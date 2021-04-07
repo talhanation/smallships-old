@@ -22,5 +22,13 @@
   "item.smallships.jungle_war_galley": "Jungle War Galley",
   "item.smallships.spruce_war_galley": "Spruce War Galley",
   "item.smallships.oak_war_galley": "Oak War Galley",
-  "item.smallships.dark_oak_war_galley": "Dark Oak War Galley"
+  "item.smallships.dark_oak_war_galley": "Dark Oak War Galley",
+
+  "entity.smallships.drakkar": "Drakkar",
+  "item.smallships.acacia_drakkar": "Acacia Drakkar",
+  "item.smallships.birch_drakkar": "Birch Drakkar",
+  "item.smallships.jungle_drakkar": "Jungle Drakkar",
+  "item.smallships.spruce_drakkar": "Spruce Drakkar",
+  "item.smallships.oak_drakkar": "Oak Drakkar",
+  "item.smallships.dark_oak_drakkar": "Dark Oak Drakkar"
 }

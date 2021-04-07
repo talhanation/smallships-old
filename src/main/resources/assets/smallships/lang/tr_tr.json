@@ -22,6 +22,14 @@
   "item.smallships.jungle_war_galley": "Orman Ağaçı Savaş kadırgası",
   "item.smallships.spruce_war_galley": "Ladin Savaş kadırgası",
   "item.smallships.oak_war_galley": "Meşe Savaş kadırgası",
-  "item.smallships.dark_war_oak_galley": "Koyu Meşe Savaş kadırgası"
+  "item.smallships.dark_war_oak_galley": "Koyu Meşe Savaş kadırgası",
+
+  "entity.smallships.drakkar": "Viking gemisi",
+  "item.smallships.acacia_drakkar": "Akasya viking gemisi",
+  "item.smallships.birch_drakkar": "Huş viking gemisi",
+  "item.smallships.jungle_drakkar": "Orman Ağaçı viking gemisi",
+  "item.smallships.spruce_drakkar": "Ladin viking gemisi",
+  "item.smallships.oak_drakkar": "Meşe viking gemisi",
+  "item.smallships.dark_oak_drakkar": "Koyu Meşe viking gemisi"
 }
 

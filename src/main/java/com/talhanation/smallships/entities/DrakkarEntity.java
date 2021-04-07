@@ -86,13 +86,13 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
 
     public void updatePassenger(Entity passenger) {
         if (isPassenger(passenger)) {
-            float f = -3.0F; //driver x pos
+            float f = -2.25F; //driver x pos
             float d = 0.0F;   //driver z pos
             float f1 = (float) ((this.removed ? 0.02D : getMountedYOffset()) + passenger.getYOffset());
             if (getPassengers().size() == 2) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
-                    f = -2.75F;
+                    f = -2.25F;
                     d = 0.0F;
                 } else {
                     f = -1.5F;
@@ -101,7 +101,7 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
             } else if (getPassengers().size() == 3) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
-                    f = -2.75F;
+                    f = -2.25F;
                     d = 0.0F;
                 } else if (i == 1) {
                     f = -1.5F;
@@ -113,7 +113,7 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
             }else if (getPassengers().size() == 4) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
-                    f = -2.75F;
+                    f = -2.25F;
                     d = 0.0F;
                 } else if (i == 1) {
                     f = -1.5F;
@@ -128,7 +128,7 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
             }else if (getPassengers().size() == 5) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
-                    f = -2.75F;
+                    f = -2.25F;
                     d = 0.0F;
                 } else if (i == 1) {
                     f = -1.5F;
@@ -146,7 +146,7 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
             }else if (getPassengers().size() == 6) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
-                    f = -2.75F;
+                    f = -2.25F;
                     d = 0.0F;
                 } else if (i == 1) {
                     f = -1.5F;
@@ -167,7 +167,7 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
             }else if (getPassengers().size() == 7) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
-                    f = -2.75F;
+                    f = -2.25F;
                     d = 0.0F;
                 } else if (i == 1) {
                     f = -1.5F;
@@ -191,7 +191,7 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
             }else if (getPassengers().size() == 8) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
-                    f = -2.75F;
+                    f = -2.25F;
                     d = 0.0F;
                 } else if (i == 1) {
                     f = -1.5F;

@@ -447,7 +447,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
             setTimeSinceHit(3);
             setDamageTaken(getDamageTaken() + amount * 10.0F);
             boolean flag = (source.getTrueSource() instanceof PlayerEntity && ((PlayerEntity) source.getTrueSource()).abilities.isCreativeMode);
-            if (flag || getDamageTaken() > 600.0F) {
+            if (flag || getDamageTaken() > 360.0F) {
                 onDestroyed(source, flag);
                 remove();
             }

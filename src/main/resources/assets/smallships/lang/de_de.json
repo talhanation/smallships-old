@@ -22,5 +22,13 @@
   "item.smallships.jungle_war_galley": "Tropenholzkriegsgaleere",
   "item.smallships.spruce_war_galley": "Fichtenholzkriegsgaleere",
   "item.smallships.oak_war_galley": "Eichenholzkriegsgaleere",
-  "item.smallships.dark_oak_war_galley": "Schwarzeichenholzkriegsgaleere"
+  "item.smallships.dark_oak_war_galley": "Schwarzeichenholzkriegsgaleere",
+
+  "entity.smallships.drakkar": "Wikingershiff",
+  "item.smallships.acacia_drakkar": "Akazienholz Wikingershiff",
+  "item.smallships.birch_drakkar": "Birkenholtz Wikingershiff",
+  "item.smallships.jungle_drakkar": "Tropenholz Wikingershiff",
+  "item.smallships.spruce_drakkar": "Fichtenholz Wikingershiff",
+  "item.smallships.oak_drakkar": "Eichenholz Wikingershiff",
+  "item.smallships.dark_oak_drakkar": "Schwarzeichenholz Wikingershiff"
 }
