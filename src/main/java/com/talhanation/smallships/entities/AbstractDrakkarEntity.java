@@ -194,7 +194,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
 
     private void breakIce() {
         AxisAlignedBB boundingBox = getBoundingBox();
-        double offset = 1D;
+        double offset = 0.125D;
         BlockPos start = new BlockPos(boundingBox.minX - offset, boundingBox.minY - offset, boundingBox.minZ - offset);
         BlockPos end = new BlockPos(boundingBox.maxX + offset, boundingBox.maxY + offset, boundingBox.maxZ + offset);
         BlockPos.Mutable pos = new BlockPos.Mutable();
@@ -517,41 +517,6 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
         this.rightInputDown = rightInputDown;
         this.forwardInputDown = forwardInputDown;
         this.backInputDown = backInputDown;
-    }
-
-    public float getBoatGlide() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
-        AxisAlignedBB axisalignedbb1 = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY - 0.001D, axisalignedbb.minZ, axisalignedbb.maxX, axisalignedbb.minY, axisalignedbb.maxZ);
-        int i = MathHelper.floor(axisalignedbb1.minX) - 1;
-        int j = MathHelper.ceil(axisalignedbb1.maxX) + 1;
-        int k = MathHelper.floor(axisalignedbb1.minY) - 1;
-        int l = MathHelper.ceil(axisalignedbb1.maxY) + 1;
-        int i1 = MathHelper.floor(axisalignedbb1.minZ) - 1;
-        int j1 = MathHelper.ceil(axisalignedbb1.maxZ) + 1;
-        VoxelShape voxelshape = VoxelShapes.create(axisalignedbb1);
-        float f = 0.0F;
-        int k1 = 0;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
-
-        for (int l1 = i; l1 < j; ++l1) {
-            for (int i2 = i1; i2 < j1; ++i2) {
-                int j2 = (l1 != i && l1 != j - 1 ? 0 : 1) + (i2 != i1 && i2 != j1 - 1 ? 0 : 1);
-                if (j2 != 2) {
-                    for (int k2 = k; k2 < l; ++k2) {
-                        if (j2 <= 0 || k2 != k && k2 != l - 1) {
-                            blockpos$mutable.setPos(l1, k2, i2);
-                            BlockState blockstate = this.world.getBlockState(blockpos$mutable);
-                            if (!(blockstate.getBlock() instanceof LilyPadBlock) && VoxelShapes.compare(blockstate.getCollisionShape(this.world, blockpos$mutable).withOffset((double) l1, (double) k2, (double) i2), voxelshape, IBooleanFunction.AND)) {
-                                f += blockstate.getSlipperiness(this.world, blockpos$mutable, this);
-                                ++k1;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return f / (float) k1;
     }
 
 }
