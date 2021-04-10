@@ -190,7 +190,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
 
     private void breakIce() {
         AxisAlignedBB boundingBox = getBoundingBox();
-        double offset = 0.125D;
+        double offset = 0.15D;
         BlockPos start = new BlockPos(boundingBox.minX - offset, boundingBox.minY - offset, boundingBox.minZ - offset);
         BlockPos end = new BlockPos(boundingBox.maxX + offset, boundingBox.maxY + offset, boundingBox.maxZ + offset);
         BlockPos.Mutable pos = new BlockPos.Mutable();

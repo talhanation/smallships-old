@@ -88,9 +88,9 @@ public class SmallShipsConfig {
 
         DrakkarSpeedFactor = BUILDER.comment("\n" +"----Drakkar Speed Factor.----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
-                "\t" + "default: 1.3")
+                "\t" + "default: 1.25")
                 .worldRestart()
-                .defineInRange("DrakkarSpeedFactor", 1.3, 0.0, 2.0);
+                .defineInRange("DrakkarSpeedFactor", 1.25, 0.0, 2.0);
 
         DrakkarTurnFactor = BUILDER.comment("\n" +"----Drakkar Turn Factor.----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
