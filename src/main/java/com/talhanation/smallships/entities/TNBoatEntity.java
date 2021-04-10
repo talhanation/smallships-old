@@ -396,7 +396,7 @@ public class TNBoatEntity extends Entity {
         }
     }
 
-    public void tickLerp() {
+    private void tickLerp() {
         if (this.canPassengerSteer()) {
             this.lerpSteps = 0;
             this.setPacketCoordinates(this.getPosX(), this.getPosY(), this.getPosZ());

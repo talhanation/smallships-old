@@ -5,6 +5,7 @@ import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessagePaddleState;
 import com.talhanation.smallships.network.MessageSailStateGalley;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.*;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
@@ -41,7 +42,6 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
 
     private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractGalleyEntity.class, DataSerializers.BOOLEAN);
 
-
     protected abstract ItemStackHandler initInventory();
     private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
     private final float[] paddlePositions = new float[2];
@@ -55,6 +55,12 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
     public boolean forwardInputDown;
     public boolean backInputDown;
     private float boatGlide;
+    private int lerpSteps;
+    private double lerpX;
+    private double lerpY;
+    private double lerpZ;
+    private double lerpYaw;
+    private double lerpPitch;
     private Status status;
     private Status previousStatus;
     public ItemStackHandler inventory = initInventory();
@@ -97,7 +103,7 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
 
     public void tick() {
         passengerwaittime--;
-        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& getSailState()) {
+        if ((this.getControllingPassenger() == null || !(this.getControllingPassenger() instanceof PlayerEntity)) && getSailState()) {
             setSailState(false);
         }
         this.previousStatus = this.status;
@@ -135,22 +141,22 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
         }
 
 
-        for(int i = 0; i <= 1; ++i) {
+        for (int i = 0; i <= 1; ++i) {
             if (this.getPaddleState(i)) {
-                if (!this.isSilent() && (double)(this.paddlePositions[i] % ((float)Math.PI * 2F)) <= (double)((float)Math.PI / 4F) && ((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F)) % (double)((float)Math.PI * 2F) >= (double)((float)Math.PI / 4F)) {
+                if (!this.isSilent() && (double) (this.paddlePositions[i] % ((float) Math.PI * 2F)) <= (double) ((float) Math.PI / 4F) && ((double) this.paddlePositions[i] + (double) ((float) Math.PI / 8F)) % (double) ((float) Math.PI * 2F) >= (double) ((float) Math.PI / 4F)) {
                     SoundEvent soundevent = this.getPaddleSound();
                     if (soundevent != null) {
                         Vector3d vector3d = this.getLook(1.0F);
                         double d0 = i == 1 ? -vector3d.z : vector3d.z;
                         double d1 = i == 1 ? vector3d.x : -vector3d.x;
-                        this.world.playSound((PlayerEntity)null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat());
-                        this.world.playSound((PlayerEntity)null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.2F + 0.4F * this.rand.nextFloat());
-                        this.world.playSound((PlayerEntity)null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.3F + 0.4F * this.rand.nextFloat());
-                        this.world.playSound((PlayerEntity)null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.6F + 0.4F * this.rand.nextFloat());
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.8F + 0.4F * this.rand.nextFloat());
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.2F + 0.4F * this.rand.nextFloat());
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.3F + 0.4F * this.rand.nextFloat());
+                        this.world.playSound((PlayerEntity) null, this.getPosX() + d0, this.getPosY(), this.getPosZ() + d1, soundevent, this.getSoundCategory(), 1.0F, 0.6F + 0.4F * this.rand.nextFloat());
                     }
                 }
 
-                this.paddlePositions[i] = (float)((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F));
+                this.paddlePositions[i] = (float) ((double) this.paddlePositions[i] + (double) ((float) Math.PI / 8F));
             } else {
                 this.paddlePositions[i] = 0.0F;
             }
@@ -179,7 +185,6 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
                 }
             }
         }
-
     }
 
     @Override
@@ -188,8 +193,7 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
         sendSailStateToServer(!getSailState());
     }
 
-    public void tickLerp() {
-        super.tickLerp();
+    private void tickLerp() {
     }
 
     public Status getBoatStatus() {

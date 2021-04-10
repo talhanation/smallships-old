@@ -8,7 +8,6 @@ import com.talhanation.smallships.network.MessageSailStateDrakkar;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.IceBlock;
-import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -29,9 +28,6 @@ import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
@@ -225,8 +221,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
         sendSailStateToServer(!getSailState());
     }
 
-    public void tickLerp() {
-        super.tickLerp();
+    private void tickLerp() {
     }
 
     public Status getBoatStatus() {

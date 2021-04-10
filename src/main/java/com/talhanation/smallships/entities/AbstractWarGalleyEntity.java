@@ -196,8 +196,7 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
         sendSailStateToServer(!getSailState());
     }
 
-    public void tickLerp() {
-        super.tickLerp();
+    private void tickLerp() {
     }
 
     public Status getBoatStatus() {

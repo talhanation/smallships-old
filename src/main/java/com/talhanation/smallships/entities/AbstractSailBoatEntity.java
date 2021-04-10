@@ -160,7 +160,6 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
     }
 
     public void tickLerp() {
-        super.tickLerp();
     }
 
     public Status getBoatStatus() {
