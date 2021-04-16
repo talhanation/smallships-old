@@ -21,7 +21,21 @@ public class RenderEntityGalley extends EntityRenderer<GalleyEntity>{
             new ResourceLocation(Main.MOD_ID,"textures/entity/galley/birch_galley.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/galley/jungle_galley.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/galley/acacia_galley.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/galley/dark_oak_galley.png")};
+            new ResourceLocation(Main.MOD_ID,"textures/entity/galley/dark_oak_galley.png"),
+
+            //BOP//
+            new ResourceLocation(Main.MOD_ID, "textures/entity/mod/bop/galley/bop_cherry_galley.png"),
+            new ResourceLocation(Main.MOD_ID, "textures/entity/mod/bop/galley/bop_dead_galley.png"),
+            new ResourceLocation(Main.MOD_ID, "textures/entity/mod/bop/galley/bop_fir_galley.png"),
+            new ResourceLocation(Main.MOD_ID, "textures/entity/mod/bop/galley/bop_hellbark_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/galley/bop_jacaranda_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/galley/bop_magic_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/galley/bop_mahogany_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/galley/bop_palm_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/galley/bop_redwood_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/galley/bop_umbran_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/galley/bop_willow_galley.png"),
+    };
 
     private final ModelGalley model = new ModelGalley<>();
 

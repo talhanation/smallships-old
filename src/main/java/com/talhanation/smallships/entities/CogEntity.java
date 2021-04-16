@@ -233,6 +233,29 @@ public class CogEntity extends AbstractSailBoatEntity {
                 return ModItems.ACACIA_COG_ITEM.get();
             case DARK_OAK:
                 return ModItems.DARK_OAK_COG_ITEM.get();
+                //BOP
+            case BOP_CHERRY:
+                return ModItems.BOP_CHERRY_COG_ITEM.get();
+            case BOP_DEAD:
+                return ModItems.BOP_DEAD_COG_ITEM.get();
+            case BOP_FIR:
+                return ModItems.BOP_FIR_COG_ITEM.get();
+            case BOP_HELLBARK:
+                return ModItems.BOP_HELLBARK_COG_ITEM.get();
+            case BOP_JACARANDA:
+                return ModItems.BOP_JACARANDA_COG_ITEM.get();
+            case BOP_MAGIC:
+                return ModItems.BOP_MAGIC_COG_ITEM.get();
+            case BOP_MAHOGANY:
+                return ModItems.BOP_MAHOGANY_COG_ITEM.get();
+            case BOP_PALM:
+                return ModItems.BOP_PALM_COG_ITEM.get();
+            case BOP_REDWOOD:
+                return ModItems.BOP_REDWOOD_COG_ITEM.get();
+            case BOP_UMBRAN:
+                return ModItems.BOP_UMBRAN_COG_ITEM.get();
+            case BOP_WILLOW:
+                return ModItems.BOP_WILLOW_COG_ITEM.get();
         }
     }
 

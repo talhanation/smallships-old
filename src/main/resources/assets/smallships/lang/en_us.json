@@ -30,5 +30,61 @@
   "item.smallships.jungle_drakkar": "Jungle Drakkar",
   "item.smallships.spruce_drakkar": "Spruce Drakkar",
   "item.smallships.oak_drakkar": "Oak Drakkar",
-  "item.smallships.dark_oak_drakkar": "Dark Oak Drakkar"
+  "item.smallships.dark_oak_drakkar": "Dark Oak Drakkar",
+
+  "item.smallships.bop_cherry_cog_item": "Cherry Cog",
+  "item.smallships.bop_cherry_galley_item": "Cherry Galley",
+  "item.smallships.bop_cherry_war_galley_item": "Cherry War Galley",
+  "item.smallships.bop_cherry_drakkar_item": "Cherry Drakkar",
+
+  "item.smallships.bop_dead_cog_item": "Dead Cog",
+  "item.smallships.bop_dead_galley_item": "Dead Galley",
+  "item.smallships.bop_dead_war_galley_item": "Dead War Galley",
+  "item.smallships.bop_dead_drakkar_item": "Dead Drakkar",
+
+  "item.smallships.bop_fir_cog_item": "Fir Cog",
+  "item.smallships.bop_fir_galley_item": "Fir Galley",
+  "item.smallships.bop_fir_war_galley_item": "Fir War Galley",
+  "item.smallships.bop_fir_drakkar_item": "Fir Drakkar",
+
+  "item.smallships.bop_hellbark_cog_item": "Hellbark Cog",
+  "item.smallships.bop_hellbark_galley_item": "Hellbark Galley",
+  "item.smallships.bop_hellbark_war_galley_item": "Hellbark War Galley",
+  "item.smallships.bop_hellbark_drakkar_item": "Hellbark Drakkar",
+
+  "item.smallships.bop_jacaranda_cog_item": "Jacaranda Cog",
+  "item.smallships.bop_jacaranda_galley_item": "Jacaranda Galley",
+  "item.smallships.bop_jacaranda_war_galley_item": "Jacaranda War Galley",
+  "item.smallships.bop_jacaranda_drakkar_item": "Jacaranda Drakkar",
+
+  "item.smallships.bop_magic_cog_item": "Magic Cog",
+  "item.smallships.bop_magic_galley_item": "Magic Galley",
+  "item.smallships.bop_magic_war_galley_item": "Magic War Galley",
+  "item.smallships.bop_magic_drakkar_item": "Magic Drakkar",
+
+  "item.smallships.bop_mahogany_cog_item": "Mahogany Cog",
+  "item.smallships.bop_mahogany_galley_item": "Mahogany Galley",
+  "item.smallships.bop_mahogany_war_galley_item": "Mahogany War Galley",
+  "item.smallships.bop_mahogany_drakkar_item": "Mahogany Drakkar",
+
+  "item.smallships.bop_palm_cog_item": "Palm Cog",
+  "item.smallships.bop_palm_galley_item": "Palm Galley",
+  "item.smallships.bop_palm_war_galley_item": "Palm War Galley",
+  "item.smallships.bop_palm_drakkar_item": "Palm Drakkar",
+
+  "item.smallships.bop_redwood_cog_item": "Redwood Cog",
+  "item.smallships.bop_redwood_galley_item": "Redwood Galley",
+  "item.smallships.bop_redwood_war_galley_item": "Redwood War Galley",
+  "item.smallships.bop_redwood_drakkar_item": "Redwood Drakkar",
+
+  "item.smallships.bop_umbran_cog_item": "Umbran Cog",
+  "item.smallships.bop_umbran_galley_item": "Umbran Galley",
+  "item.smallships.bop_umbran_war_galley_item": "Umbran War Galley",
+  "item.smallships.bop_umbran_drakkar_item": "Umbran Drakkar",
+
+
+  "item.smallships.bop_willow_cog_item": "Willow Cog",
+  "item.smallships.bop_willow_galley_item": "Willow Galley",
+  "item.smallships.bop_willow_war_galley_item": "Willow War Galley",
+  "item.smallships.bop_willow_drakkar_item": "Willow Drakkar"
 }

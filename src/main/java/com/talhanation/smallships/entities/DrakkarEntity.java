@@ -238,6 +238,29 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
                 return ModItems.ACACIA_DRAKKAR_ITEM.get();
             case DARK_OAK:
                 return ModItems.DARK_OAK_DRAKKAR_ITEM.get();
+            //BOP
+            case BOP_CHERRY:
+                return ModItems.BOP_CHERRY_DRAKKAR_ITEM.get();
+            case BOP_DEAD:
+                return ModItems.BOP_DEAD_DRAKKAR_ITEM.get();
+            case BOP_FIR:
+                return ModItems.BOP_FIR_DRAKKAR_ITEM.get();
+            case BOP_HELLBARK:
+                return ModItems.BOP_HELLBARK_DRAKKAR_ITEM.get();
+            case BOP_JACARANDA:
+                return ModItems.BOP_JACARANDA_DRAKKAR_ITEM.get();
+            case BOP_MAGIC:
+                return ModItems.BOP_MAGIC_DRAKKAR_ITEM.get();
+            case BOP_MAHOGANY:
+                return ModItems.BOP_MAHOGANY_DRAKKAR_ITEM.get();
+            case BOP_PALM:
+                return ModItems.BOP_PALM_DRAKKAR_ITEM.get();
+            case BOP_REDWOOD:
+                return ModItems.BOP_REDWOOD_DRAKKAR_ITEM.get();
+            case BOP_UMBRAN:
+                return ModItems.BOP_UMBRAN_DRAKKAR_ITEM.get();
+            case BOP_WILLOW:
+                return ModItems.BOP_WILLOW_DRAKKAR_ITEM.get();
         }
     }
 

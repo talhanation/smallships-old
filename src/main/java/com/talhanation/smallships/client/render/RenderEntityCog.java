@@ -21,7 +21,22 @@ public class RenderEntityCog extends EntityRenderer<CogEntity>{
             new ResourceLocation(Main.MOD_ID,"textures/entity/cog/birch_cog.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/cog/jungle_cog.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/cog/acacia_cog.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/cog/dark_oak_cog.png")};
+            new ResourceLocation(Main.MOD_ID,"textures/entity/cog/dark_oak_cog.png"),
+
+            //BOP//
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_cherry_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_dead_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_fir_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_hellbark_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_jacaranda_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_magic_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_mahogany_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_palm_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_redwood_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_umbran_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_willow_cog.png"),
+
+    };
 
     private final ModelSailBoat model = new ModelSailBoat<>();
 
@@ -29,7 +44,6 @@ public class RenderEntityCog extends EntityRenderer<CogEntity>{
         super(renderManagerIn);
         this.shadowSize = 1.5F;
     }
-
 
     public void render(CogEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
         matrixStackIn.push();

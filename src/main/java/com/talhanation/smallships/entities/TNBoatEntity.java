@@ -1,6 +1,7 @@
 package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
+import com.talhanation.smallships.compatiblity.BiomesOPlenty;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.network.MessagePaddleState;
 import net.minecraft.block.Block;
@@ -192,6 +193,32 @@ public class TNBoatEntity extends Entity {
                 return Items.ACACIA_BOAT;
             case DARK_OAK:
                 return Items.DARK_OAK_BOAT;
+
+                ///////////////BOP//////////////
+            case BOP_CHERRY:
+                return BiomesOPlenty.CHERRY_BOAT;
+            case BOP_DEAD:
+                return BiomesOPlenty.DEAD_BOAT;
+            case BOP_FIR:
+                return BiomesOPlenty.FIR_BOAT;
+            case BOP_HELLBARK:
+                return BiomesOPlenty.HELLBARK_BOAT;
+            case BOP_JACARANDA:
+                return BiomesOPlenty.JACARANDA_BOAT;
+            case BOP_MAGIC:
+                return BiomesOPlenty.MAGIC_BOAT;
+            case BOP_MAHOGANY:
+                return BiomesOPlenty.MAHOGANY_BOAT;
+            case BOP_PALM:
+                return BiomesOPlenty.PALM_BOAT;
+            case BOP_REDWOOD:
+                return BiomesOPlenty.REDWOOD_BOAT;
+            case BOP_UMBRAN:
+                return BiomesOPlenty.UMBRAN_BOAT;
+            case BOP_WILLOW:
+                return BiomesOPlenty.WILLOW_BOAT;
+
+
         }
     }
 
@@ -301,7 +328,7 @@ public class TNBoatEntity extends Entity {
             for(int j = 0; j < list.size(); ++j) {
                 Entity entity = list.get(j);
                 if (!entity.isPassenger(this)) {
-                    if (flag && this.getPassengers().size() < 2 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
+                    if (flag && this.getPassengers().size() < 2 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity) ) {
                         entity.startRiding(this);
                     } else {
                         this.applyEntityCollision(entity);
@@ -751,7 +778,7 @@ public class TNBoatEntity extends Entity {
                         this.remove();
                         if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
                             for(int i = 0; i < 3; ++i) {
-                                this.entityDropItem(this.getBoatType().asPlank());
+                                //this.entityDropItem(this.getBoatType().asPlank());
                             }
 
                             for(int j = 0; j < 2; ++j) {
@@ -892,28 +919,39 @@ public class TNBoatEntity extends Entity {
     }
 
     public enum Type {
-        OAK(Blocks.OAK_PLANKS, "oak"),
-        SPRUCE(Blocks.SPRUCE_PLANKS, "spruce"),
-        BIRCH(Blocks.BIRCH_PLANKS, "birch"),
-        JUNGLE(Blocks.JUNGLE_PLANKS, "jungle"),
-        ACACIA(Blocks.ACACIA_PLANKS, "acacia"),
-        DARK_OAK(Blocks.DARK_OAK_PLANKS, "dark_oak");
+        OAK("oak"),
+        SPRUCE( "spruce"),
+        BIRCH("birch"),
+        JUNGLE( "jungle"),
+        ACACIA( "acacia"),
+        DARK_OAK( "dark_oak"),
+        //BOP
+        BOP_CHERRY("bop_cherry"),
+        BOP_DEAD("bop_cherry"),
+        BOP_FIR("bop_fir"),
+        BOP_HELLBARK("bop_hellbark"),
+        BOP_JACARANDA("bop_jacaranda"),
+        BOP_MAGIC("bop_magic"),
+        BOP_MAHOGANY("bop_mahogany"),
+        BOP_PALM("bop_palm"),
+        BOP_REDWOOD("bop_redwood"),
+        BOP_UMBRAN("bop_umbran"),
+        BOP_WILLOW("bop_willow"),
+
+
+        ;
+
 
         private final String name;
-        private final Block block;
 
-        Type(Block block, String name) {
+        Type(String name) {
             this.name = name;
-            this.block = block;
         }
 
         public String getName() {
             return this.name;
         }
 
-        public Block asPlank() {
-            return this.block;
-        }
 
         public String toString() {
             return this.name;
