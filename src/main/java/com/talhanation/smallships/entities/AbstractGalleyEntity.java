@@ -19,6 +19,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -106,6 +107,12 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
         if ((this.getControllingPassenger() == null || !(this.getControllingPassenger() instanceof PlayerEntity)) && getSailState()) {
             setSailState(false);
         }
+
+        if (!(this.getControllingPassenger() == null) && (this.getControllingPassenger() instanceof PlayerEntity ) && this.forwardInputDown || this.getSailState()){
+            if (this.getBoatStatus().equals(Status.IN_WATER))
+                Watersplash();
+        }
+
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
         if (this.status != Status.UNDER_WATER && this.status != Status.UNDER_FLOWING_WATER) {
@@ -162,7 +169,7 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
             }
         }
 
-        if (getSailState() && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()) {
+        if (getSailState() && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()) {
             this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat());
 
         }
@@ -191,6 +198,27 @@ public abstract class AbstractGalleyEntity extends TNBoatEntity {
     public void onSprintPressed() {
         super.onSprintPressed();
         sendSailStateToServer(!getSailState());
+    }
+
+    @Override
+    public void Watersplash(){
+        super.Watersplash();
+        Vector3d vector3d = this.getLook(0.0F);
+        float f0 = MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * 0.8F;
+        float f1 = MathHelper.sin(this.rotationYaw * ((float)Math.PI / 180F)) * 0.8F;
+        float f2 =  2.5F - this.rand.nextFloat() * 0.7F;
+        for (int i = 0; i < 2; ++i) {
+            this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 + (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 + (double) f1, 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1, 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 + (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 + (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
+
+            this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() - vector3d.x * (double) f2 + (double) f0, this.getPosY() - vector3d.y + 0.8D, this.getPosZ() - vector3d.z * (double) f2 + (double) f1, 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.8D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1, 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() - vector3d.x * (double) f2 + (double) f0, this.getPosY() - vector3d.y + 0.8D, this.getPosZ() - vector3d.z * (double) f2 + (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.8D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
+
+        }
     }
 
     private void tickLerp() {

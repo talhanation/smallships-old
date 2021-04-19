@@ -2,6 +2,7 @@ package com.talhanation.smallships.items;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
+import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
 import com.talhanation.smallships.entities.*;
 import net.minecraft.entity.item.BoatEntity;
 import net.minecraft.item.Item;
@@ -28,7 +29,6 @@ public class ModItems {
     public static final RegistryObject<Item> JUNGLE_GALLEY_ITEM =       createGalley("jungle", AbstractGalleyEntity.Type.JUNGLE, true);
     public static final RegistryObject<Item> ACACIA_GALLEY_ITEM =       createGalley("acacia", AbstractGalleyEntity.Type.ACACIA, true);
     public static final RegistryObject<Item> DARK_OAK_GALLEY_ITEM =     createGalley("dark_oak", AbstractGalleyEntity.Type.DARK_OAK, true);
-
 
     public static final RegistryObject<Item> OAK_WAR_GALLEY_ITEM =      createWarGalley("oak", AbstractWarGalleyEntity.Type.OAK, true);
     public static final RegistryObject<Item> SPRUCE_WAR_GALLEY_ITEM =   createWarGalley("spruce", AbstractWarGalleyEntity.Type.SPRUCE, true);
@@ -103,7 +103,101 @@ public class ModItems {
 
 
 
+        //LOTR
+    public static final RegistryObject<Item> LOTR_APPLE_COG_ITEM =      createCog("lotr_apple", AbstractSailBoatEntity.Type.LOTR_APPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_APPLE_GALLEY_ITEM =      createGalley("lotr_apple", AbstractGalleyEntity.Type.LOTR_APPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_APPLE_WAR_GALLEY_ITEM =      createWarGalley("lotr_apple", AbstractWarGalleyEntity.Type.LOTR_APPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_APPLE_DRAKKAR_ITEM =      createDrakkar("lotr_apple", AbstractDrakkarEntity.Type.LOTR_APPLE, LordOfTheRingsMod.isInstalled());
 
+    public static final RegistryObject<Item> LOTR_ASPEN_COG_ITEM =      createCog("lotr_aspen", AbstractSailBoatEntity.Type.LOTR_ASPEN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ASPEN_GALLEY_ITEM =      createGalley("lotr_aspen", AbstractGalleyEntity.Type.LOTR_ASPEN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ASPEN_WAR_GALLEY_ITEM =      createWarGalley("lotr_aspen", AbstractWarGalleyEntity.Type.LOTR_ASPEN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ASPEN_DRAKKAR_ITEM =      createDrakkar("lotr_aspen", AbstractDrakkarEntity.Type.LOTR_ASPEN, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_BEECH_COG_ITEM =      createCog("lotr_beech", AbstractSailBoatEntity.Type.LOTR_BEECH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_BEECH_GALLEY_ITEM =      createGalley("lotr_beech", AbstractGalleyEntity.Type.LOTR_BEECH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_BEECH_WAR_GALLEY_ITEM =      createWarGalley("lotr_beech", AbstractWarGalleyEntity.Type.LOTR_BEECH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_BEECH_DRAKKAR_ITEM =      createDrakkar("lotr_beech", AbstractDrakkarEntity.Type.LOTR_BEECH, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_CEDAR_COG_ITEM =      createCog("lotr_cedar", AbstractSailBoatEntity.Type.LOTR_CEDAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CEDAR_GALLEY_ITEM =      createGalley("lotr_cedar", AbstractGalleyEntity.Type.LOTR_CEDAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CEDAR_WAR_GALLEY_ITEM =      createWarGalley("lotr_cedar", AbstractWarGalleyEntity.Type.LOTR_CEDAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CEDAR_DRAKKAR_ITEM =      createDrakkar("lotr_cedar", AbstractDrakkarEntity.Type.LOTR_CEDAR, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_CHARRED_COG_ITEM =      createCog("lotr_charred", AbstractSailBoatEntity.Type.LOTR_CHARRED, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHARRED_GALLEY_ITEM =      createGalley("lotr_charred", AbstractGalleyEntity.Type.LOTR_CHARRED, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHARRED_WAR_GALLEY_ITEM =      createWarGalley("lotr_charred", AbstractWarGalleyEntity.Type.LOTR_CHARRED, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHARRED_DRAKKAR_ITEM =      createDrakkar("lotr_charred", AbstractDrakkarEntity.Type.LOTR_CHARRED, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_CHERRY_COG_ITEM =      createCog("lotr_cherry", AbstractSailBoatEntity.Type.LOTR_CHERRY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHERRY_GALLEY_ITEM =      createGalley("lotr_cherry", AbstractGalleyEntity.Type.LOTR_CHERRY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHERRY_WAR_GALLEY_ITEM =      createWarGalley("lotr_cherry", AbstractWarGalleyEntity.Type.LOTR_CHERRY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHERRY_DRAKKAR_ITEM =      createDrakkar("lotr_cherry", AbstractDrakkarEntity.Type.LOTR_CHERRY, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_CYPRESS_COG_ITEM =      createCog("lotr_cypress", AbstractSailBoatEntity.Type.LOTR_CYPRESS, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CYPRESS_GALLEY_ITEM =      createGalley("lotr_cypress", AbstractGalleyEntity.Type.LOTR_CYPRESS, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CYPRESS_WAR_GALLEY_ITEM =      createWarGalley("lotr_cypress", AbstractWarGalleyEntity.Type.LOTR_CYPRESS, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CYPRESS_DRAKKAR_ITEM =      createDrakkar("lotr_cypress", AbstractDrakkarEntity.Type.LOTR_CYPRESS, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_FIR_COG_ITEM =      createCog("lotr_fir", AbstractSailBoatEntity.Type.LOTR_FIR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_FIR_GALLEY_ITEM =      createGalley("lotr_fir", AbstractGalleyEntity.Type.LOTR_FIR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_FIR_WAR_GALLEY_ITEM =      createWarGalley("lotr_fir", AbstractWarGalleyEntity.Type.LOTR_FIR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_FIR_DRAKKAR_ITEM =      createDrakkar("lotr_fir", AbstractDrakkarEntity.Type.LOTR_FIR, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_GREEN_OAK_COG_ITEM =      createCog("lotr_green_oak", AbstractSailBoatEntity.Type.LOTR_GREEN_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_GREEN_OAK_GALLEY_ITEM =      createGalley("lotr_green_oak", AbstractGalleyEntity.Type.LOTR_GREEN_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_GREEN_OAK_WAR_GALLEY_ITEM =      createWarGalley("lotr_green_oak", AbstractWarGalleyEntity.Type.LOTR_GREEN_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_GREEN_OAK_DRAKKAR_ITEM =      createDrakkar("lotr_green_oak", AbstractDrakkarEntity.Type.LOTR_GREEN_OAK, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_HOLLY_COG_ITEM =      createCog("lotr_holly", AbstractSailBoatEntity.Type.LOTR_HOLLY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_HOLLY_GALLEY_ITEM =      createGalley("lotr_holly", AbstractGalleyEntity.Type.LOTR_HOLLY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_HOLLY_WAR_GALLEY_ITEM =      createWarGalley("lotr_holly", AbstractWarGalleyEntity.Type.LOTR_HOLLY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_HOLLY_DRAKKAR_ITEM =      createDrakkar("lotr_holly", AbstractDrakkarEntity.Type.LOTR_HOLLY, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_LAIRELOSSE_COG_ITEM =      createCog("lotr_lairelosse", AbstractSailBoatEntity.Type.LOTR_LAIRELOSSE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LAIRELOSSE_GALLEY_ITEM =      createGalley("lotr_lairelosse", AbstractGalleyEntity.Type.LOTR_LAIRELOSSE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LAIRELOSSE_WAR_GALLEY_ITEM =      createWarGalley("lotr_lairelosse", AbstractWarGalleyEntity.Type.LOTR_LAIRELOSSE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LAIRELOSSE_DRAKKAR_ITEM =      createDrakkar("lotr_lairelosse", AbstractDrakkarEntity.Type.LOTR_LAIRELOSSE, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_LARCH_COG_ITEM =      createCog("lotr_larch", AbstractSailBoatEntity.Type.LOTR_LARCH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LARCH_GALLEY_ITEM =      createGalley("lotr_larch", AbstractGalleyEntity.Type.LOTR_LARCH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LARCH_WAR_GALLEY_ITEM =      createWarGalley("lotr_larch", AbstractWarGalleyEntity.Type.LOTR_LARCH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LARCH_DRAKKAR_ITEM =      createDrakkar("lotr_larch", AbstractDrakkarEntity.Type.LOTR_LARCH, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_LEBETHRON_COG_ITEM =      createCog("lotr_lebethron", AbstractSailBoatEntity.Type.LOTR_LEBETHRON, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LEBETHRON_GALLEY_ITEM =      createGalley("lotr_lebethron", AbstractGalleyEntity.Type.LOTR_LEBETHRON, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LEBETHRON_WAR_GALLEY_ITEM =      createWarGalley("lotr_lebethron", AbstractWarGalleyEntity.Type.LOTR_LEBETHRON, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LEBETHRON_DRAKKAR_ITEM =      createDrakkar("lotr_lebethron", AbstractDrakkarEntity.Type.LOTR_LEBETHRON, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_MALLORN_COG_ITEM =      createCog("lotr_mallorn", AbstractSailBoatEntity.Type.LOTR_MALLORN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MALLORN_GALLEY_ITEM =      createGalley("lotr_mallorn", AbstractGalleyEntity.Type.LOTR_MALLORN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MALLORN_WAR_GALLEY_ITEM =      createWarGalley("lotr_mallorn", AbstractWarGalleyEntity.Type.LOTR_MALLORN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MALLORN_DRAKKAR_ITEM =      createDrakkar("lotr_mallorn", AbstractDrakkarEntity.Type.LOTR_MALLORN, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_MAPLE_COG_ITEM =      createCog("lotr_maple", AbstractSailBoatEntity.Type.LOTR_MAPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MAPLE_GALLEY_ITEM =      createGalley("lotr_maple", AbstractGalleyEntity.Type.LOTR_MAPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MAPLE_WAR_GALLEY_ITEM =      createWarGalley("lotr_maple", AbstractWarGalleyEntity.Type.LOTR_MAPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MAPLE_DRAKKAR_ITEM =      createDrakkar("lotr_maple", AbstractDrakkarEntity.Type.LOTR_MAPLE, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_MIRK_OAK_COG_ITEM =      createCog("lotr_mirk_oak", AbstractSailBoatEntity.Type.LOTR_MIRK_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MIRK_OAK_GALLEY_ITEM =      createGalley("lotr_mirk_oak", AbstractGalleyEntity.Type.LOTR_MIRK_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MIRK_OAK_WAR_GALLEY_ITEM =      createWarGalley("lotr_mirk_oak", AbstractWarGalleyEntity.Type.LOTR_MIRK_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MIRK_OAK_DRAKKAR_ITEM =      createDrakkar("lotr_mirk_oak", AbstractDrakkarEntity.Type.LOTR_MIRK_OAK, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_PEAR_COG_ITEM =      createCog("lotr_pear", AbstractSailBoatEntity.Type.LOTR_PEAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PEAR_GALLEY_ITEM =      createGalley("lotr_pear", AbstractGalleyEntity.Type.LOTR_PEAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PEAR_WAR_GALLEY_ITEM =      createWarGalley("lotr_pear", AbstractWarGalleyEntity.Type.LOTR_PEAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PEAR_DRAKKAR_ITEM =      createDrakkar("lotr_pear", AbstractDrakkarEntity.Type.LOTR_PEAR, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_PINE_COG_ITEM =      createCog("lotr_pine", AbstractSailBoatEntity.Type.LOTR_PINE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PINE_GALLEY_ITEM =      createGalley("lotr_pine", AbstractGalleyEntity.Type.LOTR_PINE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PINE_WAR_GALLEY_ITEM =      createWarGalley("lotr_pine", AbstractWarGalleyEntity.Type.LOTR_PINE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PINE_DRAKKAR_ITEM =      createDrakkar("lotr_pine", AbstractDrakkarEntity.Type.LOTR_PINE, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_ROTTEN_COG_ITEM =      createCog("lotr_rotten", AbstractSailBoatEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ROTTEN_GALLEY_ITEM =      createGalley("lotr_rotten", AbstractGalleyEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ROTTEN_WAR_GALLEY_ITEM =      createWarGalley("lotr_rotten", AbstractWarGalleyEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ROTTEN_DRAKKAR_ITEM =      createDrakkar("lotr_rotten", AbstractDrakkarEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
 
 
 

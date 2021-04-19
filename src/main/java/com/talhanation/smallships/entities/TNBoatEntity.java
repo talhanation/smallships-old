@@ -2,6 +2,7 @@ package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
+import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.network.MessagePaddleState;
 import net.minecraft.block.Block;
@@ -90,6 +91,11 @@ public class TNBoatEntity extends Entity {
     }
 
     public void onSprintPressed(){
+
+    }
+
+    public void Watersplash(){
+
 
     }
 
@@ -218,8 +224,47 @@ public class TNBoatEntity extends Entity {
             case BOP_WILLOW:
                 return BiomesOPlenty.WILLOW_BOAT;
 
+                ///////////////LOTR//////////////////
 
-        }
+            case LOTR_APPLE:
+                return LordOfTheRingsMod.APPLE_BOAT;
+            case LOTR_ASPEN:
+                return LordOfTheRingsMod.ASPEN_BOAT;
+            case LOTR_BEECH:
+                return LordOfTheRingsMod.BEECH_BOAT;
+            case LOTR_CEDAR:
+                return LordOfTheRingsMod.CEDAR_BOAT;
+            case LOTR_CHARRED:
+                return LordOfTheRingsMod.CHARRED_BOAT;
+            case LOTR_CHERRY:
+                return LordOfTheRingsMod.CHERRY_BOAT;
+            case LOTR_CYPRESS:
+                return LordOfTheRingsMod.CYPRESS_BOAT;
+            case LOTR_FIR:
+                return LordOfTheRingsMod.FIR_BOAT;
+            case LOTR_GREEN_OAK:
+                return LordOfTheRingsMod.GREEN_OAK_BOAT;
+            case LOTR_HOLLY:
+                return LordOfTheRingsMod.HOLLY_BOAT;
+            case LOTR_LAIRELOSSE:
+                return LordOfTheRingsMod.LAIRELOSSE_BOAT;
+            case LOTR_LARCH:
+                return LordOfTheRingsMod.LARCH_BOAT;
+            case LOTR_LEBETHRON:
+                return LordOfTheRingsMod.LEBETHRON_BOAT;
+            case LOTR_MALLORN:
+                return LordOfTheRingsMod.MALLORN_BOAT;
+            case LOTR_MAPLE:
+                return LordOfTheRingsMod.MAPLE_BOAT;
+            case LOTR_MIRK_OAK:
+                return LordOfTheRingsMod.MIRK_OAK_BOAT;
+            case LOTR_PEAR:
+                return LordOfTheRingsMod.PEAR_BOAT;
+            case LOTR_PINE:
+                return LordOfTheRingsMod.PINE_BOAT;
+            case LOTR_ROTTEN:
+                return LordOfTheRingsMod.ROTTEN_BOAT;
+          }
     }
 
     /**
@@ -937,8 +982,26 @@ public class TNBoatEntity extends Entity {
         BOP_REDWOOD("bop_redwood"),
         BOP_UMBRAN("bop_umbran"),
         BOP_WILLOW("bop_willow"),
-
-
+        //LOTR
+        LOTR_APPLE("lotr_apple"),
+        LOTR_ASPEN("lotr_aspen"),
+        LOTR_BEECH("lotr_beech"),
+        LOTR_CEDAR("lotr_cedar"),
+        LOTR_CHARRED("lotr_charred"),
+        LOTR_CHERRY("lotr_cherry"),
+        LOTR_CYPRESS("lotr_cypress"),
+        LOTR_FIR("lotr_fir"),
+        LOTR_GREEN_OAK("lotr_green_oak"),
+        LOTR_HOLLY("lotr_holly"),
+        LOTR_LAIRELOSSE("lotr_lairelosse"),
+        LOTR_LARCH("lotr_larch"),
+        LOTR_LEBETHRON("lotr_lebethron"),
+        LOTR_MALLORN("lotr_mallorn"),
+        LOTR_MAPLE("lotr_maple"),
+        LOTR_MIRK_OAK("lotr_mirk_oak"),
+        LOTR_PEAR("lotr_pear"),
+        LOTR_PINE("lotr_pine"),
+        LOTR_ROTTEN("lotr_rotten")
         ;
 
 

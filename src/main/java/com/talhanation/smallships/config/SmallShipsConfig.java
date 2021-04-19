@@ -20,7 +20,6 @@ public class SmallShipsConfig {
     public static final int NEW_VERSION = 3;
 
     public static ForgeConfigSpec.BooleanValue PlaySwimmSound;
-    public static ForgeConfigSpec.DoubleValue SailSpeedFactor;
     public static ForgeConfigSpec.DoubleValue GalleySpeedFactor;
     public static ForgeConfigSpec.DoubleValue GalleyTurnFactor;
     public static ForgeConfigSpec.DoubleValue WarGalleySpeedFactor;
@@ -29,10 +28,11 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue CogTurnFactor;
     public static ForgeConfigSpec.DoubleValue DrakkarSpeedFactor;
     public static ForgeConfigSpec.DoubleValue DrakkarTurnFactor;
+    public static ForgeConfigSpec.DoubleValue DrakkarIceBreakSpeed;
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
 
     static {
-        VERSION = BUILDER.comment("\n" +"Version, do not change!##")
+        VERSION = BUILDER.comment("\n" +"##Version, do not change!##")
                 .defineInRange("Version", 0, 0, Integer.MAX_VALUE);
 
         BUILDER.comment("Small Ships Config:").push("Ships");
@@ -97,6 +97,14 @@ public class SmallShipsConfig {
                 "\t" + "default: 0.3")
                 .worldRestart()
                 .defineInRange("DrakkarTurnFactor", 0.3, 0.0, 1.0);
+
+        DrakkarIceBreakSpeed = BUILDER.comment("\n" +"----Drakkar Ice Break Speed.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "higher values = slower break speed"  + "\n" +
+                "\t" + "default: 2.0")
+                .worldRestart()
+                .defineInRange("DrakkarIceBreakSpeed", 2.0, 0.0, 100);
+
 
         PlaySwimmSound = BUILDER.comment("\n" + "----Should Ships Make Swimming sounds?----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +

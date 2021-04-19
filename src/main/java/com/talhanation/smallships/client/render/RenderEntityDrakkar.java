@@ -36,6 +36,27 @@ public class RenderEntityDrakkar extends EntityRenderer<DrakkarEntity>{
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/galley/bop_umbran_galley.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/galley/bop_willow_galley.png"),
 
+            //LOTR//
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_apple_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_aspen_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_beech_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_cedar_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_charred_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_cherry_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_cypress_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_fir_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_green_oak_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_holly_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_lairelosse_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_larch_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_lebethron_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_mallorn_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_maple_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_mirk_oak_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_pear_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_pine_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_rotten_galley.png"),
+
     };
 
     private final ModelDrakkar model = new ModelDrakkar<>();

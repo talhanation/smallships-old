@@ -256,6 +256,46 @@ public class CogEntity extends AbstractSailBoatEntity {
                 return ModItems.BOP_UMBRAN_COG_ITEM.get();
             case BOP_WILLOW:
                 return ModItems.BOP_WILLOW_COG_ITEM.get();
+                //LOTR
+            case LOTR_APPLE:
+                return ModItems.LOTR_APPLE_COG_ITEM.get();
+            case LOTR_ASPEN:
+                return ModItems.LOTR_ASPEN_COG_ITEM.get();
+            case LOTR_BEECH:
+                return ModItems.LOTR_BEECH_COG_ITEM.get();
+            case LOTR_CEDAR:
+                return ModItems.LOTR_CEDAR_COG_ITEM.get();
+            case LOTR_CHERRY:
+                return ModItems.LOTR_CHERRY_COG_ITEM.get();
+            case LOTR_CHARRED:
+                return ModItems.LOTR_CHARRED_COG_ITEM.get();
+            case LOTR_CYPRESS:
+                return ModItems.LOTR_CYPRESS_COG_ITEM.get();
+            case LOTR_FIR:
+                return ModItems.LOTR_FIR_COG_ITEM.get();
+            case LOTR_GREEN_OAK:
+                return ModItems.LOTR_GREEN_OAK_COG_ITEM.get();
+            case LOTR_HOLLY:
+                return ModItems.LOTR_HOLLY_COG_ITEM.get();
+            case LOTR_LAIRELOSSE:
+                return ModItems.LOTR_LAIRELOSSE_COG_ITEM.get();
+            case LOTR_LARCH:
+                return ModItems.LOTR_LARCH_COG_ITEM.get();
+            case LOTR_LEBETHRON:
+                return ModItems.LOTR_LEBETHRON_COG_ITEM.get();
+            case LOTR_MALLORN:
+                return ModItems.LOTR_MALLORN_COG_ITEM.get();
+            case LOTR_MAPLE:
+                return ModItems.LOTR_MAPLE_COG_ITEM.get();
+            case LOTR_MIRK_OAK:
+                return ModItems.LOTR_MIRK_OAK_COG_ITEM.get();
+            case LOTR_PEAR:
+                return ModItems.LOTR_PEAR_COG_ITEM.get();
+            case LOTR_PINE:
+                return ModItems.LOTR_PINE_COG_ITEM.get();
+            case LOTR_ROTTEN:
+                return ModItems.LOTR_ROTTEN_COG_ITEM.get();
+
         }
     }
 

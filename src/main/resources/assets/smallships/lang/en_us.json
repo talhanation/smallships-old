@@ -82,9 +82,104 @@
   "item.smallships.bop_umbran_war_galley": "Umbran War Galley",
   "item.smallships.bop_umbran_drakkar": "Umbran Drakkar",
 
-
   "item.smallships.bop_willow_cog": "Willow Cog",
   "item.smallships.bop_willow_galley": "Willow Galley",
   "item.smallships.bop_willow_war_galley": "Willow War Galley",
-  "item.smallships.bop_willow_drakkar": "Willow Drakkar"
+  "item.smallships.bop_willow_drakkar": "Willow Drakkar",
+
+  "item.smallships.lotr_apple_cog": "Apple Cog",
+  "item.smallships.lotr_apple_galley": "Apple Galley",
+  "item.smallships.lotr_apple_war_galley": "Apple War Galley",
+  "item.smallships.lotr_apple_drakkar": "Apple Drakkar",
+
+  "item.smallships.lotr_aspen_cog": "Aspen Cog",
+  "item.smallships.lotr_aspen_galley": "Aspen Galley",
+  "item.smallships.lotr_aspen_war_galley": "Aspen War Galley",
+  "item.smallships.lotr_aspen_drakkar": "Aspen Drakkar",
+
+  "item.smallships.lotr_beech_cog": "Beech Cog",
+  "item.smallships.lotr_beech_galley": "Beech Galley",
+  "item.smallships.lotr_beech_war_galley": "Beech War Galley",
+  "item.smallships.lotr_beech_drakkar": "Beech Drakkar",
+
+  "item.smallships.lotr_cedar_cog": "Cedar Cog",
+  "item.smallships.lotr_cedar_galley": "Cedar Galley",
+  "item.smallships.lotr_cedar_war_galley": "Cedar War Galley",
+  "item.smallships.lotr_cedar_drakkar": "Cedar Drakkar",
+
+  "item.smallships.lotr_charred_cog": "Charred Cog",
+  "item.smallships.lotr_charred_galley": "Charred Galley",
+  "item.smallships.lotr_charred_war_galley": "Charred War Galley",
+  "item.smallships.lotr_charred_drakkar": "Charred Drakkar",
+
+  "item.smallships.lotr_cherry_cog": "Cherry Cog",
+  "item.smallships.lotr_cherry_galley": "Cherry Galley",
+  "item.smallships.lotr_cherry_war_galley": "Cherry War Galley",
+  "item.smallships.lotr_cherry_drakkar": "Cherry Drakkar",
+
+  "item.smallships.lotr_cypress_cog": "Cypress Cog",
+  "item.smallships.lotr_cypress_galley": "Cypress Galley",
+  "item.smallships.lotr_cypress_war_galley": "Cypress War Galley",
+  "item.smallships.lotr_cypress_drakkar": "Cypress Drakkar",
+
+  "item.smallships.lotr_fir_cog": "Fir Cog",
+  "item.smallships.lotr_fir_galley": "Fir Galley",
+  "item.smallships.lotr_fir_war_galley": "Fir War Galley",
+  "item.smallships.lotr_fir_drakkar": "Fir Drakkar",
+
+  "item.smallships.lotr_green_oak_cog": "Green Oak Cog",
+  "item.smallships.lotr_green_oak_galley": "Green Oak Galley",
+  "item.smallships.lotr_green_oak_war_galley": "Green Oak War Galley",
+  "item.smallships.lotr_green_oak_drakkar": "Green Oak Drakkar",
+
+  "item.smallships.lotr_holly_cog": "Holly Cog",
+  "item.smallships.lotr_holly_galley": "Holly Galley",
+  "item.smallships.lotr_holly_war_galley": "Holly War Galley",
+  "item.smallships.lotr_holly_drakkar": "Holly Drakkar",
+
+  "item.smallships.lotr_lairelosse_cog": "Lairelosse Cog",
+  "item.smallships.lotr_lairelosse_galley": "Lairelosse Galley",
+  "item.smallships.lotr_lairelosse_war_galley": "Lairelosse War Galley",
+  "item.smallships.lotr_lairelosse_drakkar": "Lairelosse Drakkar",
+
+  "item.smallships.lotr_larch_cog": "Larch Cog",
+  "item.smallships.lotr_larch_galley": "Larch Galley",
+  "item.smallships.lotr_larch_war_galley": "Larch War Galley",
+  "item.smallships.lotr_larch_drakkar": "Larch Drakkar",
+
+  "item.smallships.lotr_lebethron_cog": "Lebethron Cog",
+  "item.smallships.lotr_lebethron_galley": "Lebethron Galley",
+  "item.smallships.lotr_lebethron_war_galley": "Lebethron War Galley",
+  "item.smallships.lotr_lebethron_drakkar": "Lebethron Drakkar",
+
+  "item.smallships.lotr_mallorn_cog": "Mallorn Cog",
+  "item.smallships.lotr_mallorn_galley": "Mallorn Galley",
+  "item.smallships.lotr_mallorn_war_galley": "Mallorn War Galley",
+  "item.smallships.lotr_mallorn_drakkar": "Mallorn Drakkar",
+
+  "item.smallships.lotr_maple_cog": "Maple Cog",
+  "item.smallships.lotr_maple_galley": "Maple Galley",
+  "item.smallships.lotr_maple_war_galley": "Maple War Galley",
+  "item.smallships.lotr_maple_drakkar": "Maple Drakkar",
+
+  "item.smallships.lotr_mirk_oak_cog": "Mirk Oak Cog",
+  "item.smallships.lotr_mirk_oak_galley": "Mirk Oak Galley",
+  "item.smallships.lotr_mirk_oak_war_galley": "Mirk Oak War Galley",
+  "item.smallships.lotr_mirk_oak_drakkar": "Mirk Oak Drakkar",
+
+  "item.smallships.lotr_pear_cog": "Pear Cog",
+  "item.smallships.lotr_pear_galley": "Pear Galley",
+  "item.smallships.lotr_pear_war_galley": "Pear War Galley",
+  "item.smallships.lotr_pear_drakkar": "Pear Drakkar",
+
+  "item.smallships.lotr_pine_cog": "Pine Cog",
+  "item.smallships.lotr_pine_galley": "Pine Galley",
+  "item.smallships.lotr_pine_war_galley": "Pine War Galley",
+  "item.smallships.lotr_pine_drakkar": "Pine Drakkar",
+
+  "item.smallships.lotr_rotten_cog": "Rotten Cog",
+  "item.smallships.lotr_rotten_galley": "Rotten Galley",
+  "item.smallships.lotr_rotten_war_galley": "Rotten War Galley",
+  "item.smallships.lotr_rotten_drakkar": "Rotten Drakkar"
+
 }
