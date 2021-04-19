@@ -17,7 +17,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec CONFIG;
 
     public static ForgeConfigSpec.IntValue VERSION;
-    public static final int NEW_VERSION = 3;
+    public static final int NEW_VERSION = 4;
 
     public static ForgeConfigSpec.BooleanValue PlaySwimmSound;
     public static ForgeConfigSpec.DoubleValue GalleySpeedFactor;
