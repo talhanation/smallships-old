@@ -37,19 +37,6 @@ public class SmallShipsConfig {
 
         BUILDER.comment("Small Ships Config:").push("Ships");
 
-        /*SailSpeedFactor = BUILDER.comment("\n" +"----Sail Speed Factor for when the sprint key is pressed while riding a ship.----" + "\n" +
-                "\t" +"(takes effect after restart)" + "\n" +
-                "\t" +"default: 1.0")
-                .worldRestart()
-                .defineInRange("SailSpeedFactor", 1.0, 0.0, 2.0);
-            */
-            /*
-            this.PassengerBlackList = builder.comment("Passenger Blacklist: List of entities that are NOT allowed to mount a ship.")
-                    .define("cargoCart.pullEntities", new ArrayList<String>(Arrays.asList(
-                            "minecraft:enderdragon",
-                            "minecraft:phantom",
-                            "minecraft:biest")));
-            */
         GalleySpeedFactor = BUILDER.comment("\n" +"----Galley Speed Factor.----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: 1.3")
