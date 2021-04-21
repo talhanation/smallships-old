@@ -1,10 +1,7 @@
 package com.talhanation.smallships.util;
 
 import com.talhanation.smallships.Main;
-import com.talhanation.smallships.client.render.RenderEntityCog;
-import com.talhanation.smallships.client.render.RenderEntityDrakkar;
-import com.talhanation.smallships.client.render.RenderEntityGalley;
-import com.talhanation.smallships.client.render.RenderEntityWarGalley;
+import com.talhanation.smallships.client.render.*;
 import com.talhanation.smallships.init.ModEntityTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -21,6 +18,7 @@ public class ClientEventBusSubscriber {
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.GALLEY_ENTITY.get(), RenderEntityGalley::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.WAR_GALLEY_ENTITY.get(), RenderEntityWarGalley::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.DRAKKAR_ENTITY.get(), RenderEntityDrakkar::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ROWBOAT_ENTITY.get(), RenderEntityRowBoat::new);
     }
 
 }

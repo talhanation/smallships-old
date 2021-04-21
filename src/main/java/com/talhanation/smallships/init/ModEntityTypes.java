@@ -53,4 +53,12 @@ public class ModEntityTypes {
                     .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "drakkar").toString()));
+
+    public static final RegistryObject<EntityType<RowBoatEntity>> ROWBOAT_ENTITY = ENTITY_TYPES.register("rowboat",
+            () -> EntityType.Builder.<RowBoatEntity>create(RowBoatEntity::new, EntityClassification.MISC)
+                    .size(2.75F, 1.25F)
+                    .trackingRange(20)
+                    .setUpdateInterval(10)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .build(new ResourceLocation(Main.MOD_ID, "rowboat").toString()));
 }

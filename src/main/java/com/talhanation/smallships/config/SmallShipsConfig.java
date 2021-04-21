@@ -20,6 +20,7 @@ public class SmallShipsConfig {
     public static final int NEW_VERSION = 4;
 
     public static ForgeConfigSpec.BooleanValue PlaySwimmSound;
+    public static ForgeConfigSpec.BooleanValue WaterMobFlee;
     public static ForgeConfigSpec.DoubleValue GalleySpeedFactor;
     public static ForgeConfigSpec.DoubleValue GalleyTurnFactor;
     public static ForgeConfigSpec.DoubleValue WarGalleySpeedFactor;
@@ -29,6 +30,8 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue DrakkarSpeedFactor;
     public static ForgeConfigSpec.DoubleValue DrakkarTurnFactor;
     public static ForgeConfigSpec.DoubleValue DrakkarIceBreakSpeed;
+    public static ForgeConfigSpec.DoubleValue RowBoatSpeedFactor;
+    public static ForgeConfigSpec.DoubleValue RowBoatTurnFactor;
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
 
     static {
@@ -92,11 +95,27 @@ public class SmallShipsConfig {
                 .worldRestart()
                 .defineInRange("DrakkarIceBreakSpeed", 2.0, 0.0, 100);
 
+        RowBoatSpeedFactor = BUILDER.comment("\n" +"----Row Boat Speed Factor.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: 1.0")
+                .worldRestart()
+                .defineInRange("DrakkarSpeedFactor", 1.0, 0.0, 2.0);
+
+        RowBoatTurnFactor = BUILDER.comment("\n" +"----Row Boat Turn Factor.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: 0.8")
+                .worldRestart()
+                .defineInRange("DrakkarTurnFactor", 0.8, 0.0, 1.0);
 
         PlaySwimmSound = BUILDER.comment("\n" + "----Should Ships Make Swimming sounds?----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: true")
                 .define("PlaySwimmSound", true);
+
+        WaterMobFlee = BUILDER.comment("\n" + "----Should Ships Make WaterMobs flee?----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: true")
+                .define("WaterMobFlee", true);
 
 
 

@@ -3,6 +3,7 @@ package com.talhanation.smallships.entities;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
 import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
+import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.network.MessagePaddleState;
 import net.minecraft.block.Block;
@@ -387,6 +388,24 @@ public class TNBoatEntity extends Entity {
         }
 
         breakLily();
+
+
+        if ((SmallShipsConfig.WaterMobFlee.get()).booleanValue())  {
+            double radius = 15.0D;
+            List<WaterMobEntity> list1 = this.world.getEntitiesWithinAABB(WaterMobEntity.class, new AxisAlignedBB(getPosX() - radius, getPosY() - radius, getPosZ() - radius, getPosX() + radius, getPosY() + radius, getPosZ() + radius));
+            for (WaterMobEntity ent : list1)
+                fleeEntity(ent);
+        }
+    }
+
+    public void fleeEntity(MobEntity entity) {
+        double fleeDistance = 10.0D;
+        Vector3d vecBoat = new Vector3d(getPosX(), getPosY(), getPosZ());
+        Vector3d vecEntity = new Vector3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+        Vector3d fleeDir = vecEntity.subtract(vecBoat);
+        fleeDir = fleeDir.normalize();
+        Vector3d fleePos = new Vector3d(vecEntity.x + fleeDir.x * fleeDistance, vecEntity.y + fleeDir.y * fleeDistance, vecEntity.z + fleeDir.z * fleeDistance);
+        entity.getNavigator().tryMoveToXYZ(fleePos.x, fleePos.y, fleePos.z, 10.0D);
     }
 
     private void breakLily() {
@@ -1085,5 +1104,4 @@ public class TNBoatEntity extends Entity {
             return (PlayerEntity) passengers.get(0);
         return null;
     }
-
 }

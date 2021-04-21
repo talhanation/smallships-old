@@ -11,39 +11,6 @@ public class BiomesOPlenty {
         return (ModList.get() != null && ModList.get().getModContainerById("biomesoplenty").isPresent());
     }
 
-    @ObjectHolder("biomesoplenty:cherry_planks")
-    public static final Block CHERRY_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:dead_planks")
-    public static final Block DEAD_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:fir_planks")
-    public static final Block FIR_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:hellbark_planks")
-    public static final Block HELLBARK_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:jacaranda_planks")
-    public static final Block JACARANDA_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:magic_planks")
-    public static final Block MAGIC_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:mahogany_planks")
-    public static final Block MAHOGANY_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:palm_planks")
-    public static final Block PALM_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:redwood_planks")
-    public static final Block REDWOOD_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:umbran_planks")
-    public static final Block UMBRAN_PLANKS = null;
-
-    @ObjectHolder("biomesoplenty:willow_planks")
-    public static final Block WILLOW_PLANKS = null;
-
     @ObjectHolder("biomesoplenty:cherry_boat")
     public static final Item CHERRY_BOAT = null;
 

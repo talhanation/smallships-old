@@ -61,7 +61,7 @@ public class LordOfTheRingsMod {
     @ObjectHolder("lotr:pear_boat")
     public static final Item PEAR_BOAT = null;
 
-    @ObjectHolder("lotr:pear_boat")
+    @ObjectHolder("lotr:pine_boat")
     public static final Item PINE_BOAT = null;
 
     @ObjectHolder("lotr:rotten_boat")
