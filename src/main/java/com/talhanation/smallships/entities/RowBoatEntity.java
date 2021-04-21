@@ -95,7 +95,7 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
                     f = -0.75F;
                     d = 0.0F;
                 } else {
-                    f = 1.5F;
+                    f = 0.5F;
                     d = -0.0F;
                 }
             }
