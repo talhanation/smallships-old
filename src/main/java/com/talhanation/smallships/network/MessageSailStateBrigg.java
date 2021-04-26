@@ -1,20 +1,20 @@
 package com.talhanation.smallships.network;
 
-import com.talhanation.smallships.entities.AbstractCogEntity;
+import com.talhanation.smallships.entities.AbstractBriggEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessageSailState implements Message<MessageSailState> {
+public class MessageSailStateBrigg implements Message<MessageSailStateBrigg> {
 
-    private boolean state;
+    private boolean statebrigg;
 
-    public MessageSailState() {
+    public MessageSailStateBrigg() {
     }
 
-    public MessageSailState(boolean state) {
-        this.state = state;
+    public MessageSailStateBrigg(boolean statebrigg) {
+        this.statebrigg = statebrigg;
     }
 
     public Dist getExecutingSide() {
@@ -23,21 +23,21 @@ public class MessageSailState implements Message<MessageSailState> {
 
     public void executeServerSide(NetworkEvent.Context context) {
         Entity riding = context.getSender().getRidingEntity();
-        if (!(riding instanceof AbstractCogEntity))
+        if (!(riding instanceof AbstractBriggEntity))
             return;
-        AbstractCogEntity sailboat = (AbstractCogEntity) riding;
+        AbstractBriggEntity sailboat = (AbstractBriggEntity) riding;
         if (context.getSender() == (sailboat.getDriver())) {
-            sailboat.setSailState(state);
+            sailboat.setSailState(statebrigg);
         }
     }
 
-    public MessageSailState fromBytes(PacketBuffer buf) {
-        this.state = buf.readBoolean();
+    public MessageSailStateBrigg fromBytes(PacketBuffer buf) {
+        this.statebrigg = buf.readBoolean();
         return this;
     }
 
     public void toBytes(PacketBuffer buf) {
-        buf.writeBoolean(this.state);
+        buf.writeBoolean(this.statebrigg);
     }
 
 }

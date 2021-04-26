@@ -23,15 +23,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class CogEntity extends AbstractSailBoatEntity {
+public class CogEntity extends AbstractCogEntity {
     public boolean Cargo_0;
     public boolean Cargo_1;
     public boolean Cargo_2;
     public boolean Cargo_3;
 
-    private static final DataParameter<Integer> CARGO = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> CARGO = EntityDataManager.createKey(AbstractCogEntity.class, DataSerializers.VARINT);
 
-    public CogEntity(EntityType<? extends AbstractSailBoatEntity> entityType, World worldIn) {
+    public CogEntity(EntityType<? extends AbstractCogEntity> entityType, World worldIn) {
         super(entityType, worldIn);
     }
 
@@ -74,7 +74,7 @@ public class CogEntity extends AbstractSailBoatEntity {
     }
 
     public CogEntity(World worldIn, double x, double y, double z) {
-        this((EntityType<? extends AbstractSailBoatEntity>) ModEntityTypes.COG_ENTITY.get(), worldIn);
+        this((EntityType<? extends AbstractCogEntity>) ModEntityTypes.COG_ENTITY.get(), worldIn);
         setPosition(x, y, z);
         setMotion(Vector3d.ZERO);
         this.prevPosX = x;
@@ -83,7 +83,7 @@ public class CogEntity extends AbstractSailBoatEntity {
     }
 
     public CogEntity(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {
-        this((EntityType<? extends AbstractSailBoatEntity>) ModEntityTypes.COG_ENTITY.get(), worldIn);
+        this((EntityType<? extends AbstractCogEntity>) ModEntityTypes.COG_ENTITY.get(), worldIn);
     }
 
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {

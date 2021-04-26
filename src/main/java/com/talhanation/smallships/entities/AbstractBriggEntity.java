@@ -3,15 +3,18 @@ package com.talhanation.smallships.entities;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
-import com.talhanation.smallships.network.MessageSailState;
-import net.minecraft.entity.*;
+import com.talhanation.smallships.network.MessageSailStateBrigg;
+import com.talhanation.smallships.network.MessageSteerState;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -36,8 +39,10 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractSailBoatEntity extends TNBoatEntity {
-    private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractSailBoatEntity.class, DataSerializers.BOOLEAN);
+public abstract class AbstractBriggEntity extends TNBoatEntity {
+    private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractBriggEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.createKey(AbstractBriggEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.createKey(AbstractBriggEntity.class, DataSerializers.BOOLEAN);
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -53,24 +58,33 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
     public ItemStackHandler inventory = initInventory();
     public int passengerwaittime;
     public float passengerfaktor;
-    public boolean leftsteer;
-    public boolean rightsteer;
 
     protected abstract ItemStackHandler initInventory();
 
     private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
 
-    public AbstractSailBoatEntity(EntityType<? extends AbstractSailBoatEntity> entityType, World worldIn) {
+    public AbstractBriggEntity(EntityType<? extends AbstractBriggEntity> entityType, World worldIn) {
         super(entityType, worldIn);
     }
 
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SAIL_STATE, false);
+        this.dataManager.register(IS_LEFT, false);
+        this.dataManager.register(IS_RIGHT, false);
+    }
+
+    public boolean getSteerState(int side) {
+        return this.dataManager.<Boolean>get(side == 0 ? IS_LEFT : IS_RIGHT) && this.getControllingPassenger() != null;
     }
 
     public boolean getSailState() {
         return dataManager.get(SAIL_STATE);
+    }
+
+    public void setSteerState(boolean left, boolean right){
+        this.dataManager.set(IS_LEFT, left);
+        this.dataManager.set(IS_RIGHT, right);
     }
 
     public void setSailState(boolean state) {
@@ -80,9 +94,13 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
         }
     }
 
+    public void sendSteerStateToServer(){
+            Main.SIMPLE_CHANNEL.sendToServer(new MessageSteerState(this.getSteerState(0), this.getSteerState(1)));
+    }
+
     public void sendSailStateToServer(boolean state) {
         if (world.isRemote) {
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageSailState(state));
+            Main.SIMPLE_CHANNEL.sendToServer(new MessageSailStateBrigg(state));
         }
     }
 
@@ -96,6 +114,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
 
     public void tick() {
         passengerwaittime--;
+
         if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& getSailState()) {
             setSailState(false);
         }
@@ -107,7 +126,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
 
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
-        if (this.status != TNBoatEntity.Status.UNDER_WATER && this.status != TNBoatEntity.Status.UNDER_FLOWING_WATER) {
+        if (this.status != Status.UNDER_WATER && this.status != Status.UNDER_FLOWING_WATER) {
             this.outOfControlTicks = 0.0F;
         } else {
             ++this.outOfControlTicks;
@@ -127,6 +146,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
             this.updateMotion();
             if (this.world.isRemote) {
                 this.controlBoat();
+                this.sendSteerStateToServer();
             }
             this.move(MoverType.SELF, this.getMotion());
         } else {
@@ -146,7 +166,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
             for (int j = 0; j < list.size(); ++j) {
                 Entity entity = list.get(j);
                 if (!entity.isPassenger(this)) {
-                    if (flag && this.getPassengers().size() < 5 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
+                    if (flag && this.getPassengers().size() < 10 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
                         if (passengerwaittime < 0) {
                             entity.startRiding(this);
                         }
@@ -168,9 +188,9 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
     public void Watersplash(){
         super.Watersplash();
         Vector3d vector3d = this.getLook(0.0F);
-        float f0 = MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * 0.8F;
-        float f1 = MathHelper.sin(this.rotationYaw * ((float)Math.PI / 180F)) * 0.8F;
-        float f2 =  2.5F - this.rand.nextFloat() * 0.7F;
+        float f0 = MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * 1.2F;
+        float f1 = MathHelper.sin(this.rotationYaw * ((float)Math.PI / 180F)) * 1.2F;
+        float f2 =  4F - this.rand.nextFloat() * 0.7F;
         for (int i = 0; i < 2; ++i) {
             this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 + (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 + (double) f1, 0.0D, 0.0D, 0.0D);
             this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1, 0.0D, 0.0D, 0.0D);
@@ -208,14 +228,14 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
         double d0 = -0.04D; // down/up moment
         double d1 = hasNoGravity() ? 0.0D : d0;
         double d2 = 0.0D;  //
-        double CogTurnFactor = SmallShipsConfig.CogTurnFactor.get();
+        double BriggTurnFactor = SmallShipsConfig.BriggTurnFactor.get();
         this.momentum = 1.0F;
 
-        if (this.getPassengers().size() == 2) this.passengerfaktor = 0.05F;
-        if (this.getPassengers().size() == 4) this.passengerfaktor = 0.1F;
-        if (this.getPassengers().size() == 6) this.passengerfaktor = 0.2F;
-        if (this.getPassengers().size() == 8) this.passengerfaktor = 0.3F;
-        if (this.getPassengers().size() > 8) this.passengerfaktor = 0.4F;
+        if (this.getPassengers().size() == 2) this.passengerfaktor = 0.0075F;
+        if (this.getPassengers().size() == 4) this.passengerfaktor = 0.0150F;
+        if (this.getPassengers().size() == 6) this.passengerfaktor = 0.0300F;
+        if (this.getPassengers().size() == 8) this.passengerfaktor = 0.0600F;
+        if (this.getPassengers().size() > 8)  this.passengerfaktor = 0.1200F;
 
         if (this.previousStatus == Status.IN_AIR && this.status != Status.IN_AIR && this.status != Status.ON_LAND) {
             this.waterLevel = (getBoundingBox()).minY + getHeight();
@@ -241,7 +261,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
             }
             Vector3d vec3d = getMotion();
             setMotion(vec3d.x * (this.momentum - this.passengerfaktor), vec3d.y + d1, vec3d.z * (this.momentum - this.passengerfaktor));
-            this.deltaRotation *= (this.momentum - this.passengerfaktor) * CogTurnFactor;
+            this.deltaRotation *= (this.momentum - this.passengerfaktor) * BriggTurnFactor;
             if (d2 > 0.0D) {
                 Vector3d vec3d1 = getMotion();
                 setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
@@ -250,7 +270,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
     }
 
     protected void controlBoat() {
-        double CogSpeedFactor = SmallShipsConfig.CogSpeedFactor.get();
+        double BriggSpeedFactor = SmallShipsConfig.BriggSpeedFactor.get();
         if (this.isBeingRidden()) {
             float f = 0.0F;
             if (this.leftInputDown) {
@@ -265,15 +285,16 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
             this.rotationYaw += this.deltaRotation;
 
             if (getSailState()) {
-                f += (0.04F * CogSpeedFactor);
+                f += (0.04F * BriggSpeedFactor);
             }
             if (this.backInputDown) {
-                f -= (0.005F * CogSpeedFactor);
+                f -= (0.01F * BriggSpeedFactor);
             }
             if (this.forwardInputDown) {
-                f += (0.005F * CogSpeedFactor);
+                f += (0.01F * BriggSpeedFactor);
             }
             this.setMotion(this.getMotion().add((double) (MathHelper.sin(-this.rotationYaw * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * f)));
+            this.setSteerState(this.rightInputDown && !this.leftInputDown, this.leftInputDown && !this.rightInputDown);
         }
     }
 
@@ -310,7 +331,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
             }
         }
 
-        return flag ? TNBoatEntity.Status.UNDER_WATER : null;
+        return flag ? Status.UNDER_WATER : null;
     }
 
     private boolean checkInWater() {
@@ -370,12 +391,12 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
 
     protected void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-        this.inventory.deserializeNBT(compound.getCompound("Items"));
+   //     this.inventory.deserializeNBT(compound.getCompound("Items"));
     }
 
     protected void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
-        compound.put("Items", (INBT) this.inventory.serializeNBT());
+//        compound.put("Items", (INBT) this.inventory.serializeNBT());
 
     }
 
@@ -399,7 +420,7 @@ public abstract class AbstractSailBoatEntity extends TNBoatEntity {
         if (!this.world.isRemote && isAlive()) {
             if (source == DamageSource.CACTUS)
                 return false;
-            if (source instanceof net.minecraft.util.IndirectEntityDamageSource && source.getTrueSource() != null && isPassenger(source.getTrueSource()))
+            if (source instanceof IndirectEntityDamageSource && source.getTrueSource() != null && isPassenger(source.getTrueSource()))
                 return false;
             setForwardDirection(-getForwardDirection());
             setTimeSinceHit(3);

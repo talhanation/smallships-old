@@ -95,8 +95,15 @@ public class TNBoatEntity extends Entity {
 
     }
 
-    public void Watersplash(){
+    public void onInvPressed(PlayerEntity player){
 
+    }
+
+    public void openContainer(PlayerEntity player){
+
+    }
+
+    public void Watersplash(){
 
     }
 

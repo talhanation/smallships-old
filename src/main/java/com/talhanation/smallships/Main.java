@@ -30,6 +30,7 @@ public class Main {
     public static final String MOD_ID = "smallships";
     public static SimpleChannel SIMPLE_CHANNEL;
     public static KeyBinding SAIL_KEY;
+    public static KeyBinding INV_KEY;
 
     public Main() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SmallShipsConfig.CONFIG);
@@ -69,6 +70,18 @@ public class Main {
         SIMPLE_CHANNEL.registerMessage(4, MessageSailStateDrakkar.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessageSailStateDrakkar()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
+
+        SIMPLE_CHANNEL.registerMessage(5, MessageSailStateBrigg.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessageSailStateBrigg()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
+
+        SIMPLE_CHANNEL.registerMessage(6, MessageSteerState.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessageSteerState()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
+
+        SIMPLE_CHANNEL.registerMessage(7, MessageOpenInv.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessageOpenInv()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
     }
 
 
@@ -78,6 +91,7 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
         SAIL_KEY = ClientRegistry.registerKeyBinding("key.ship_sail", "category.smallships", 82);
+        INV_KEY = ClientRegistry.registerKeyBinding("key.ship_inventory", "category.smallships", 73);
     }
 
 }

@@ -61,4 +61,12 @@ public class ModEntityTypes {
                     .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "rowboat").toString()));
+
+    public static final RegistryObject<EntityType<BriggEntity>> BRIGG_ENTITY = ENTITY_TYPES.register("brigg",
+            () -> EntityType.Builder.<BriggEntity>create(BriggEntity::new, EntityClassification.MISC)
+                    .size(5.5F, 1.25F)
+                    .trackingRange(20)
+                    .setUpdateInterval(10)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .build(new ResourceLocation(Main.MOD_ID, "brigg").toString()));
 }

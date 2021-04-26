@@ -17,7 +17,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec CONFIG;
 
     public static ForgeConfigSpec.IntValue VERSION;
-    public static final int NEW_VERSION = 4;
+    public static final int NEW_VERSION = 5;
 
     public static ForgeConfigSpec.BooleanValue PlaySwimmSound;
     public static ForgeConfigSpec.BooleanValue WaterMobFlee;
@@ -32,6 +32,9 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue DrakkarIceBreakSpeed;
     public static ForgeConfigSpec.DoubleValue RowBoatSpeedFactor;
     public static ForgeConfigSpec.DoubleValue RowBoatTurnFactor;
+    public static ForgeConfigSpec.DoubleValue BriggSpeedFactor;
+    public static ForgeConfigSpec.DoubleValue BriggTurnFactor;
+
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
 
     static {
@@ -106,6 +109,18 @@ public class SmallShipsConfig {
                 "\t" + "default: 0.8")
                 .worldRestart()
                 .defineInRange("DrakkarTurnFactor", 0.8, 0.0, 1.0);
+
+        BriggSpeedFactor = BUILDER.comment("\n" +"----Brigg Speed Factor.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: 1.28" )
+                .worldRestart()
+                .defineInRange("BriggSpeedFactor", 1.28, 0.0, 2.0);
+
+        BriggTurnFactor = BUILDER.comment("\n" +"----Brigg Turn Factor.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: 0.2")
+                .worldRestart()
+                .defineInRange("BriggTurnFactor", 0.2, 0.0, 1.0);
 
         PlaySwimmSound = BUILDER.comment("\n" + "----Should Ships Make Swimming sounds?----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +

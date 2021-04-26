@@ -5,12 +5,14 @@ import com.talhanation.smallships.entities.TNBoatEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class KeyEvents {
 
     private boolean wasSailPressed;
+    private boolean wasInvPressed;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -32,6 +34,16 @@ public class KeyEvents {
                 }
             } else {
                 this.wasSailPressed = false;
+            }
+
+            if (Main.INV_KEY.isKeyDown()){
+                if(!this.wasInvPressed){
+                    boat.onInvPressed(clientPlayerEntity);
+                    this.wasInvPressed = true;
+                }
+                else {
+                    this.wasInvPressed = false;
+                }
             }
         }
     }
