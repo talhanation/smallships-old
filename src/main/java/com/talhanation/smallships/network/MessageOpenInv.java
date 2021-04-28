@@ -34,7 +34,7 @@ public class MessageOpenInv implements Message<MessageOpenInv> {
 
 
     public MessageOpenInv fromBytes(PacketBuffer paramPacketBuffer) {
-        return null;
+        return this;
     }
 
 
