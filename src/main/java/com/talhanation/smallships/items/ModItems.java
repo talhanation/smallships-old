@@ -240,7 +240,37 @@ public class ModItems {
     public static final RegistryObject<Item> LOTR_ROTTEN_DRAKKAR_ITEM =      createDrakkar("lotr_rotten", AbstractDrakkarEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
     public static final RegistryObject<Item> LOTR_ROTTEN_ROWBOAT_ITEM =      createRowBoat("lotr_rotten", AbstractRowBoatEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
 
+    public static final RegistryObject<Item> BOP_CHERRY_BRIGG_ITEM =      createBrigg("bop_cherry", AbstractBriggEntity.Type.BOP_CHERRY, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_DEAD_BRIGG_ITEM =      createBrigg("bop_dead", AbstractBriggEntity.Type.BOP_DEAD, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_FIR_BRIGG_ITEM =      createBrigg("bop_fir", AbstractBriggEntity.Type.BOP_FIR, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_HELLBARK_BRIGG_ITEM =      createBrigg("bop_hellbark", AbstractBriggEntity.Type.BOP_HELLBARK, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_JACARANDA_BRIGG_ITEM =      createBrigg("bop_jacaranda", AbstractBriggEntity.Type.BOP_JACARANDA, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_MAGIC_BRIGG_ITEM =      createBrigg("bop_magic", AbstractBriggEntity.Type.BOP_MAGIC, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_MAHOGANY_BRIGG_ITEM =      createBrigg("bop_mahogany", AbstractBriggEntity.Type.BOP_MAHOGANY, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_PALM_BRIGG_ITEM =      createBrigg("bop_palm", AbstractBriggEntity.Type.BOP_PALM, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_REDWOOD_BRIGG_ITEM =      createBrigg("bop_redwood", AbstractBriggEntity.Type.BOP_REDWOOD, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_UMBRAN_BRIGG_ITEM =      createBrigg("bop_umbran", AbstractBriggEntity.Type.BOP_UMBRAN, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_WILLOW_BRIGG_ITEM =      createBrigg("bop_willow", AbstractBriggEntity.Type.BOP_WILLOW, BiomesOPlenty.isInstalled());
 
+    public static final RegistryObject<Item> LOTR_APPLE_BRIGG_ITEM =      createBrigg("lotr_apple", AbstractBriggEntity.Type.LOTR_APPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ASPEN_BRIGG_ITEM =      createBrigg("lotr_aspen", AbstractBriggEntity.Type.LOTR_ASPEN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_BEECH_BRIGG_ITEM =      createBrigg("lotr_beech", AbstractBriggEntity.Type.LOTR_BEECH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CEDAR_BRIGG_ITEM =      createBrigg("lotr_cedar", AbstractBriggEntity.Type.LOTR_CEDAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHARRED_BRIGG_ITEM =      createBrigg("lotr_charred", AbstractBriggEntity.Type.LOTR_CHARRED, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHERRY_BRIGG_ITEM =      createBrigg("lotr_cherry", AbstractBriggEntity.Type.LOTR_CHERRY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CYPRESS_BRIGG_ITEM =      createBrigg("lotr_cypress", AbstractBriggEntity.Type.LOTR_CYPRESS, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_FIR_BRIGG_ITEM =      createBrigg("lotr_fir", AbstractBriggEntity.Type.LOTR_FIR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_GREEN_OAK_BRIGG_ITEM =      createBrigg("lotr_green_oak", AbstractBriggEntity.Type.LOTR_GREEN_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_HOLLY_BRIGG_ITEM =      createBrigg("lotr_holly", AbstractBriggEntity.Type.LOTR_HOLLY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LAIRELOSSE_BRIGG_ITEM =      createBrigg("lotr_lairelosse", AbstractBriggEntity.Type.LOTR_LAIRELOSSE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LARCH_BRIGG_ITEM =      createBrigg("lotr_larch", AbstractBriggEntity.Type.LOTR_LARCH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LEBETHRON_BRIGG_ITEM =      createBrigg("lotr_lebethron", AbstractBriggEntity.Type.LOTR_LEBETHRON, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MALLORN_BRIGG_ITEM =      createBrigg("lotr_mallorn", AbstractBriggEntity.Type.LOTR_MALLORN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MAPLE_BRIGG_ITEM =      createBrigg("lotr_maple", AbstractBriggEntity.Type.LOTR_MAPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MIRK_OAK_BRIGG_ITEM =      createBrigg("lotr_mirk_oak", AbstractBriggEntity.Type.LOTR_MIRK_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PEAR_BRIGG_ITEM =      createBrigg("lotr_pear", AbstractBriggEntity.Type.LOTR_PEAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PINE_BRIGG_ITEM =      createBrigg("lotr_pine", AbstractBriggEntity.Type.LOTR_PINE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ROTTEN_BRIGG_ITEM =      createBrigg("lotr_rotten", AbstractBriggEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
 
 
 

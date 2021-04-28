@@ -22,7 +22,7 @@ public class RenderEntityBrigg extends EntityRenderer<BriggEntity>{
             new ResourceLocation(Main.MOD_ID,"textures/entity/cog/jungle_cog.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/cog/acacia_cog.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/cog/dark_oak_cog.png"),
-/*
+
             //BOP//
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_cherry_cog.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/bop/cog/bop_dead_cog.png"),
@@ -56,7 +56,7 @@ public class RenderEntityBrigg extends EntityRenderer<BriggEntity>{
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/cog/lotr_pear_cog.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/cog/lotr_pine_cog.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/cog/lotr_rotten_cog.png"),
-            */
+
     };
 
     private final ModelBrigg model = new ModelBrigg<>();

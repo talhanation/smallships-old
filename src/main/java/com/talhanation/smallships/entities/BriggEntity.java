@@ -380,7 +380,7 @@ public class BriggEntity extends AbstractBriggEntity {
                 return ModItems.ACACIA_BRIGG_ITEM.get();
             case DARK_OAK:
                 return ModItems.DARK_OAK_BRIGG_ITEM.get();
-          /*
+
             //BOP
             case BOP_CHERRY:
                 return ModItems.BOP_CHERRY_BRIGG_ITEM.get();
@@ -443,7 +443,7 @@ public class BriggEntity extends AbstractBriggEntity {
                 return ModItems.LOTR_PINE_BRIGG_ITEM.get();
             case LOTR_ROTTEN:
                 return ModItems.LOTR_ROTTEN_BRIGG_ITEM.get();
-    */
+
         }
     }
 
