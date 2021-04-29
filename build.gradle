@@ -44,7 +44,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             Random rnd = new Random()
-            args = ['--username', 'Player' + rnd.nextInt(10)]
+            args = ['--username', 'Player' + rnd.nextInt(100)]
 
             mods {
                 examplemod {

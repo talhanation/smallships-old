@@ -5,6 +5,7 @@ import com.talhanation.smallships.entities.TNBoatEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -26,7 +27,7 @@ public class KeyEvents {
             if (Main.SAIL_KEY.isPressed()) {
                 boat.onSprintPressed();
             }
-
+        if (riding.equals(boat))
             if (Main.INV_KEY.isPressed()) {
                 boat.onInvPressed(clientPlayerEntity);
             }

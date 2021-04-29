@@ -24,10 +24,8 @@ public class MessageOpenInv implements Message<MessageOpenInv> {
 
     public void executeServerSide(NetworkEvent.Context context) {
         Entity riding = context.getSender().getRidingEntity();
-        if (!(riding instanceof TNBoatEntity))
-            return;
         TNBoatEntity boat = (TNBoatEntity) riding;
-        if (context.getSender() == (boat.getDriver())) {
+        if (riding.equals(boat)) {
             boat.openContainer(context.getSender());
         }
     }
