@@ -27,7 +27,9 @@ public class KeyEvents {
             if (Main.SAIL_KEY.isPressed()) {
                 boat.onSprintPressed();
             }
-        if (riding.equals(boat))
+        }
+
+        if (boat.getPassengers().contains(clientPlayerEntity)) {
             if (Main.INV_KEY.isPressed()) {
                 boat.onInvPressed(clientPlayerEntity);
             }

@@ -1112,19 +1112,4 @@ public class TNBoatEntity extends Entity {
         return null;
     }
 
-    public PlayerEntity getInventoryUser() {
-        if (getPassengers().size() <= 0)
-            return null;
-        else if (getPassengers().get(0) instanceof PlayerEntity)
-            return (PlayerEntity) getPassengers().get(0);
-        else if (getPassengers().get(1) instanceof PlayerEntity)
-            return (PlayerEntity) getPassengers().get(1);
-        else if (getPassengers().get(2) instanceof PlayerEntity)
-            return (PlayerEntity) getPassengers().get(2);
-        else if (getPassengers().get(3) instanceof PlayerEntity)
-            return (PlayerEntity) getPassengers().get(3);
-
-        return null;
-    }
-
 }
