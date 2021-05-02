@@ -118,10 +118,6 @@ public class BriggEntity extends AbstractBriggEntity {
         }
     }
 
-    @Override
-    public void onInvPressed(PlayerEntity player){
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageOpenInv(player));
-    }
 
     @OnlyIn(Dist.CLIENT)
     public void handleStatusUpdate(byte id) {

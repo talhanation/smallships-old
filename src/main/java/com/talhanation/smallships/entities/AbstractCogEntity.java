@@ -4,6 +4,7 @@ import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessageSailState;
+import com.talhanation.smallships.network.MessageSteerState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -38,6 +39,8 @@ import java.util.List;
 
 public abstract class AbstractCogEntity extends TNBoatEntity {
     private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractCogEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.createKey(AbstractBriggEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.createKey(AbstractBriggEntity.class, DataSerializers.BOOLEAN);
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -67,10 +70,21 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
     protected void registerData() {
         super.registerData();
         this.dataManager.register(SAIL_STATE, false);
+        this.dataManager.register(IS_LEFT, false);
+        this.dataManager.register(IS_RIGHT, false);
+    }
+
+    public boolean getSteerState(int side) {
+        return this.dataManager.<Boolean>get(side == 0 ? IS_LEFT : IS_RIGHT) && this.getControllingPassenger() != null;
     }
 
     public boolean getSailState() {
         return dataManager.get(SAIL_STATE);
+    }
+
+    public void setSteerState(boolean left, boolean right){
+        this.dataManager.set(IS_LEFT, left);
+        this.dataManager.set(IS_RIGHT, right);
     }
 
     public void setSailState(boolean state) {
@@ -86,6 +100,10 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
         }
     }
 
+    public void sendSteerStateToServer(){
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageSteerState(this.getSteerState(0), this.getSteerState(1)));
+    }
+
     public void playSailSound(boolean state) {
         if (state) {
             this.world.playSound(null, this.getPosX(), this.getPosY() + 4 , this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.4F * this.rand.nextFloat());
@@ -96,6 +114,8 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
 
     public void tick() {
         passengerwaittime--;
+
+
         if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& getSailState()) {
             setSailState(false);
         }
@@ -127,6 +147,7 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
             this.updateMotion();
             if (this.world.isRemote) {
                 this.controlBoat();
+                this.sendSteerStateToServer();
             }
             this.move(MoverType.SELF, this.getMotion());
         } else {
@@ -274,6 +295,7 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
                 f += (0.005F * CogSpeedFactor);
             }
             this.setMotion(this.getMotion().add((double) (MathHelper.sin(-this.rotationYaw * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * f)));
+            this.setSteerState(this.rightInputDown && !this.leftInputDown, this.leftInputDown && !this.rightInputDown);
         }
     }
 

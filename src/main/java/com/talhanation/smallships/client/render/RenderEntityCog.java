@@ -3,7 +3,7 @@ package com.talhanation.smallships.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.talhanation.smallships.Main;
-import com.talhanation.smallships.client.model.ModelSailBoat;
+import com.talhanation.smallships.client.model.ModelCog;
 import com.talhanation.smallships.entities.CogEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -58,7 +58,7 @@ public class RenderEntityCog extends EntityRenderer<CogEntity>{
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/cog/lotr_rotten_cog.png"),
     };
 
-    private final ModelSailBoat model = new ModelSailBoat<>();
+    private final ModelCog model = new ModelCog<>();
 
     public RenderEntityCog(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);

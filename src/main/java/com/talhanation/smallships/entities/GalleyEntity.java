@@ -1,8 +1,10 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.Main;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.GalleyContainer;
 import com.talhanation.smallships.items.ModItems;
+import com.talhanation.smallships.network.MessageOpenInv;
 import com.talhanation.smallships.util.GalleyItemStackHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

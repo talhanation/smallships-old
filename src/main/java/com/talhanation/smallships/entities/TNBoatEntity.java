@@ -5,6 +5,7 @@ import com.talhanation.smallships.compatiblity.BiomesOPlenty;
 import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.ModEntityTypes;
+import com.talhanation.smallships.network.MessageOpenInv;
 import com.talhanation.smallships.network.MessagePaddleState;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -95,8 +96,8 @@ public class TNBoatEntity extends Entity {
 
     }
 
-    public void onInvPressed(PlayerEntity player) {
-
+    public void onInvPressed(PlayerEntity player){
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageOpenInv(player));
     }
 
     public void openContainer(PlayerEntity player) {
