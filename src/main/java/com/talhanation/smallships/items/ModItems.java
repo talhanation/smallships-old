@@ -2,6 +2,7 @@ package com.talhanation.smallships.items;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
+import com.talhanation.smallships.compatiblity.Environmental;
 import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
 import com.talhanation.smallships.entities.*;
 import net.minecraft.item.Item;
@@ -272,8 +273,24 @@ public class ModItems {
     public static final RegistryObject<Item> LOTR_PINE_BRIGG_ITEM =      createBrigg("lotr_pine", AbstractBriggEntity.Type.LOTR_PINE, LordOfTheRingsMod.isInstalled());
     public static final RegistryObject<Item> LOTR_ROTTEN_BRIGG_ITEM =      createBrigg("lotr_rotten", AbstractBriggEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
 
-
-
+    public static final RegistryObject<Item> ENVI_CHERRY_COG_ITEM =      createCog("envi_cherry", AbstractCogEntity.Type.ENVI_CHERRY, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WISTERIA_COG_ITEM =      createCog("envi_wisteria", AbstractCogEntity.Type.ENVI_WISTERIA, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WILLOW_COG_ITEM =      createCog("envi_willow", AbstractCogEntity.Type.ENVI_WILLOW, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_CHERRY_GALLEY_ITEM =      createGalley("envi_cherry", AbstractGalleyEntity.Type.ENVI_CHERRY, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WISTERIA_GALLEY_ITEM =      createGalley("envi_wisteria", AbstractGalleyEntity.Type.ENVI_WISTERIA, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WILLOW_GALLEY_ITEM =      createGalley("envi_willow", AbstractGalleyEntity.Type.ENVI_WILLOW, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_CHERRY_WAR_GALLEY_ITEM =      createWarGalley("envi_cherry", AbstractWarGalleyEntity.Type.ENVI_CHERRY, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WISTERIA_WAR_GALLEY_ITEM =      createWarGalley("envi_wisteria", AbstractWarGalleyEntity.Type.ENVI_WISTERIA, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WILLOW_WAR_GALLEY_ITEM =      createWarGalley("envi_willow", AbstractWarGalleyEntity.Type.ENVI_WILLOW, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_CHERRY_DRAKKAR_ITEM =      createDrakkar("envi_cherry", AbstractDrakkarEntity.Type.ENVI_CHERRY, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WISTERIA_DRAKKAR_ITEM =      createDrakkar("envi_wisteria", AbstractDrakkarEntity.Type.ENVI_WISTERIA, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WILLOW_DRAKKAR_ITEM =      createDrakkar("envi_willow", AbstractDrakkarEntity.Type.ENVI_WILLOW, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_CHERRY_ROWBOAT_ITEM =      createRowBoat("envi_cherry", AbstractRowBoatEntity.Type.ENVI_CHERRY, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WISTERIA_ROWBOAT_ITEM =      createRowBoat("envi_wisteria", AbstractRowBoatEntity.Type.ENVI_WISTERIA, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WILLOW_ROWBOAT_ITEM =      createRowBoat("envi_willow", AbstractRowBoatEntity.Type.ENVI_WILLOW, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_CHERRY_BRIGG_ITEM =      createBrigg("envi_cherry", AbstractBriggEntity.Type.ENVI_CHERRY, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WISTERIA_BRIGG_ITEM =      createBrigg("envi_wisteria", AbstractBriggEntity.Type.ENVI_WISTERIA, Environmental.isInstalled());
+    public static final RegistryObject<Item> ENVI_WILLOW_BRIGG_ITEM =      createBrigg("envi_willow", AbstractBriggEntity.Type.ENVI_WILLOW, Environmental.isInstalled());
 
 
 

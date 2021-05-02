@@ -440,6 +440,13 @@ public class BriggEntity extends AbstractBriggEntity {
             case LOTR_ROTTEN:
                 return ModItems.LOTR_ROTTEN_BRIGG_ITEM.get();
 
+            //ENVI//
+            case ENVI_CHERRY:
+                return ModItems.ENVI_CHERRY_BRIGG_ITEM.get();
+            case ENVI_WILLOW:
+                return ModItems.ENVI_WILLOW_BRIGG_ITEM.get();
+            case ENVI_WISTERIA:
+                return ModItems.ENVI_WISTERIA_BRIGG_ITEM.get();
         }
     }
 

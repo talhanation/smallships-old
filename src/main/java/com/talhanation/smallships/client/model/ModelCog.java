@@ -11,7 +11,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
+public class ModelCog<T extends CogEntity> extends EntityModel<T> {
     public ModelRenderer botom_1;
     public ModelRenderer side_1;
     public ModelRenderer side_3;
@@ -89,7 +89,7 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
     public ModelRenderer Sail_1_2_5;
     public ModelRenderer Sail_1_2_6;
 
-    public ModelSailBoat() {
+    public ModelCog() {
         this.textureWidth = 128;
         this.textureHeight = 64;
         this.Cargo3 = new ModelRenderer(this, 96, 38);
@@ -501,8 +501,8 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
     }
 
     @Override
-    public void setRotationAngles(T entityln, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityln.getSailState()) {
+    public void setRotationAngles(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+        if (entityIn.getSailState()) {
             this.Sail_0.showModel = false;
             this.Sail_1.showModel = true;
         } else {
@@ -510,18 +510,24 @@ public class ModelSailBoat<T extends CogEntity> extends EntityModel<T> {
             this.Sail_1.showModel = false;
         }
 
-        this.Cargo0.showModel = (entityln).Cargo_0;
-        this.Cargo1.showModel = (entityln).Cargo_1;
-        this.Cargo2.showModel = (entityln).Cargo_2;
-        this.Cargo3.showModel = (entityln).Cargo_3;
+        this.Cargo0.showModel = (entityIn).Cargo_0;
+        this.Cargo1.showModel = (entityIn).Cargo_1;
+        this.Cargo2.showModel = (entityIn).Cargo_2;
+        this.Cargo3.showModel = (entityIn).Cargo_3;
 
-        if (entityln.isBeingRidden()){
-            if (entityln.leftInputDown) this.steer.rotateAngleY = -MathHelper.cos(3.1415927F);
-            else if (entityln.rightInputDown) this.steer.rotateAngleY = MathHelper.cos(3.1415927F);
-            else this.steer.rotateAngleY = 0;
+        if (entityIn.getSteerState(0)){
+            this.steer.rotateAngleY = MathHelper.cos(3.1415927F);
+            //this.Brigg.rotateAngleZ = -MathHelper.cos(3.1415927F * 2 );
+        }
+        else if (entityIn.getSteerState(1)) {
+            this.steer.rotateAngleY = -MathHelper.cos(3.1415927F);
+            //this.Brigg.rotateAngleZ = MathHelper.cos(3.1415927F * 2 );
+        }
+        else {
+            this.steer.rotateAngleY = 0;
+            //this.Brigg.rotateAngleZ = 0;
         }
     }
-
 
     /**
      * This is a helper function from Tabula to set the rotation of model parts

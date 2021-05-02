@@ -683,11 +683,17 @@ public class ModelBrigg<T extends BriggEntity> extends EntityModel<T> {
             this.Sail_1_0_o.showModel = false;
             this.Sail_2_0_o.showModel = false;
         }
-
-        if (entityIn.isBeingRidden()){
-            if (entityIn.getSteerState(0)) this.steer.rotateAngleX = -MathHelper.cos(3.1415927F);
-            else if (entityIn.getSteerState(1)) this.steer.rotateAngleX = MathHelper.cos(3.1415927F);
-            else this.steer.rotateAngleX = 0;
+        if (entityIn.getSteerState(0)){
+            this.steer.rotateAngleX = -MathHelper.cos(3.1415927F);
+            //this.Brigg.rotateAngleZ = -MathHelper.cos(3.1415927F * 2 );
+        }
+        else if (entityIn.getSteerState(1)) {
+            this.steer.rotateAngleX = MathHelper.cos(3.1415927F);
+            //this.Brigg.rotateAngleZ = MathHelper.cos(3.1415927F * 2 );
+        }
+        else {
+            this.steer.rotateAngleX = 0;
+            //this.Brigg.rotateAngleZ = 0;
         }
 
         this.Cargo0.showModel = (entityIn).Cargo_0;
@@ -705,8 +711,4 @@ public class ModelBrigg<T extends BriggEntity> extends EntityModel<T> {
         modelRenderer.rotateAngleZ = z;
     }
 
-    public void SteerSate(BriggEntity briggEntity, int side, float limbSwing){
-        if (side == 0) {
-        }
-    }
 }

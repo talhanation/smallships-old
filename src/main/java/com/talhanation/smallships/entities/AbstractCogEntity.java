@@ -56,8 +56,6 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
     public ItemStackHandler inventory = initInventory();
     public int passengerwaittime;
     public float passengerfaktor;
-    public boolean leftsteer;
-    public boolean rightsteer;
 
     protected abstract ItemStackHandler initInventory();
 

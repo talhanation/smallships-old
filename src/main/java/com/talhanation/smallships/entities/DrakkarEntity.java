@@ -303,6 +303,14 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
             case LOTR_ROTTEN:
                 return ModItems.LOTR_ROTTEN_DRAKKAR_ITEM.get();
 
+            //ENVI//
+            case ENVI_CHERRY:
+                return ModItems.ENVI_CHERRY_DRAKKAR_ITEM.get();
+            case ENVI_WILLOW:
+                return ModItems.ENVI_WILLOW_DRAKKAR_ITEM.get();
+            case ENVI_WISTERIA:
+                return ModItems.ENVI_WISTERIA_DRAKKAR_ITEM.get();
+
         }
     }
 

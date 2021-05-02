@@ -1029,7 +1029,12 @@ public class TNBoatEntity extends Entity {
         LOTR_MIRK_OAK("lotr_mirk_oak"),
         LOTR_PEAR("lotr_pear"),
         LOTR_PINE("lotr_pine"),
-        LOTR_ROTTEN("lotr_rotten");
+        LOTR_ROTTEN("lotr_rotten"),
+        //ENVI
+        ENVI_CHERRY("envi_cherry"),
+        ENVI_WISTERIA("envi_wisteria"),
+        ENVI_WILLOW("envi_willow");
+
 
 
         private final String name;

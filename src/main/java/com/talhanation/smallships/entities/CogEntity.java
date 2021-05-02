@@ -299,6 +299,14 @@ public class CogEntity extends AbstractCogEntity {
             case LOTR_ROTTEN:
                 return ModItems.LOTR_ROTTEN_COG_ITEM.get();
 
+           //ENVI//
+            case ENVI_CHERRY:
+                return ModItems.ENVI_CHERRY_COG_ITEM.get();
+            case ENVI_WILLOW:
+                return ModItems.ENVI_WILLOW_COG_ITEM.get();
+            case ENVI_WISTERIA:
+                return ModItems.ENVI_WISTERIA_COG_ITEM.get();
+
         }
     }
 

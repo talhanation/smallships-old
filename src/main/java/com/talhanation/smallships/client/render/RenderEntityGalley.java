@@ -56,6 +56,12 @@ public class RenderEntityGalley extends EntityRenderer<GalleyEntity>{
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_pear_galley.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_pine_galley.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/lotr/galley/lotr_rotten_galley.png"),
+
+            //ENVI//
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/envi/galley/envi_cherry_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/envi/gelley/envi_wisteria_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/envi/gelley/envi_willow_galley.png")
+
     };
 
     private final ModelGalley model = new ModelGalley<>();

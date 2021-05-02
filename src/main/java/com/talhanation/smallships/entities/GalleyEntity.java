@@ -332,6 +332,14 @@ public class GalleyEntity extends AbstractGalleyEntity {
                 return ModItems.LOTR_PINE_GALLEY_ITEM.get();
             case LOTR_ROTTEN:
                 return ModItems.LOTR_ROTTEN_GALLEY_ITEM.get();
+
+            //ENVI//
+            case ENVI_CHERRY:
+                return ModItems.ENVI_CHERRY_GALLEY_ITEM.get();
+            case ENVI_WILLOW:
+                return ModItems.ENVI_WILLOW_GALLEY_ITEM.get();
+            case ENVI_WISTERIA:
+                return ModItems.ENVI_WISTERIA_GALLEY_ITEM.get();
         }
 
     }

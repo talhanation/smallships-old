@@ -696,6 +696,14 @@ public class WarGalleyEntity extends AbstractWarGalleyEntity {
             case LOTR_ROTTEN:
                 return ModItems.LOTR_ROTTEN_WAR_GALLEY_ITEM.get();
 
+            //ENVI//
+            case ENVI_CHERRY:
+                return ModItems.ENVI_CHERRY_WAR_GALLEY_ITEM.get();
+            case ENVI_WILLOW:
+                return ModItems.ENVI_WILLOW_WAR_GALLEY_ITEM.get();
+            case ENVI_WISTERIA:
+                return ModItems.ENVI_WISTERIA_WAR_GALLEY_ITEM.get();
+
         }
 
     }

@@ -263,5 +263,24 @@
   "item.smallships.bop_palm_brigg": "Palm Brigg",
   "item.smallships.bop_redwood_brigg": "Redwood Brigg",
   "item.smallships.bop_umbran_brigg": "Umbran Brigg",
-  "item.smallships.bop_willow_brigg": "Willow Brigg"
+  "item.smallships.bop_willow_brigg": "Willow Brigg",
+
+  "item.smallships.envi_cherry_cog": "Cherry Cog",
+  "item.smallships.envi_wisteria_cog": "Wisteria Cog",
+  "item.smallships.envi_willow_cog": "Willow Cog",
+  "item.smallships.envi_cherry_galley": "Cherry Galley",
+  "item.smallships.envi_wisteria_galley": "Wisteria Galley",
+  "item.smallships.envi_willow_galley": "Willow Galley",
+  "item.smallships.envi_cherry_war_galley": "Cherry War Galley",
+  "item.smallships.envi_wisteria_war_galley": "Wisteria War Galley",
+  "item.smallships.envi_willow_war_galley": "Willow War Galley",
+  "item.smallships.envi_cherry_drakkar": "Cherry Drakkar",
+  "item.smallships.envi_wisteria_drakkar": "Wisteria Drakkar",
+  "item.smallships.envi_willow_drakkar": "Willow Drakkar",
+  "item.smallships.envi_cherry_rowboat": "Cherry Row Boat",
+  "item.smallships.envi_wisteria_rowboat": "Wisteria Row Boat",
+  "item.smallships.envi_willow_rowboat": "Willow Row Boat",
+ "item.smallships.envi_cherry_brigg": "Cherry Brigg",
+  "item.smallships.envi_wisteria_brigg": "Wisteria Brigg",
+  "item.smallships.envi_willow_brigg": "Willow Brigg"
 }

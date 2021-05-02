@@ -185,6 +185,14 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
             case LOTR_ROTTEN:
                 return ModItems.LOTR_ROTTEN_ROWBOAT_ITEM.get();
 
+            //ENVI//
+            case ENVI_CHERRY:
+                return ModItems.ENVI_CHERRY_ROWBOAT_ITEM.get();
+            case ENVI_WILLOW:
+                return ModItems.ENVI_WILLOW_ROWBOAT_ITEM.get();
+            case ENVI_WISTERIA:
+                return ModItems.ENVI_WISTERIA_ROWBOAT_ITEM.get();
+
         }
 
     }
