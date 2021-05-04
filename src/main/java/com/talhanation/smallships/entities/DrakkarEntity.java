@@ -1,15 +1,12 @@
 package com.talhanation.smallships.entities;
 
-import com.talhanation.smallships.Main;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.DrakkarContainer;
 import com.talhanation.smallships.items.ModItems;
-import com.talhanation.smallships.network.MessageOpenInv;
 import com.talhanation.smallships.util.DrakkarItemStackHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
@@ -338,8 +335,9 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
         return ((Integer)this.dataManager.get(CARGO)).intValue();
     }
 
+    @Override
     public void openContainer(PlayerEntity player) {
-        player.openContainer((INamedContainerProvider)new SimpleNamedContainerProvider((id, inv, plyr) -> new DrakkarContainer(id, inv, this),
+        player.openContainer(new SimpleNamedContainerProvider((id, inv, plyr) -> new DrakkarContainer(id, inv, this),
 
                 getDisplayName()));
     }

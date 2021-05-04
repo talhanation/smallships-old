@@ -4,7 +4,6 @@ import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessagePaddleState;
-import com.talhanation.smallships.network.MessageSailStateDrakkar;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.IceBlock;
@@ -43,14 +42,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractDrakkarEntity extends TNBoatEntity {
-
-    private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractDrakkarEntity.class, DataSerializers.BOOLEAN);
-
-
+public abstract class AbstractDrakkarEntity extends AbstractSailBoat {
     protected abstract ItemStackHandler initInventory();
-
-    private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
     private final float[] paddlePositions = new float[2];
     public float momentum;
     public float outOfControlTicks;
@@ -64,7 +57,6 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
     private float boatGlide;
     private Status status;
     private Status previousStatus;
-    public ItemStackHandler inventory = initInventory();
     public int passengerwaittime;
     public float passengerfaktor;
     public double icebreakcounter = SmallShipsConfig.DrakkarIceBreakSpeed.get();
@@ -75,32 +67,6 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(SAIL_STATE, false);
-    }
-
-    public boolean getSailState() {
-        return dataManager.get(SAIL_STATE);
-    }
-
-    public void setSailState(boolean state) {
-        if (state != getSailState()) {
-            playSailSound(state);
-            dataManager.set(SAIL_STATE, state);
-        }
-    }
-
-    public void sendSailStateToServer(boolean state) {
-        if (world.isRemote) {
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageSailStateDrakkar(state));
-        }
-    }
-
-    public void playSailSound(boolean state) {
-        if (state) {
-            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.4F * this.rand.nextFloat());
-        } else {
-            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat());
-        }
     }
 
     public void tick() {
@@ -248,13 +214,7 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
         }
     }
 
-    @Override
-    public void onSprintPressed() {
-        super.onSprintPressed();
-        sendSailStateToServer(!getSailState());
-    }
-
-    private void tickLerp() {
+    public void tickLerp() {
     }
 
     public Status getBoatStatus() {
@@ -424,44 +384,6 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
         super.applyEntityCollision(entityIn);
     }
 
-    //inventory
-    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
-        if (inventorySlot >= 0 && inventorySlot < this.inventory.getSlots()) {
-            this.inventory.setStackInSlot(inventorySlot, itemStackIn);
-            return true;
-        }
-        return false;
-    }
-
-    public void onDestroyedAndDoDrops(DamageSource source) {
-        for (int i = 0; i < this.inventory.getSlots(); i++)
-            InventoryHelper.spawnItemStack(this.world, getPosX(), getPosY(), getPosZ(), this.inventory.getStackInSlot(i));
-    }
-
-    protected void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        this.inventory.deserializeNBT(compound.getCompound("Items"));
-    }
-
-    protected void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.put("Items", (INBT) this.inventory.serializeNBT());
-
-    }
-
-    public void remove(boolean keepData) {
-        super.remove(keepData);
-        if (!keepData && this.itemHandler != null) {
-            this.itemHandler.invalidate();
-            this.itemHandler = null;
-        }
-    }
-
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (isAlive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.itemHandler != null)
-            return this.itemHandler.cast();
-        return super.getCapability(capability, facing);
-    }
 
     public boolean attackEntityFrom(DamageSource source, float amount) {
         if (isInvulnerableTo(source))
@@ -484,19 +406,6 @@ public abstract class AbstractDrakkarEntity extends TNBoatEntity {
         return false;
     }
 
-    public void onDestroyed(DamageSource source, boolean byCreativePlayer) {
-        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            if (!byCreativePlayer)
-                this.entityDropItem(this.getItemBoat());
-            onDestroyedAndDoDrops(source);
-        }
-    }
-
-    public float WaveMotion() {
-        float wavestr = 2.0F;
-        if (world.isRaining()) return 1.5F * wavestr;
-        else return wavestr;
-    }
 
     @Override
     protected void addPassenger(Entity passenger) {

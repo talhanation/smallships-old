@@ -8,11 +8,11 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public final class CogContainer extends SailBoatContainer {
+public final class CogContainer extends AbstractCogContainer {
     public CogContainer(int id, PlayerInventory playerInv, AbstractCogEntity sailBoatEntity) {
-        super(ContainerType.GENERIC_9X6, id, sailBoatEntity);
+        super(ContainerType.GENERIC_9X3, id, sailBoatEntity);
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++)
                 addSlot((Slot)new SlotItemHandler((IItemHandler)this.sailboatInv, j + i * 9, 8 + j * 18, 18 + i * 18));
         }

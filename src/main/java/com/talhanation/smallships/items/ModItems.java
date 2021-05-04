@@ -14,14 +14,21 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ModItems {
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Main.MOD_ID);
 
+    public static final RegistryObject<Item> SAIL_ITEM = ITEMS.register("sail_item", () -> new Item((new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION))));
+
+    public static final RegistryObject<Item> OAK_ROWBOAT_ITEM =         createRowBoat("oak", AbstractRowBoatEntity.Type.OAK, true);
+    public static final RegistryObject<Item> SPRUCE_ROWBOAT_ITEM =      createRowBoat("spruce", AbstractRowBoatEntity.Type.SPRUCE, true);
+    public static final RegistryObject<Item> BIRCH_ROWBOAT_ITEM =       createRowBoat("birch", AbstractRowBoatEntity.Type.BIRCH, true);
+    public static final RegistryObject<Item> JUNGLE_ROWBOAT_ITEM =      createRowBoat("jungle", AbstractRowBoatEntity.Type.JUNGLE, true);
+    public static final RegistryObject<Item> ACACIA_ROWBOAT_ITEM =      createRowBoat("acacia", AbstractRowBoatEntity.Type.ACACIA, true);
+    public static final RegistryObject<Item> DARK_OAK_ROWBOAT_ITEM =    createRowBoat("dark_oak", AbstractRowBoatEntity.Type.DARK_OAK, true);
+
     public static final RegistryObject<Item> OAK_COG_ITEM =             createCog("oak", AbstractCogEntity.Type.OAK, true);
     public static final RegistryObject<Item> SPRUCE_COG_ITEM =          createCog("spruce", AbstractCogEntity.Type.SPRUCE, true);
     public static final RegistryObject<Item> BIRCH_COG_ITEM =           createCog("birch", AbstractCogEntity.Type.BIRCH, true);
     public static final RegistryObject<Item> JUNGLE_COG_ITEM =          createCog("jungle", AbstractCogEntity.Type.JUNGLE, true);
     public static final RegistryObject<Item> ACACIA_COG_ITEM =          createCog("acacia", AbstractCogEntity.Type.ACACIA, true);
     public static final RegistryObject<Item> DARK_OAK_COG_ITEM =        createCog("dark_oak", AbstractCogEntity.Type.DARK_OAK, true);
-
-    public static final RegistryObject<Item> SAIL_ITEM = ITEMS.register("sail_item", () -> new Item((new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION))));
 
     public static final RegistryObject<Item> OAK_GALLEY_ITEM =          createGalley("oak", AbstractGalleyEntity.Type.OAK, true);
     public static final RegistryObject<Item> SPRUCE_GALLEY_ITEM =       createGalley("spruce", AbstractGalleyEntity.Type.SPRUCE, true);
@@ -43,13 +50,6 @@ public class ModItems {
     public static final RegistryObject<Item> JUNGLE_DRAKKAR_ITEM =      createDrakkar("jungle", AbstractDrakkarEntity.Type.JUNGLE, true);
     public static final RegistryObject<Item> ACACIA_DRAKKAR_ITEM =      createDrakkar("acacia", AbstractDrakkarEntity.Type.ACACIA, true);
     public static final RegistryObject<Item> DARK_OAK_DRAKKAR_ITEM =    createDrakkar("dark_oak", AbstractDrakkarEntity.Type.DARK_OAK, true);
-
-    public static final RegistryObject<Item> OAK_ROWBOAT_ITEM =         createRowBoat("oak", AbstractRowBoatEntity.Type.OAK, true);
-    public static final RegistryObject<Item> SPRUCE_ROWBOAT_ITEM =      createRowBoat("spruce", AbstractRowBoatEntity.Type.SPRUCE, true);
-    public static final RegistryObject<Item> BIRCH_ROWBOAT_ITEM =       createRowBoat("birch", AbstractRowBoatEntity.Type.BIRCH, true);
-    public static final RegistryObject<Item> JUNGLE_ROWBOAT_ITEM =      createRowBoat("jungle", AbstractRowBoatEntity.Type.JUNGLE, true);
-    public static final RegistryObject<Item> ACACIA_ROWBOAT_ITEM =      createRowBoat("acacia", AbstractRowBoatEntity.Type.ACACIA, true);
-    public static final RegistryObject<Item> DARK_OAK_ROWBOAT_ITEM =    createRowBoat("dark_oak", AbstractRowBoatEntity.Type.DARK_OAK, true);
 
     public static final RegistryObject<Item> OAK_BRIGG_ITEM =         createBrigg("oak", AbstractBriggEntity.Type.OAK, true);
     public static final RegistryObject<Item> SPRUCE_BRIGG_ITEM =      createBrigg("spruce", AbstractBriggEntity.Type.SPRUCE, true);

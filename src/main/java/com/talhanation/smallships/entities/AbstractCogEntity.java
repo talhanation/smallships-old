@@ -1,22 +1,14 @@
 package com.talhanation.smallships.entities;
 
-import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
-import com.talhanation.smallships.init.SoundInit;
-import com.talhanation.smallships.network.MessageSailState;
-import com.talhanation.smallships.network.MessageSteerState;
-import net.minecraft.entity.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.MoverType;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
 import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
@@ -24,23 +16,15 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractCogEntity extends TNBoatEntity {
-    private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractCogEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.createKey(AbstractBriggEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.createKey(AbstractBriggEntity.class, DataSerializers.BOOLEAN);
+public abstract class AbstractCogEntity extends AbstractSailBoat{
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -53,13 +37,8 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
     private float boatGlide;
     private Status status;
     private Status previousStatus;
-    public ItemStackHandler inventory = initInventory();
     public int passengerwaittime;
     public float passengerfaktor;
-
-    protected abstract ItemStackHandler initInventory();
-
-    private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
 
     public AbstractCogEntity(EntityType<? extends AbstractCogEntity> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -67,52 +46,10 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(SAIL_STATE, false);
-        this.dataManager.register(IS_LEFT, false);
-        this.dataManager.register(IS_RIGHT, false);
-    }
-
-    public boolean getSteerState(int side) {
-        return this.dataManager.<Boolean>get(side == 0 ? IS_LEFT : IS_RIGHT) && this.getControllingPassenger() != null;
-    }
-
-    public boolean getSailState() {
-        return dataManager.get(SAIL_STATE);
-    }
-
-    public void setSteerState(boolean left, boolean right){
-        this.dataManager.set(IS_LEFT, left);
-        this.dataManager.set(IS_RIGHT, right);
-    }
-
-    public void setSailState(boolean state) {
-        if (state != getSailState()) {
-            playSailSound(state);
-            dataManager.set(SAIL_STATE, state);
-        }
-    }
-
-    public void sendSailStateToServer(boolean state) {
-        if (world.isRemote) {
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageSailState(state));
-        }
-    }
-
-    public void sendSteerStateToServer(){
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageSteerState(this.getSteerState(0), this.getSteerState(1)));
-    }
-
-    public void playSailSound(boolean state) {
-        if (state) {
-            this.world.playSound(null, this.getPosX(), this.getPosY() + 4 , this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.4F * this.rand.nextFloat());
-        } else {
-            this.world.playSound(null, this.getPosX(), this.getPosY() + 4, this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat());
-        }
     }
 
     public void tick() {
         passengerwaittime--;
-
 
         if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& getSailState()) {
             setSailState(false);
@@ -145,7 +82,6 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
             this.updateMotion();
             if (this.world.isRemote) {
                 this.controlBoat();
-                this.sendSteerStateToServer();
             }
             this.move(MoverType.SELF, this.getMotion());
         } else {
@@ -177,10 +113,7 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
         }
     }
 
-    @Override
-    public void onSprintPressed() {
-        super.onSprintPressed();
-        sendSailStateToServer(!getSailState());
+    public void tickLerp() {
     }
 
     @Override
@@ -202,9 +135,6 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
             this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.8D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
 
         }
-    }
-
-    public void tickLerp() {
     }
 
     public Status getBoatStatus() {
@@ -293,7 +223,7 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
                 f += (0.005F * CogSpeedFactor);
             }
             this.setMotion(this.getMotion().add((double) (MathHelper.sin(-this.rotationYaw * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * f)));
-            this.setSteerState(this.rightInputDown && !this.leftInputDown, this.leftInputDown && !this.rightInputDown);
+            setSteerState(this.rightInputDown && !this.leftInputDown, this.leftInputDown && !this.rightInputDown);
         }
     }
 
@@ -330,7 +260,7 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
             }
         }
 
-        return flag ? TNBoatEntity.Status.UNDER_WATER : null;
+        return flag ? Status.UNDER_WATER : null;
     }
 
     private boolean checkInWater() {
@@ -367,50 +297,9 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
         return false;
     }
 
-    /**
-     * Applies a velocity to the entities, to push them away from eachother.
-     */
     @Override
     public void applyEntityCollision(Entity entityIn) {
         super.applyEntityCollision(entityIn);
-    }
-
-    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
-        if (inventorySlot >= 0 && inventorySlot < this.inventory.getSlots()) {
-            this.inventory.setStackInSlot(inventorySlot, itemStackIn);
-            return true;
-        }
-        return false;
-    }
-
-    public void onDestroyedAndDoDrops(DamageSource source) {
-        for (int i = 0; i < this.inventory.getSlots(); i++)
-            InventoryHelper.spawnItemStack(this.world, getPosX(), getPosY(), getPosZ(), this.inventory.getStackInSlot(i));
-    }
-
-    protected void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        this.inventory.deserializeNBT(compound.getCompound("Items"));
-    }
-
-    protected void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.put("Items", (INBT) this.inventory.serializeNBT());
-
-    }
-
-    public void remove(boolean keepData) {
-        super.remove(keepData);
-        if (!keepData && this.itemHandler != null) {
-            this.itemHandler.invalidate();
-            this.itemHandler = null;
-        }
-    }
-
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (isAlive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.itemHandler != null)
-            return this.itemHandler.cast();
-        return super.getCapability(capability, facing);
     }
 
     public boolean attackEntityFrom(DamageSource source, float amount) {
@@ -419,7 +308,7 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
         if (!this.world.isRemote && isAlive()) {
             if (source == DamageSource.CACTUS)
                 return false;
-            if (source instanceof net.minecraft.util.IndirectEntityDamageSource && source.getTrueSource() != null && isPassenger(source.getTrueSource()))
+            if (source instanceof IndirectEntityDamageSource && source.getTrueSource() != null && isPassenger(source.getTrueSource()))
                 return false;
             setForwardDirection(-getForwardDirection());
             setTimeSinceHit(3);
@@ -432,20 +321,6 @@ public abstract class AbstractCogEntity extends TNBoatEntity {
             return true;
         }
         return false;
-    }
-
-    public void onDestroyed(DamageSource source, boolean byCreativePlayer) {
-        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            if (!byCreativePlayer)
-                this.entityDropItem(this.getItemBoat());
-            onDestroyedAndDoDrops(source);
-        }
-    }
-
-    public float WaveMotion() {
-        float wavestr = 2.0F;
-        if (world.isRaining()) return 1.5F * wavestr;
-        else return wavestr;
     }
 
     protected void addPassenger(Entity passenger) {

@@ -7,7 +7,6 @@ import com.talhanation.smallships.util.RowBoatItemStackHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
@@ -67,7 +66,7 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
     }
 
     public RowBoatEntity(World worldIn, double x, double y, double z) {
-        this((EntityType<? extends AbstractRowBoatEntity>) ModEntityTypes.ROWBOAT_ENTITY.get(), worldIn);
+        this(ModEntityTypes.ROWBOAT_ENTITY.get(), worldIn);
         setPosition(x, y, z);
         setMotion(Vector3d.ZERO);
         this.prevPosX = x;
@@ -198,7 +197,7 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
     }
 
     protected ItemStackHandler initInventory() {
-        return (ItemStackHandler)new RowBoatItemStackHandler<RowBoatEntity>(9, this) {
+        return new RowBoatItemStackHandler<RowBoatEntity>(9, this) {
             protected void onContentsChanged(int slot) {
                 int sigma, tempload = 0;
                 for (int i = 0; i < getSlots(); i++) {
@@ -212,34 +211,34 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
                 } else {
                     sigma = 0;
                 }
-                ((RowBoatEntity)this.rowboat).getDataManager().set(RowBoatEntity.CARGO, Integer.valueOf(sigma));
+                (this.rowboat).getDataManager().set(RowBoatEntity.CARGO, sigma);
             }
         };
     }
 
     public int getCargo() {
-        return ((Integer)this.dataManager.get(CARGO)).intValue();
+        return this.dataManager.get(CARGO);
     }
 
+    @Override
     public void openContainer(PlayerEntity player) {
-        player.openContainer((INamedContainerProvider)new SimpleNamedContainerProvider((id, inv, plyr) -> new RowBoatContainer(id, inv, this),
-
+        player.openContainer(new SimpleNamedContainerProvider((id, inv, plyr) -> new RowBoatContainer(id, inv, this),
                 getDisplayName()));
     }
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(CARGO, Integer.valueOf(0));
+        this.dataManager.register(CARGO, 0);
     }
 
     protected void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-        this.dataManager.set(CARGO, Integer.valueOf(compound.getInt("Cargo")));
+        this.dataManager.set(CARGO, compound.getInt("Cargo"));
     }
 
     protected void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
-        compound.putInt("Cargo", ((Integer)this.dataManager.get(CARGO)).intValue());
+        compound.putInt("Cargo", this.dataManager.get(CARGO));
     }
 
     protected boolean canFitPassenger(Entity passenger) {

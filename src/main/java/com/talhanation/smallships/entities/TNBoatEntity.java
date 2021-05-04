@@ -3,13 +3,9 @@ package com.talhanation.smallships.entities;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
 import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
-import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.ModEntityTypes;
-import com.talhanation.smallships.network.MessageOpenInv;
 import com.talhanation.smallships.network.MessagePaddleState;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -92,17 +88,6 @@ public class TNBoatEntity extends Entity {
         this.prevPosZ = z;
     }
 
-    public void onSprintPressed() {
-
-    }
-
-    public void onInvPressed(PlayerEntity player){
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageOpenInv(player));
-    }
-
-    public void openContainer(PlayerEntity player) {
-
-    }
 
     public void Watersplash() {
 
@@ -125,6 +110,7 @@ public class TNBoatEntity extends Entity {
         this.dataManager.register(RIGHT_PADDLE, false);
         this.dataManager.register(ROCKING_TICKS, 0);
     }
+
 
     public boolean canCollide(Entity entity) {
         return func_242378_a(this, entity);
@@ -395,51 +381,6 @@ public class TNBoatEntity extends Entity {
             updateClientControls();
         }
 
-        breakLily();
-
-
-        if ((SmallShipsConfig.WaterMobFlee.get()).booleanValue()) {
-            double radius = 15.0D;
-            List<WaterMobEntity> list1 = this.world.getEntitiesWithinAABB(WaterMobEntity.class, new AxisAlignedBB(getPosX() - radius, getPosY() - radius, getPosZ() - radius, getPosX() + radius, getPosY() + radius, getPosZ() + radius));
-            for (WaterMobEntity ent : list1)
-                fleeEntity(ent);
-        }
-    }
-
-    public void fleeEntity(MobEntity entity) {
-        double fleeDistance = 10.0D;
-        Vector3d vecBoat = new Vector3d(getPosX(), getPosY(), getPosZ());
-        Vector3d vecEntity = new Vector3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
-        Vector3d fleeDir = vecEntity.subtract(vecBoat);
-        fleeDir = fleeDir.normalize();
-        Vector3d fleePos = new Vector3d(vecEntity.x + fleeDir.x * fleeDistance, vecEntity.y + fleeDir.y * fleeDistance, vecEntity.z + fleeDir.z * fleeDistance);
-        entity.getNavigator().tryMoveToXYZ(fleePos.x, fleePos.y, fleePos.z, 10.0D);
-    }
-
-    private void breakLily() {
-        AxisAlignedBB boundingBox = getBoundingBox();
-        double offset = 0.75D;
-        BlockPos start = new BlockPos(boundingBox.minX - offset, boundingBox.minY - offset, boundingBox.minZ - offset);
-        BlockPos end = new BlockPos(boundingBox.maxX + offset, boundingBox.maxY + offset, boundingBox.maxZ + offset);
-        BlockPos.Mutable pos = new BlockPos.Mutable();
-        boolean hasBroken = false;
-        if (world.isAreaLoaded(start, end)) {
-            for (int i = start.getX(); i <= end.getX(); ++i) {
-                for (int j = start.getY(); j <= end.getY(); ++j) {
-                    for (int k = start.getZ(); k <= end.getZ(); ++k) {
-                        pos.setPos(i, j, k);
-                        BlockState blockstate = world.getBlockState(pos);
-                        if (blockstate.getBlock() instanceof LilyPadBlock) {
-                            world.destroyBlock(pos, true);
-                            hasBroken = true;
-                        }
-                    }
-                }
-            }
-        }
-        if (hasBroken) {
-            world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundEvents.BLOCK_CROP_BREAK, SoundCategory.BLOCKS, 1F, 0.9F + 0.2F * rand.nextFloat());
-        }
     }
 
     private void updateRocking() {

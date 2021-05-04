@@ -1,6 +1,6 @@
 package com.talhanation.smallships.network;
 
-import com.talhanation.smallships.entities.AbstractCogEntity;
+import com.talhanation.smallships.entities.AbstractSailBoat;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,9 +23,9 @@ public class MessageSailState implements Message<MessageSailState> {
 
     public void executeServerSide(NetworkEvent.Context context) {
         Entity riding = context.getSender().getRidingEntity();
-        if (!(riding instanceof AbstractCogEntity))
+        if (!(riding instanceof AbstractSailBoat))
             return;
-        AbstractCogEntity sailboat = (AbstractCogEntity) riding;
+        AbstractSailBoat sailboat = (AbstractSailBoat) riding;
         if (context.getSender() == (sailboat.getDriver())) {
             sailboat.setSailState(state);
         }

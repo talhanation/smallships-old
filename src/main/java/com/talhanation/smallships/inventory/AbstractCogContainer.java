@@ -9,13 +9,13 @@ import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class SailBoatContainer extends Container {
+public class AbstractCogContainer extends Container {
 
     protected final ItemStackHandler sailboatInv;
 
     protected final AbstractCogEntity sailboat;
 
-    public SailBoatContainer(ContainerType<?> type, int id, AbstractCogEntity sailboat) {
+    public AbstractCogContainer(ContainerType<?> type, int id, AbstractCogEntity sailboat) {
         super(type, id);
         this.sailboat = sailboat;
         this.sailboatInv = sailboat.inventory;

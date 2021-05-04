@@ -527,8 +527,9 @@ public class ModelCog<T extends CogEntity> extends EntityModel<T> {
             this.steer.rotateAngleY = 0;
             //this.Brigg.rotateAngleZ = 0;
         }
-    }
 
+
+    }
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */

@@ -1,18 +1,13 @@
 package com.talhanation.smallships.entities;
 
-import com.talhanation.smallships.Main;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.BriggContainer;
 import com.talhanation.smallships.items.ModItems;
-import com.talhanation.smallships.network.MessageOpenInv;
 import com.talhanation.smallships.util.BriggItemStackHandler;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
@@ -58,7 +53,7 @@ public class BriggEntity extends AbstractBriggEntity {
 
     protected ItemStackHandler initInventory() {
 
-        return (ItemStackHandler)new BriggItemStackHandler<BriggEntity>(54, this) {
+        return new BriggItemStackHandler<BriggEntity>(54, this) {
             protected void onContentsChanged(int slot) {
                 int sigma, tempload = 0;
                 for (int i = 0; i < getSlots(); i++) {
@@ -76,13 +71,13 @@ public class BriggEntity extends AbstractBriggEntity {
                 } else {
                     sigma = 0;
                 }
-                ((BriggEntity)this.brigg).getDataManager().set(BriggEntity.CARGO, Integer.valueOf(sigma));
+                (this.brigg).getDataManager().set(BriggEntity.CARGO, sigma);
             }
         };
     }
 
     public BriggEntity(World worldIn, double x, double y, double z) {
-        this((EntityType<? extends AbstractBriggEntity>) ModEntityTypes.BRIGG_ENTITY.get(), worldIn);
+        this(ModEntityTypes.BRIGG_ENTITY.get(), worldIn);
         setPosition(x, y, z);
         setMotion(Vector3d.ZERO);
         this.prevPosX = x;
@@ -91,7 +86,7 @@ public class BriggEntity extends AbstractBriggEntity {
     }
 
     public BriggEntity(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {
-        this((EntityType<? extends AbstractBriggEntity>) ModEntityTypes.BRIGG_ENTITY.get(), worldIn);
+        this(ModEntityTypes.BRIGG_ENTITY.get(), worldIn);
     }
 
 
@@ -336,7 +331,7 @@ public class BriggEntity extends AbstractBriggEntity {
     }
 
     public int getCargo() {
-        return ((Integer)this.dataManager.get(CARGO)).intValue();
+        return this.dataManager.get(CARGO);
     }
 
     @Override
@@ -348,17 +343,17 @@ public class BriggEntity extends AbstractBriggEntity {
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(CARGO, Integer.valueOf(0));
+        this.dataManager.register(CARGO, 0);
     }
 
     protected void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-        this.dataManager.set(CARGO, Integer.valueOf(compound.getInt("Cargo")));
+        this.dataManager.set(CARGO, compound.getInt("Cargo"));
     }
 
     protected void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
-     compound.putInt("Cargo", ((Integer)this.dataManager.get(CARGO)).intValue());
+        compound.putInt("Cargo", this.dataManager.get(CARGO));
     }
 
     public Item getItemBoat() {

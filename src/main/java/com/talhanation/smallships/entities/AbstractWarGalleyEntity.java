@@ -4,7 +4,6 @@ import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessagePaddleState;
-import com.talhanation.smallships.network.MessageSailStateWarGalley;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -37,16 +36,8 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
-
-    private static final DataParameter<Boolean> LEFT_PADDLE = EntityDataManager.createKey(AbstractWarGalleyEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> RIGHT_PADDLE = EntityDataManager.createKey(AbstractWarGalleyEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractWarGalleyEntity.class, DataSerializers.BOOLEAN);
-
-
-    protected abstract ItemStackHandler initInventory();
-    private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
-    private final float[] paddlePositions = new float[2];
+public abstract class AbstractWarGalleyEntity extends AbstractSailBoat {
+   private final float[] paddlePositions = new float[2];
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -69,38 +60,8 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(LEFT_PADDLE, false);
-        this.dataManager.register(RIGHT_PADDLE, false);
-        this.dataManager.register(SAIL_STATE, false);
     }
 
-    public boolean getSailState() {
-        return dataManager.get(SAIL_STATE);
-    }
-
-    public void setSailState(boolean state) {
-        if (state != getSailState()) {
-            playSailSound(state);
-            dataManager.set(SAIL_STATE, state);
-        }
-    }
-
-    public void sendSailStateToServer(boolean state) {
-        if (world.isRemote) {
-            Main.SIMPLE_CHANNEL.sendToServer(new MessageSailStateWarGalley(state));
-        }
-    }
-
-
-    public void playSailSound(boolean state) {
-        if (state) {
-            this.world.playSound(null, this.getPosX() + 1, this.getPosY() + 4, this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.6F * this.rand.nextFloat());
-            this.world.playSound(null, this.getPosX() , this.getPosY() + 4, this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.4F * this.rand.nextFloat());
-        } else {
-            this.world.playSound(null, this.getPosX() + 1, this.getPosY() + 4, this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat());
-            this.world.playSound(null, this.getPosX(), this.getPosY() + 4, this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat());
-        }
-    }
 
     public void tick() {
         passengerwaittime--;
@@ -197,12 +158,6 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
     }
 
     @Override
-    public void onSprintPressed() {
-        super.onSprintPressed();
-        sendSailStateToServer(!getSailState());
-    }
-
-    @Override
     public void Watersplash(){
         super.Watersplash();
         Vector3d vector3d = this.getLook(0.0F);
@@ -222,8 +177,7 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
 
         }
     }
-
-    private void tickLerp() {
+    public void tickLerp() {
     }
 
     public Status getBoatStatus() {
@@ -396,44 +350,6 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
        super.applyEntityCollision(entityIn);
     }
 
-    //inventory
-    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
-        if (inventorySlot >= 0 && inventorySlot < this.inventory.getSlots()) {
-            this.inventory.setStackInSlot(inventorySlot, itemStackIn);
-            return true;
-        }
-        return false;
-    }
-
-    public void onDestroyedAndDoDrops(DamageSource source) {
-        for (int i = 0; i < this.inventory.getSlots(); i++)
-            InventoryHelper.spawnItemStack(this.world, getPosX(), getPosY(), getPosZ(), this.inventory.getStackInSlot(i));
-    }
-
-    protected void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        this.inventory.deserializeNBT(compound.getCompound("Items"));
-    }
-
-    protected void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.put("Items", (INBT)this.inventory.serializeNBT());
-
-    }
-
-    public void remove(boolean keepData) {
-        super.remove(keepData);
-        if (!keepData && this.itemHandler != null) {
-            this.itemHandler.invalidate();
-            this.itemHandler = null;
-        }
-    }
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (isAlive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.itemHandler != null)
-            return this.itemHandler.cast();
-        return super.getCapability(capability, facing);
-    }
-
     public boolean attackEntityFrom(DamageSource source, float amount) {
         if (isInvulnerableTo(source))
             return false;
@@ -455,24 +371,15 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
         return false;
     }
 
-    public void onDestroyed(DamageSource source, boolean byCreativePlayer) {
-        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
-            if (!byCreativePlayer)
-                this.entityDropItem(this.getItemBoat());
-            onDestroyedAndDoDrops(source);
-        }
-    }
-
-    public float WaveMotion(){
-        float wavestr = 2.0F;
-        if (world.isRaining()) return 1.5F * wavestr;
-        else return wavestr;
-    }
-
     @Override
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
     }
+
+    public void setPaddleState(boolean left, boolean right) {
+        super.setPaddleState(left, right);
+    }
+
 
     @Nullable
     protected SoundEvent getPaddleSound() {
@@ -487,20 +394,6 @@ public abstract class AbstractWarGalleyEntity extends TNBoatEntity {
             default:
                 return null;
         }
-    }
-
-    public void setPaddleState(boolean left, boolean right) {
-        this.dataManager.set(LEFT_PADDLE, left);
-        this.dataManager.set(RIGHT_PADDLE, right);
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public float getRowingTime(int side, float limbSwing) {
-        return this.getPaddleState(side) ? (float)MathHelper.clampedLerp((double)this.paddlePositions[side] - (double)((float)Math.PI / 8F), (double)this.paddlePositions[side], (double)limbSwing) : 0.0F;
-    }
-
-    public boolean getPaddleState(int side) {
-        return this.dataManager.<Boolean>get(side == 0 ? LEFT_PADDLE : RIGHT_PADDLE) && this.getControllingPassenger() != null;
     }
 
     @Override

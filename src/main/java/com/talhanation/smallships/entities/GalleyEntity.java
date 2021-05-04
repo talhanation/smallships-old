@@ -345,7 +345,7 @@ public class GalleyEntity extends AbstractGalleyEntity {
     }
 
     protected ItemStackHandler initInventory() {
-        return (ItemStackHandler)new GalleyItemStackHandler<GalleyEntity>(9, this) {
+        return new GalleyItemStackHandler<GalleyEntity>(9, this) {
             protected void onContentsChanged(int slot) {
                 int sigma, tempload = 0;
                 for (int i = 0; i < getSlots(); i++) {
@@ -359,34 +359,34 @@ public class GalleyEntity extends AbstractGalleyEntity {
                 } else {
                     sigma = 0;
                 }
-                ((GalleyEntity)this.galley).getDataManager().set(GalleyEntity.CARGO, Integer.valueOf(sigma));
+                (this.galley).getDataManager().set(GalleyEntity.CARGO, Integer.valueOf(sigma));
             }
         };
     }
 
     public int getCargo() {
-        return ((Integer)this.dataManager.get(CARGO)).intValue();
+        return this.dataManager.get(CARGO);
     }
 
     public void openContainer(PlayerEntity player) {
-        player.openContainer((INamedContainerProvider)new SimpleNamedContainerProvider((id, inv, plyr) -> new GalleyContainer(id, inv, this),
+        player.openContainer(new SimpleNamedContainerProvider((id, inv, plyr) -> new GalleyContainer(id, inv, this),
 
                 getDisplayName()));
     }
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(CARGO, Integer.valueOf(0));
+        this.dataManager.register(CARGO, 0);
     }
 
     protected void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-        this.dataManager.set(CARGO, Integer.valueOf(compound.getInt("Cargo")));
+        this.dataManager.set(CARGO, compound.getInt("Cargo"));
     }
 
     protected void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
-        compound.putInt("Cargo", ((Integer)this.dataManager.get(CARGO)).intValue());
+        compound.putInt("Cargo", (Integer) this.dataManager.get(CARGO));
     }
 
     protected boolean canFitPassenger(Entity passenger) {

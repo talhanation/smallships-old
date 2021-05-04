@@ -1,11 +1,11 @@
 package com.talhanation.smallships.client.events;
 
 import com.talhanation.smallships.Main;
-import com.talhanation.smallships.entities.TNBoatEntity;
+import com.talhanation.smallships.entities.AbstractInventoryBoat;
+import com.talhanation.smallships.entities.AbstractSailBoat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -19,19 +19,23 @@ public class KeyEvents {
             return;
 
         Entity riding = clientPlayerEntity.getRidingEntity();
-        if (!(riding instanceof TNBoatEntity)) {
+        if (!(riding instanceof AbstractSailBoat)){
             return;
         }
-        TNBoatEntity boat = (TNBoatEntity) riding;
-        if (clientPlayerEntity.equals(boat.getDriver())) {
+        AbstractSailBoat sailBoat = (AbstractSailBoat) riding;
+        if (clientPlayerEntity.equals(sailBoat.getDriver())) {
             if (Main.SAIL_KEY.isPressed()) {
-                boat.onSprintPressed();
+                sailBoat.onSprintPressed();
             }
         }
-
-        if (boat.getPassengers().contains(clientPlayerEntity)) {
+        Entity riding2 = clientPlayerEntity.getRidingEntity();
+        if (!(riding2 instanceof AbstractInventoryBoat)) {
+            return;
+        }
+        AbstractInventoryBoat invBoat = (AbstractInventoryBoat) riding2;
+        if (invBoat.getPassengers().contains(clientPlayerEntity)) {
             if (Main.INV_KEY.isPressed()) {
-                boat.onInvPressed(clientPlayerEntity);
+                invBoat.onInvPressed(clientPlayerEntity);
             }
         }
     }

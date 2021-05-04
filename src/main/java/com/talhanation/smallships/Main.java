@@ -51,35 +51,19 @@ public class Main {
         MinecraftForge.EVENT_BUS.register(this);
         SIMPLE_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation("smallships", "default"), () -> "1.0.0", s -> true, s -> true);
 
-        SIMPLE_CHANNEL.registerMessage(0, MessageSailState.class, (msg, buf) -> msg.toBytes(buf),
-                buf -> (new MessageSailState()).fromBytes(buf),
-                (msg, fun) -> msg.executeServerSide(fun.get()));
-
-        SIMPLE_CHANNEL.registerMessage(1, MessageSailStateGalley.class, (msg, buf) -> msg.toBytes(buf),
-                buf -> (new MessageSailStateGalley()).fromBytes(buf),
-                (msg, fun) -> msg.executeServerSide(fun.get()));
-
-        SIMPLE_CHANNEL.registerMessage(2, MessagePaddleState.class, (msg, buf) -> msg.toBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(0, MessagePaddleState.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessagePaddleState()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(3, MessageSailStateWarGalley.class, (msg, buf) -> msg.toBytes(buf),
-                buf -> (new MessageSailStateWarGalley()).fromBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(1, MessageSailState.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessageSailState()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(4, MessageSailStateDrakkar.class, (msg, buf) -> msg.toBytes(buf),
-                buf -> (new MessageSailStateDrakkar()).fromBytes(buf),
-                (msg, fun) -> msg.executeServerSide(fun.get()));
-
-        SIMPLE_CHANNEL.registerMessage(5, MessageSailStateBrigg.class, (msg, buf) -> msg.toBytes(buf),
-                buf -> (new MessageSailStateBrigg()).fromBytes(buf),
-                (msg, fun) -> msg.executeServerSide(fun.get()));
-
-        SIMPLE_CHANNEL.registerMessage(6, MessageSteerState.class, (msg, buf) -> msg.toBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(2, MessageSteerState.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessageSteerState()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(7, MessageOpenInv.class, (msg, buf) -> msg.toBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(3, MessageOpenInv.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessageOpenInv()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
     }

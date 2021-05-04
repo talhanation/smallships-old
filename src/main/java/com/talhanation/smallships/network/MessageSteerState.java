@@ -1,7 +1,6 @@
 package com.talhanation.smallships.network;
 
-import com.talhanation.smallships.entities.AbstractBriggEntity;
-import com.talhanation.smallships.entities.TNBoatEntity;
+import com.talhanation.smallships.entities.AbstractSailBoat;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -26,11 +25,11 @@ public class MessageSteerState implements Message<MessageSteerState> {
 
     public void executeServerSide(NetworkEvent.Context context) {
         Entity riding = context.getSender().getRidingEntity();
-        if (!(riding instanceof AbstractBriggEntity))
+        if (!(riding instanceof AbstractSailBoat))
             return;
-        AbstractBriggEntity boat = (AbstractBriggEntity) riding;
-        if (context.getSender() == (boat.getDriver())) {
-            boat.setSteerState(left, right);
+        AbstractSailBoat sailBoat = (AbstractSailBoat) riding;
+        if (context.getSender() == (sailBoat.getDriver())) {
+            sailBoat.setSteerState(left, right);
         }
     }
 

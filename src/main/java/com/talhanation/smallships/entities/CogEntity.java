@@ -1,23 +1,21 @@
 package com.talhanation.smallships.entities;
 
-import com.talhanation.smallships.Main;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.CogContainer;
 import com.talhanation.smallships.items.ModItems;
-import com.talhanation.smallships.network.MessageOpenInv;
-import com.talhanation.smallships.util.SailBoatItemStackHandler;
+import com.talhanation.smallships.util.CogItemStackHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -52,31 +50,31 @@ public class CogEntity extends AbstractCogEntity {
     }
 
     protected ItemStackHandler initInventory() {
-        return (ItemStackHandler)new SailBoatItemStackHandler<CogEntity>(54, this) {
+        return new CogItemStackHandler<CogEntity>(27, this) {
             protected void onContentsChanged(int slot) {
                 int sigma, tempload = 0;
                 for (int i = 0; i < getSlots(); i++) {
                     if (!getStackInSlot(i).isEmpty())
                         tempload++;
                 }
-                if (tempload > 31) {
+                if (tempload > 20) {
                     sigma = 4;
-                } else if (tempload > 16) {
+                } else if (tempload > 14) {
                     sigma = 3;
                 } else if (tempload > 8) {
                     sigma = 2;
-                } else if (tempload > 3) {
+                } else if (tempload > 2) {
                     sigma = 1;
                 } else {
                     sigma = 0;
                 }
-                ((CogEntity)this.sailboat).getDataManager().set(CogEntity.CARGO, Integer.valueOf(sigma));
+                (this.cog).getDataManager().set(CogEntity.CARGO, sigma);
             }
         };
     }
 
     public CogEntity(World worldIn, double x, double y, double z) {
-        this((EntityType<? extends AbstractCogEntity>) ModEntityTypes.COG_ENTITY.get(), worldIn);
+        this(ModEntityTypes.COG_ENTITY.get(), worldIn);
         setPosition(x, y, z);
         setMotion(Vector3d.ZERO);
         this.prevPosX = x;
@@ -85,17 +83,17 @@ public class CogEntity extends AbstractCogEntity {
     }
 
     public CogEntity(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {
-        this((EntityType<? extends AbstractCogEntity>) ModEntityTypes.COG_ENTITY.get(), worldIn);
+        this(ModEntityTypes.COG_ENTITY.get(), worldIn);
     }
 
     public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
         if (player.isSecondaryUseActive()) {
-            if (this.isBeingRidden() && !(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)){
+            if (this.isBeingRidden() && !(getControllingPassenger() instanceof PlayerEntity)){
                     this.removePassengers();
                     this.passengerwaittime = 200;
             }
             else {
-                if (!(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)) {
+                if (!(getControllingPassenger() instanceof PlayerEntity)) {
                     openContainer(player);
                 } return ActionResultType.func_233537_a_(this.world.isRemote);
             } return ActionResultType.PASS;
@@ -110,8 +108,6 @@ public class CogEntity extends AbstractCogEntity {
             return ActionResultType.PASS;
         }
     }
-
-
 
     @OnlyIn(Dist.CLIENT)
     public void handleStatusUpdate(byte id) {
@@ -195,11 +191,12 @@ public class CogEntity extends AbstractCogEntity {
     }
 
     public int getCargo() {
-        return ((Integer)this.dataManager.get(CARGO)).intValue();
+        return this.dataManager.get(CARGO);
     }
 
+    @Override
     public void openContainer(PlayerEntity player) {
-        player.openContainer((INamedContainerProvider)new SimpleNamedContainerProvider((id, inv, plyr) -> new CogContainer(id, inv, this),
+        player.openContainer(new SimpleNamedContainerProvider((id, inv, plyr) -> new CogContainer(id, inv, this),
 
                 getDisplayName()));
     }
@@ -207,17 +204,17 @@ public class CogEntity extends AbstractCogEntity {
 
     protected void registerData() {
         super.registerData();
-        this.dataManager.register(CARGO, Integer.valueOf(0));
+        this.dataManager.register(CARGO, 0);
     }
 
     protected void readAdditional(CompoundNBT compound) {
         super.readAdditional(compound);
-        this.dataManager.set(CARGO, Integer.valueOf(compound.getInt("Cargo")));
+        this.dataManager.set(CARGO, compound.getInt("Cargo"));
     }
 
     protected void writeAdditional(CompoundNBT compound) {
         super.writeAdditional(compound);
-        compound.putInt("Cargo", ((Integer)this.dataManager.get(CARGO)).intValue());
+        compound.putInt("Cargo", this.dataManager.get(CARGO));
     }
 
 
