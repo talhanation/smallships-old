@@ -56,7 +56,7 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
     }
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
-
+    @Override
     public void onInvPressed(PlayerEntity player){
         Main.SIMPLE_CHANNEL.sendToServer(new MessageOpenInv(player));
     }

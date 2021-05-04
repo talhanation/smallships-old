@@ -122,7 +122,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     }
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
-
+    @Override
     public void onSprintPressed() {
         sendSailStateToServer(!getSailState());
     }

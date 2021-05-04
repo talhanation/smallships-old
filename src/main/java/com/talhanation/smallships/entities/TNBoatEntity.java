@@ -93,6 +93,14 @@ public class TNBoatEntity extends Entity {
 
     }
 
+    public void onSprintPressed(){
+
+    }
+
+    public void onInvPressed(PlayerEntity player){
+
+    }
+
     protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return sizeIn.height;
     }
