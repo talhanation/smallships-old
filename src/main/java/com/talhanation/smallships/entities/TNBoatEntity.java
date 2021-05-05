@@ -1,5 +1,6 @@
 package com.talhanation.smallships.entities;
 
+import com.google.common.collect.Lists;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
 import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
@@ -50,6 +51,7 @@ public class TNBoatEntity extends Entity {
     private static final DataParameter<Boolean> RIGHT_PADDLE = EntityDataManager.createKey(TNBoatEntity.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> ROCKING_TICKS = EntityDataManager.createKey(TNBoatEntity.class, DataSerializers.VARINT);
     private final float[] paddlePositions = new float[2];
+    private final List<Entity> passengers = Lists.newArrayList();
     private float momentum;
     private float outOfControlTicks;
     private float deltaRotation;
@@ -101,6 +103,16 @@ public class TNBoatEntity extends Entity {
 
     }
 
+    public void onDismountPressed(){
+        this.removePassengers();
+    }
+/*
+    public void removePassengersExceptPlayer() {
+        for(int i = this.passengers.size() - 1; i >= 1; --i) {
+            this.passengers.get(i).stopRiding();
+        }
+    }
+*/
     protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return sizeIn.height;
     }

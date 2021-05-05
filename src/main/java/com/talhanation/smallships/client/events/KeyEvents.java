@@ -14,6 +14,7 @@ public class KeyEvents {
 
     private boolean wasSailPressed;
     private boolean wasInvPressed;
+    private boolean wasDismountPressed;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -45,5 +46,15 @@ public class KeyEvents {
 
             }
         }
+        /*if (clientPlayerEntity.equals(boat.getDriver())) {
+            if (Main.DISMOUNT_KEY.isKeyDown()) {
+                boat.onDismountPressed();
+                this.wasDismountPressed = true;
+            }
+            else {
+                this.wasDismountPressed = false;
+            }
+        }
+    */
     }
 }

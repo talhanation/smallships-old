@@ -1,4 +1,8 @@
 {
+  "category.smallships" : "Small Ships",
+  "key.ship_sail" : "Toggle Sail",
+  "key.ship_inventory" : "Open Ship Inventroy",
+
   "entity.smallships.cog": "Cog",
   "item.smallships.acacia_cog": "Acacia Cog",
   "item.smallships.birch_cog": "Birch Cog",
@@ -222,8 +226,7 @@
   "item.smallships.lotr_pine_rowboat": "Pine Rowing Boat",
   "item.smallships.lotr_rotten_rowboat": "Rotten Rowing Boat",
 
-  "category.smallships" : "Small Ships",
-  "key.ship_sail" : "Toggle Sail",
+
 
   "entity.smallships.brigg": "Brigg",
   "item.smallships.oak_brigg": "Oak Brigg",
