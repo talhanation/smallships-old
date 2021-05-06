@@ -34,6 +34,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue RowBoatTurnFactor;
     public static ForgeConfigSpec.DoubleValue BriggSpeedFactor;
     public static ForgeConfigSpec.DoubleValue BriggTurnFactor;
+    public static ForgeConfigSpec.DoubleValue ShipZoom;
 
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
 
@@ -131,6 +132,12 @@ public class SmallShipsConfig {
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: true")
                 .define("WaterMobFlee", true);
+
+        ShipZoom = BUILDER.comment("\n" +"----Ship Zoom.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: 0.2")
+                .worldRestart()
+                .defineInRange("ShipZoom", 6D, 1D, 20D);
 
 
 

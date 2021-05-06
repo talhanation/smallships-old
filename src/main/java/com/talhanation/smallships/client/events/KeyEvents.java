@@ -23,13 +23,13 @@ public class KeyEvents {
         if (clientPlayerEntity == null)
             return;
 
-        Entity riding = clientPlayerEntity.getRidingEntity();
+        Entity riding = clientPlayerEntity.getVehicle();
         if (!(riding instanceof TNBoatEntity)){
             return;
         }
         TNBoatEntity boat = (TNBoatEntity) riding;
         if (clientPlayerEntity.equals(boat.getDriver())) {
-            if (Main.SAIL_KEY.isKeyDown()) {
+            if (Main.SAIL_KEY.isDown()) {
                 boat.onSprintPressed();
                 this.wasSailPressed = true;
             }
@@ -38,7 +38,7 @@ public class KeyEvents {
             }
         }
         if (boat.getPassengers().contains(clientPlayerEntity)) {
-            if (Main.INV_KEY.isKeyDown()) {
+            if (Main.INV_KEY.isDown()) {
                 boat.onInvPressed(clientPlayerEntity);
                 this.wasInvPressed = true;
             }else {
@@ -47,7 +47,7 @@ public class KeyEvents {
             }
         }
         /*if (clientPlayerEntity.equals(boat.getDriver())) {
-            if (Main.DISMOUNT_KEY.isKeyDown()) {
+            if (Main.DISMOUNT_KEY.isDown()) {
                 boat.onDismountPressed();
                 this.wasDismountPressed = true;
             }
