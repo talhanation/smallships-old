@@ -130,12 +130,6 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
 
-    public float WaveMotion() {
-        float wavestr = 2.0F;
-        if (level.isRaining()) return 1.5F * wavestr;
-        else return wavestr;
-    }
-
     public void fleeEntity(MobEntity entity) {
         double fleeDistance = 10.0D;
         Vector3d vecBoat = new Vector3d(getX(), getY(), getZ());
