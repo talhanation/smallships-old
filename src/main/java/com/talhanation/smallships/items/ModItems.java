@@ -14,7 +14,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 public class ModItems {
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Main.MOD_ID);
 
-    public static final RegistryObject<Item> SAIL_ITEM = ITEMS.register("sail_item", () -> new Item((new Item.Properties().maxStackSize(1).group(ItemGroup.TRANSPORTATION))));
+    public static final RegistryObject<Item> SAIL_ITEM = ITEMS.register("sail_item", () -> new Item((new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION))));
 
     public static final RegistryObject<Item> OAK_ROWBOAT_ITEM =         createRowBoat("oak", AbstractRowBoatEntity.Type.OAK, true);
     public static final RegistryObject<Item> SPRUCE_ROWBOAT_ITEM =      createRowBoat("spruce", AbstractRowBoatEntity.Type.SPRUCE, true);
@@ -303,27 +303,27 @@ public class ModItems {
 
 
     private static RegistryObject<Item> createCog(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_cog", () -> new CogItem(type, (new Item.Properties()).maxStackSize(1).group(compatiblity ? ItemGroup.TRANSPORTATION : null)));
+        return ITEMS.register(name + "_cog", () -> new CogItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createGalley(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_galley", () -> new GalleyItem(type, (new Item.Properties()).maxStackSize(1).group(compatiblity ? ItemGroup.TRANSPORTATION : null)));
+        return ITEMS.register(name + "_galley", () -> new GalleyItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createWarGalley(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_war_galley", () -> new WarGalleyItem(type, (new Item.Properties()).maxStackSize(1).group(compatiblity ? ItemGroup.TRANSPORTATION : null)));
+        return ITEMS.register(name + "_war_galley", () -> new WarGalleyItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createDrakkar(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_drakkar", () -> new DrakkarItem(type, (new Item.Properties()).maxStackSize(1).group(compatiblity ? ItemGroup.TRANSPORTATION : null)));
+        return ITEMS.register(name + "_drakkar", () -> new DrakkarItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createRowBoat(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_rowboat", () -> new RowBoatItem(type, (new Item.Properties()).maxStackSize(1).group(compatiblity ? ItemGroup.TRANSPORTATION : null)));
+        return ITEMS.register(name + "_rowboat", () -> new RowBoatItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createBrigg(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_brigg", () -> new BriggItem(type, (new Item.Properties()).maxStackSize(1).group(compatiblity ? ItemGroup.TRANSPORTATION : null)));
+        return ITEMS.register(name + "_brigg", () -> new BriggItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
     }
 }
 

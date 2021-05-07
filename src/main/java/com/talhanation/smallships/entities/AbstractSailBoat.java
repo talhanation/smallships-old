@@ -3,7 +3,6 @@ package com.talhanation.smallships.entities;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
-import com.talhanation.smallships.network.MessageOpenInv;
 import com.talhanation.smallships.network.MessageSailState;
 import com.talhanation.smallships.network.MessageSteerState;
 import net.minecraft.block.BlockState;
@@ -28,9 +27,9 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import java.util.List;
 
 public abstract class AbstractSailBoat extends AbstractInventoryBoat {
-    private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.createKey(AbstractSailBoat.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.createKey(AbstractSailBoat.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.createKey(AbstractSailBoat.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
 
     public AbstractSailBoat(EntityType<? extends TNBoatEntity> type, World world) {
         super(type, world);
@@ -38,11 +37,12 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     ////////////////////////////////////TICK////////////////////////////////////
 
+    @Override
     public void tick() {
         super.tick();
 
-        if (this.canPassengerSteer()) {
-            if (this.world.isRemote) {
+        if (this.isControlledByLocalInstance()) {
+            if (this.level.isClientSide) {
                 this.sendSteerStateToServer();
             }
         }
@@ -55,7 +55,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
         if (SmallShipsConfig.WaterMobFlee.get()) {
             double radius = 15.0D;
-            List<WaterMobEntity> list1 = this.world.getEntitiesWithinAABB(WaterMobEntity.class, new AxisAlignedBB(getPosX() - radius, getPosY() - radius, getPosZ() - radius, getPosX() + radius, getPosY() + radius, getPosZ() + radius));
+            List<WaterMobEntity> list1 = this.level.getEntitiesOfClass(WaterMobEntity.class, new AxisAlignedBB(getX() - radius, getY() - radius, getZ() - radius, getX() + radius, getY() + radius, getZ() + radius));
             for (WaterMobEntity ent : list1)
                 fleeEntity(ent);
         }
@@ -67,21 +67,22 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     ////////////////////////////////////REGISTER////////////////////////////////////
 
-    protected void registerData() {
-    super.registerData();
-        this.dataManager.register(IS_LEFT, false);
-        this.dataManager.register(IS_RIGHT, false);
-        this.dataManager.register(SAIL_STATE, false);
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(IS_LEFT, false);
+        this.entityData.define(IS_RIGHT, false);
+        this.entityData.define(SAIL_STATE, false);
     }
 
     ////////////////////////////////////GET////////////////////////////////////
 
     public boolean getSteerState(int side) {
-        return this.dataManager.<Boolean>get(side == 0 ? IS_LEFT : IS_RIGHT) && this.getControllingPassenger() != null;
+        return this.entityData.<Boolean>get(side == 0 ? IS_LEFT : IS_RIGHT) && this.getControllingPassenger() != null;
     }
 
     public boolean getSailState() {
-        return dataManager.get(SAIL_STATE);
+        return entityData.get(SAIL_STATE);
     }
 
     ////////////////////////////////////SET////////////////////////////////////
@@ -90,19 +91,19 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     public void setSailState(boolean state) {
         if (state != getSailState()) {
             playSailSound(state);
-            dataManager.set(SAIL_STATE, state);
+            entityData.set(SAIL_STATE, state);
         }
     }
 
     public void setSteerState(boolean left, boolean right){
-        this.dataManager.set(IS_LEFT, left);
-        this.dataManager.set(IS_RIGHT, right);
+        this.entityData.set(IS_LEFT, left);
+        this.entityData.set(IS_RIGHT, right);
     }
 
     ////////////////////////////////////SERVER////////////////////////////////////
 
     public void sendSailStateToServer(boolean state) {
-        if (world.isRemote) {
+        if (level.isClientSide) {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSailState(state));
         }
     }
@@ -115,9 +116,9 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     public void playSailSound(boolean state) {
         if (state) {
-            this.world.playSound(null, this.getPosX(), this.getPosY() + 4 , this.getPosZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundCategory(), 15.0F, 0.8F + 0.4F * this.rand.nextFloat());
+            this.level.playSound(null, this.getX(), this.getY() + 4 , this.getZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundSource(), 15.0F, 0.8F + 0.4F * this.random.nextFloat());
         } else {
-            this.world.playSound(null, this.getPosX(), this.getPosY() + 4, this.getPosZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundCategory(), 10.0F, 0.8F + 0.4F * this.rand.nextFloat());
+            this.level.playSound(null, this.getX(), this.getY() + 4, this.getZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundSource(), 10.0F, 0.8F + 0.4F * this.random.nextFloat());
         }
     }
 
@@ -131,18 +132,18 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     public float WaveMotion() {
         float wavestr = 2.0F;
-        if (world.isRaining()) return 1.5F * wavestr;
+        if (level.isRaining()) return 1.5F * wavestr;
         else return wavestr;
     }
 
     public void fleeEntity(MobEntity entity) {
         double fleeDistance = 10.0D;
-        Vector3d vecBoat = new Vector3d(getPosX(), getPosY(), getPosZ());
-        Vector3d vecEntity = new Vector3d(entity.getPosX(), entity.getPosY(), entity.getPosZ());
+        Vector3d vecBoat = new Vector3d(getX(), getY(), getZ());
+        Vector3d vecEntity = new Vector3d(entity.getX(), entity.getY(), entity.getZ());
         Vector3d fleeDir = vecEntity.subtract(vecBoat);
         fleeDir = fleeDir.normalize();
         Vector3d fleePos = new Vector3d(vecEntity.x + fleeDir.x * fleeDistance, vecEntity.y + fleeDir.y * fleeDistance, vecEntity.z + fleeDir.z * fleeDistance);
-        entity.getNavigator().tryMoveToXYZ(fleePos.x, fleePos.y, fleePos.z, 10.0D);
+        entity.getNavigation().moveTo(fleePos.x, fleePos.y, fleePos.z, 10.0D);
     }
 
     private void breakLily() {
@@ -152,14 +153,14 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         BlockPos end = new BlockPos(boundingBox.maxX + offset, boundingBox.maxY + offset, boundingBox.maxZ + offset);
         BlockPos.Mutable pos = new BlockPos.Mutable();
         boolean hasBroken = false;
-        if (world.isAreaLoaded(start, end)) {
+        if (level.hasChunksAt(start, end)) {
             for (int i = start.getX(); i <= end.getX(); ++i) {
                 for (int j = start.getY(); j <= end.getY(); ++j) {
                     for (int k = start.getZ(); k <= end.getZ(); ++k) {
-                        pos.setPos(i, j, k);
-                        BlockState blockstate = world.getBlockState(pos);
+                        pos.set(i, j, k);
+                        BlockState blockstate = level.getBlockState(pos);
                         if (blockstate.getBlock() instanceof LilyPadBlock) {
-                            world.destroyBlock(pos, true);
+                            level.destroyBlock(pos, true);
                             hasBroken = true;
                         }
                     }
@@ -167,11 +168,12 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
             }
         }
         if (hasBroken) {
-            world.playSound(null, getPosX(), getPosY(), getPosZ(), SoundEvents.BLOCK_CROP_BREAK, SoundCategory.BLOCKS, 1F, 0.9F + 0.2F * rand.nextFloat());
+            level.playSound(null, getX(), getY(), getZ(), SoundEvents.CROP_BREAK, SoundCategory.BLOCKS, 1F, 0.9F + 0.2F * random.nextFloat());
         }
     }
 
-    public IPacket<?> createSpawnPacket() {
+    @Override
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket((Entity) this);
     }
 

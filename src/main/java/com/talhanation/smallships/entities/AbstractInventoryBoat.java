@@ -31,12 +31,14 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
 
     ////////////////////////////////////REGISTER////////////////////////////////////
 
-    protected void registerData() {
-        super.registerData();
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
     }
 
     ////////////////////////////////////GET////////////////////////////////////
 
+    @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (isAlive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.itemHandler != null)
             return this.itemHandler.cast();
@@ -45,13 +47,15 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
 
     ////////////////////////////////////ADDITIONAL////////////////////////////////////
 
-    protected void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
         this.inventory.deserializeNBT(compound.getCompound("Items"));
     }
 
-    protected void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
+    @Override
+    protected void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
         compound.put("Items", this.inventory.serializeNBT());
     }
 
@@ -62,16 +66,16 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
     }
 
     public void onDestroyed(DamageSource source, boolean byCreativePlayer) {
-        if (this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS)) {
+        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
             if (!byCreativePlayer)
-                this.entityDropItem(this.getItemBoat());
+                this.spawnAtLocation(this.getItemBoat());
             onDestroyedAndDoDrops(source);
         }
     }
 
     public void onDestroyedAndDoDrops(DamageSource source) {
         for (int i = 0; i < this.inventory.getSlots(); i++)
-            InventoryHelper.spawnItemStack(this.world, getPosX(), getPosY(), getPosZ(), this.inventory.getStackInSlot(i));
+            InventoryHelper.dropItemStack(this.level, getX(), getY(), getZ(), this.inventory.getStackInSlot(i));
     }
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
@@ -80,7 +84,8 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
 
     }
 
-    public boolean replaceItemInInventory(int inventorySlot, ItemStack itemStackIn) {
+    @Override
+    public boolean setSlot(int inventorySlot, ItemStack itemStackIn) {
         if (inventorySlot >= 0 && inventorySlot < this.inventory.getSlots()) {
             this.inventory.setStackInSlot(inventorySlot, itemStackIn);
             return true;
@@ -88,6 +93,7 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
         return false;
     }
 
+    @Override
     public void remove(boolean keepData) {
         super.remove(keepData);
         if (!keepData && this.itemHandler != null) {
@@ -98,7 +104,8 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
 
     protected abstract ItemStackHandler initInventory();
 
-    public IPacket<?> createSpawnPacket() {
+    @Override
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket((Entity) this);
     }
 }

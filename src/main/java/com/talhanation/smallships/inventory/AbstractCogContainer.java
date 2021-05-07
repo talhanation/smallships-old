@@ -21,32 +21,35 @@ public class AbstractCogContainer extends Container {
         this.sailboatInv = sailboat.inventory;
     }
 
-    public boolean canInteractWith(PlayerEntity playerIn) {
-        return (this.sailboat.isAlive() && this.sailboat.getDistance((Entity)playerIn) < 8.0F);
+    @Override
+    public boolean stillValid(PlayerEntity playerIn) {
+        return (this.sailboat.isAlive() && this.sailboat.distanceTo((Entity)playerIn) < 8.0F);
     }
 
-    public ItemStack transferStackInSlot(PlayerEntity playerIn, int index) {
+    @Override
+    public ItemStack quickMoveStack(PlayerEntity playerIn, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.inventorySlots.get(index);
-        if (slot != null && slot.getHasStack()) {
-            ItemStack itemstack1 = slot.getStack();
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasItem()) {
+            ItemStack itemstack1 = slot.getItem();
             if (index < this.sailboatInv.getSlots()) {
-                if (!mergeItemStack(itemstack1, this.sailboatInv.getSlots(), this.inventorySlots.size(), true))
+                if (!moveItemStackTo(itemstack1, this.sailboatInv.getSlots(), this.slots.size(), true))
                     return ItemStack.EMPTY;
-            } else if (!mergeItemStack(itemstack1, 0, this.sailboatInv.getSlots(), false)) {
+            } else if (!moveItemStackTo(itemstack1, 0, this.sailboatInv.getSlots(), false)) {
                 return ItemStack.EMPTY;
             }
             if (itemstack1.isEmpty()) {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             } else {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
         }
         return itemstack;
     }
 
-    public void onContainerClosed(PlayerEntity playerIn) {
-        super.onContainerClosed(playerIn);
+    @Override
+    public void removed(PlayerEntity playerIn) {
+        super.removed(playerIn);
     }
 }
 

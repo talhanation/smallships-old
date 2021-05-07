@@ -1,16 +1,12 @@
 package com.talhanation.smallships.entities;
 
-import com.talhanation.smallships.Main;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.GalleyContainer;
 import com.talhanation.smallships.items.ModItems;
-import com.talhanation.smallships.network.MessageOpenInv;
 import com.talhanation.smallships.util.GalleyItemStackHandler;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.CompoundNBT;
@@ -28,12 +24,13 @@ public class GalleyEntity extends AbstractGalleyEntity {
     public boolean Cargo_0 = true;
     public boolean Cargo_1 = true;
 
-    private static final DataParameter<Integer> CARGO = EntityDataManager.createKey(AbstractGalleyEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> CARGO = EntityDataManager.defineId(AbstractGalleyEntity.class, DataSerializers.INT);
 
     public GalleyEntity(EntityType<? extends AbstractGalleyEntity> entityType, World worldIn) {
         super(entityType, worldIn);
     }
 
+    @Override
     public void tick(){
         super.tick();
         this.getCargo();
@@ -44,20 +41,20 @@ public class GalleyEntity extends AbstractGalleyEntity {
 
     }
 
-
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
+    @Override
+    public ActionResultType interact(PlayerEntity player, Hand hand) {
         if (player.isSecondaryUseActive()) {
-            if (this.isBeingRidden() && !(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)){
-                this.removePassengers();
+            if (this.isVehicle() && !(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)){
+                this.ejectPassengers();
                 this.passengerwaittime = 200;
             }
             else {
                 if (!(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)) {
                    openContainer(player);
-                } return ActionResultType.func_233537_a_(this.world.isRemote);
+                } return ActionResultType.sidedSuccess(this.level.isClientSide);
             } return ActionResultType.PASS;
         } else if (this.outOfControlTicks < 60.0F) {
-            if (!this.world.isRemote) {
+            if (!this.level.isClientSide) {
                 return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
 
             } else {
@@ -70,27 +67,30 @@ public class GalleyEntity extends AbstractGalleyEntity {
 
     public GalleyEntity(World worldIn, double x, double y, double z) {
         this((EntityType<? extends AbstractGalleyEntity>) ModEntityTypes.GALLEY_ENTITY.get(), worldIn);
-        setPosition(x, y, z);
-        setMotion(Vector3d.ZERO);
-        this.prevPosX = x;
-        this.prevPosY = y;
-        this.prevPosZ = z;
+        setPos(x, y, z);
+        setDeltaMovement(Vector3d.ZERO);
+        this.xo = x;
+        this.yo = y;
+        this.zo = z;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
-        super.handleStatusUpdate(id);
+    @Override
+    public void handleEntityEvent(byte id) {
+        super.handleEntityEvent(id);
     }
 
-    public double getMountedYOffset() {
+    @Override
+    public double getPassengersRidingOffset() {
         return 0.75D;
     }
 
-    public void updatePassenger(Entity passenger) {
-        if (isPassenger(passenger)) {
+    @Override
+    public void positionRider(Entity passenger) {
+        if (hasPassenger(passenger)) {
             float f = -2.75F; //driver x pos
             float d = 0.0F;   //driver z pos
-            float f1 = (float) ((this.removed ? 0.02D : getMountedYOffset()) + passenger.getYOffset());
+            float f1 = (float) ((this.removed ? 0.02D : getPassengersRidingOffset()) + passenger.getMyRidingOffset());
             if (getPassengers().size() == 2) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
@@ -248,10 +248,10 @@ public class GalleyEntity extends AbstractGalleyEntity {
                     d = -0.75F;
                 }
             }
-            Vector3d vector3d = (new Vector3d((double) f, 0.0D, d)).rotateYaw(-this.rotationYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-            passenger.setPosition(this.getPosX() + vector3d.x, this.getPosY() + (double) f1, +this.getPosZ() + vector3d.z);
-            passenger.rotationYaw += this.deltaRotation;
-            applyYawToEntity(passenger);
+            Vector3d vector3d = (new Vector3d((double) f, 0.0D, d)).yRot(-this.yRot * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+            passenger.setPos(this.getX() + vector3d.x, this.getY() + (double) f1, +this.getZ() + vector3d.z);
+            passenger.yRot += this.deltaRotation;
+            clampRotation(passenger);
         }
     }
 
@@ -359,37 +359,39 @@ public class GalleyEntity extends AbstractGalleyEntity {
                 } else {
                     sigma = 0;
                 }
-                (this.galley).getDataManager().set(GalleyEntity.CARGO, Integer.valueOf(sigma));
+                (this.galley).getEntityData().set(GalleyEntity.CARGO, Integer.valueOf(sigma));
             }
         };
     }
 
     public int getCargo() {
-        return this.dataManager.get(CARGO);
+        return this.entityData.get(CARGO);
     }
 
     public void openContainer(PlayerEntity player) {
-        player.openContainer(new SimpleNamedContainerProvider((id, inv, plyr) -> new GalleyContainer(id, inv, this),
-
-                getDisplayName()));
+        player.openMenu(new SimpleNamedContainerProvider((id, inv, plyr) -> new GalleyContainer(id, inv, this), getDisplayName()));
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(CARGO, 0);
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(CARGO, 0);
     }
 
-    protected void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        this.dataManager.set(CARGO, compound.getInt("Cargo"));
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
+        this.entityData.set(CARGO, compound.getInt("Cargo"));
     }
 
-    protected void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.putInt("Cargo", (Integer) this.dataManager.get(CARGO));
+    @Override
+    protected void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putInt("Cargo", (Integer) this.entityData.get(CARGO));
     }
 
-    protected boolean canFitPassenger(Entity passenger) {
+    @Override
+    protected boolean canAddPassenger(Entity passenger) {
         return (getPassengers().size() < 9);
     }
 }

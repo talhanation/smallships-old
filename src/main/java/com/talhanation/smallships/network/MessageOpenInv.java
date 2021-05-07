@@ -25,7 +25,7 @@ public class MessageOpenInv implements Message<MessageOpenInv> {
 
     public void executeServerSide(NetworkEvent.Context context) {
         Minecraft minecraft = Minecraft.getInstance();
-        Entity riding = context.getSender().getRidingEntity();
+        Entity riding = context.getSender().getVehicle();
         AbstractInventoryBoat invBoat = (AbstractInventoryBoat) riding;
         PlayerEntity playerEntity = minecraft.player;
 

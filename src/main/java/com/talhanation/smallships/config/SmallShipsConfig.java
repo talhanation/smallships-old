@@ -35,6 +35,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue BriggSpeedFactor;
     public static ForgeConfigSpec.DoubleValue BriggTurnFactor;
     public static ForgeConfigSpec.DoubleValue ShipZoom;
+    public static ForgeConfigSpec.BooleanValue EnterThirdPerson;
 
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
 
@@ -139,7 +140,11 @@ public class SmallShipsConfig {
                 .worldRestart()
                 .defineInRange("ShipZoom", 6D, 1D, 20D);
 
-
+        EnterThirdPerson = BUILDER.comment("\n" +"----Should the player enter ships in third person?----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: true")
+                .worldRestart()
+                .define("EnterThirdPerson", true);
 
         CONFIG = BUILDER.build();
     }

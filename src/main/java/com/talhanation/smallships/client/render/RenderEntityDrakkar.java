@@ -68,34 +68,36 @@ public class RenderEntityDrakkar extends EntityRenderer<DrakkarEntity>{
 
     public RenderEntityDrakkar(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);
-        this.shadowSize = 1.6F;
+        this.shadowRadius = 1.6F;
     }
 
 
+    @Override
     public void render(DrakkarEntity entityIn, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn) {
-        matrixStackIn.push();
+        matrixStackIn.pushPose();
         matrixStackIn.translate(0.0D, 0.1D, 0.0D);
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180.0F - entityYaw));
         float f = entityIn.getTimeSinceHit() - partialTicks;
         float f1 = entityIn.getDamageTaken() - partialTicks;
         if (f1 < 0.0F)
             f1 = 0.0F;
         if (f > 0.0F)
-            matrixStackIn.rotate(Vector3f.XP.rotationDegrees(MathHelper.sin(f) * f * f1 / 10.0F * entityIn.getForwardDirection()));
+            matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.sin(f) * f * f1 / 10.0F * entityIn.getForwardDirection()));
         float f2 = entityIn.getRockingAngle(partialTicks);
-        if (!MathHelper.epsilonEquals(f2, 0.0F))
-            matrixStackIn.rotate(new Quaternion(new Vector3f(1.0F, 0.0F, 1.0F), entityIn.getRockingAngle(partialTicks), true));
+        if (!MathHelper.equal(f2, 0.0F))
+            matrixStackIn.mulPose(new Quaternion(new Vector3f(1.0F, 0.0F, 1.0F), entityIn.getRockingAngle(partialTicks), true));
         matrixStackIn.scale(-1.2F, -1.2F, 1.2F);
         matrixStackIn.translate(0.0D, -1.8D,0.0D);
-        matrixStackIn.rotate(Vector3f.YP.rotationDegrees(0F));
-        this.model.setRotationAngles(entityIn, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.getRenderType(getEntityTexture(entityIn)));
-        this.model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-        matrixStackIn.pop();
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(0F));
+        this.model.setupAnim(entityIn, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.renderType(getTextureLocation(entityIn)));
+        this.model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        matrixStackIn.popPose();
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
 
-    public ResourceLocation getEntityTexture(DrakkarEntity entity) {
+    @Override
+    public ResourceLocation getTextureLocation(DrakkarEntity entity) {
         return DRAKKAR_TEXTURES[entity.getBoatType().ordinal()];
     }
 

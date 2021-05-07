@@ -22,7 +22,7 @@ public class MessageSailState implements Message<MessageSailState> {
     }
 
     public void executeServerSide(NetworkEvent.Context context) {
-        Entity riding = context.getSender().getRidingEntity();
+        Entity riding = context.getSender().getVehicle();
         if (!(riding instanceof AbstractSailBoat))
             return;
         AbstractSailBoat sailboat = (AbstractSailBoat) riding;
