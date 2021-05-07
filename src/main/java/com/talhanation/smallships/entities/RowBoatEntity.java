@@ -25,12 +25,13 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
     public boolean Cargo_0 = true;
     public boolean Cargo_1 = true;
 
-    private static final DataParameter<Integer> CARGO = EntityDataManager.createKey(AbstractRowBoatEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> CARGO = EntityDataManager.defineId(AbstractRowBoatEntity.class, DataSerializers.INT);
 
     public RowBoatEntity(EntityType<? extends AbstractRowBoatEntity> entityType, World worldIn) {
         super(entityType, worldIn);
     }
 
+    @Override
     public void tick(){
         super.tick();
         this.getCargo();
@@ -41,20 +42,20 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
 
     }
 
-
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
+    @Override
+    public ActionResultType interact(PlayerEntity player, Hand hand) {
         if (player.isSecondaryUseActive()) {
-            if (this.isBeingRidden() && !(getControllingPassenger() instanceof PlayerEntity)){
-                this.removePassengers();
+            if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
+                this.ejectPassengers();
                 this.passengerwaittime = 200;
             }
             else {
                 if (!(getControllingPassenger() instanceof PlayerEntity)) {
                    openContainer(player);
-                } return ActionResultType.func_233537_a_(this.world.isRemote);
+                } return ActionResultType.sidedSuccess(this.level.isClientSide);
             } return ActionResultType.PASS;
         } else if (this.outOfControlTicks < 60.0F) {
-            if (!this.world.isRemote) {
+            if (!this.level.isClientSide) {
                 return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
 
             } else {
@@ -67,27 +68,30 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
 
     public RowBoatEntity(World worldIn, double x, double y, double z) {
         this(ModEntityTypes.ROWBOAT_ENTITY.get(), worldIn);
-        setPosition(x, y, z);
-        setMotion(Vector3d.ZERO);
-        this.prevPosX = x;
-        this.prevPosY = y;
-        this.prevPosZ = z;
+        setPos(x, y, z);
+        setDeltaMovement(Vector3d.ZERO);
+        this.xo = x;
+        this.yo = y;
+        this.zo = z;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
-        super.handleStatusUpdate(id);
+    @Override
+    public void handleEntityEvent(byte id) {
+        super.handleEntityEvent(id);
     }
 
-    public double getMountedYOffset() {
+    @Override
+    public double getPassengersRidingOffset() {
         return 0.75D;
     }
 
-    public void updatePassenger(Entity passenger) {
-        if (isPassenger(passenger)) {
+    @Override
+    public void positionRider(Entity passenger) {
+        if (hasPassenger(passenger)) {
             float f = -0.75F; //driver x pos
             float d = 0.0F;   //driver z pos
-            float f1 = (float) ((this.removed ? 0.02D : getMountedYOffset()) + passenger.getYOffset());
+            float f1 = (float) ((this.removed ? 0.02D : getPassengersRidingOffset()) + passenger.getMyRidingOffset());
             if (getPassengers().size() == 2) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
@@ -98,10 +102,10 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
                     d = -0.0F;
                 }
             }
-            Vector3d vector3d = (new Vector3d((double) f, 0.0D, d)).rotateYaw(-this.rotationYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-            passenger.setPosition(this.getPosX() + vector3d.x, this.getPosY() + (double) f1, +this.getPosZ() + vector3d.z);
-            passenger.rotationYaw += this.deltaRotation;
-            applyYawToEntity(passenger);
+            Vector3d vector3d = (new Vector3d((double) f, 0.0D, d)).yRot(-this.yRot * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+            passenger.setPos(this.getX() + vector3d.x, this.getY() + (double) f1, +this.getZ() + vector3d.z);
+            passenger.yRot += this.deltaRotation;
+            clampRotation(passenger);
         }
     }
 
@@ -211,37 +215,41 @@ public class RowBoatEntity extends AbstractRowBoatEntity {
                 } else {
                     sigma = 0;
                 }
-                (this.rowboat).getDataManager().set(RowBoatEntity.CARGO, sigma);
+                (this.rowboat).getEntityData().set(RowBoatEntity.CARGO, sigma);
             }
         };
     }
 
     public int getCargo() {
-        return this.dataManager.get(CARGO);
+        return this.entityData.get(CARGO);
     }
 
     @Override
     public void openContainer(PlayerEntity player) {
-        player.openContainer(new SimpleNamedContainerProvider((id, inv, plyr) -> new RowBoatContainer(id, inv, this),
+        player.openMenu(new SimpleNamedContainerProvider((id, inv, plyr) -> new RowBoatContainer(id, inv, this),
                 getDisplayName()));
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(CARGO, 0);
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(CARGO, 0);
     }
 
-    protected void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        this.dataManager.set(CARGO, compound.getInt("Cargo"));
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
+        this.entityData.set(CARGO, compound.getInt("Cargo"));
     }
 
-    protected void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.putInt("Cargo", this.dataManager.get(CARGO));
+    @Override
+    protected void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putInt("Cargo", this.entityData.get(CARGO));
     }
 
-    protected boolean canFitPassenger(Entity passenger) {
+    @Override
+    protected boolean canAddPassenger(Entity passenger) {
         return (getPassengers().size() < 2);
     }
 }

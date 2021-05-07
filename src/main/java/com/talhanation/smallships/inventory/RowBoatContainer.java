@@ -11,7 +11,7 @@ import net.minecraftforge.items.SlotItemHandler;
 public final class RowBoatContainer extends AbstractRowBoatContainer {
 
     public RowBoatContainer(int id, PlayerInventory playerInv, AbstractRowBoatEntity rowBoatEntity) {
-        super(ContainerType.GENERIC_9X1, id, rowBoatEntity);
+        super(ContainerType.GENERIC_9x1, id, rowBoatEntity);
 
         for (int i = 0; i < 1; i++) {// row/reihe
             for (int j = 0; j < 9; j++)

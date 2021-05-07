@@ -11,7 +11,7 @@ import net.minecraftforge.items.SlotItemHandler;
 public final class GalleyContainer extends AbstractGalleyContainer {
 
     public GalleyContainer(int id, PlayerInventory playerInv, AbstractGalleyEntity galleyEntity) {
-        super(ContainerType.GENERIC_9X1, id, galleyEntity);
+        super(ContainerType.GENERIC_9x1, id, galleyEntity);
 
         for (int i = 0; i < 1; i++) {// row/reihe
             for (int j = 0; j < 9; j++)

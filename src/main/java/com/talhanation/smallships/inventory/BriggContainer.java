@@ -10,7 +10,7 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public final class BriggContainer extends AbstractBriggContainer{
     public BriggContainer(int id, PlayerInventory playerInv, AbstractBriggEntity briggEntity) {
-        super(ContainerType.GENERIC_9X6, id, briggEntity);
+        super(ContainerType.GENERIC_9x6, id, briggEntity);
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 9; j++)

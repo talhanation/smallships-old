@@ -24,7 +24,7 @@ public class MessageSteerState implements Message<MessageSteerState> {
     }
 
     public void executeServerSide(NetworkEvent.Context context) {
-        Entity riding = context.getSender().getRidingEntity();
+        Entity riding = context.getSender().getVehicle();
         if (!(riding instanceof AbstractSailBoat))
             return;
         AbstractSailBoat sailBoat = (AbstractSailBoat) riding;

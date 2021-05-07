@@ -11,7 +11,7 @@ import net.minecraftforge.items.SlotItemHandler;
 public final class DrakkarContainer extends AbstractDrakkarContainer {
 
     public DrakkarContainer(int id, PlayerInventory playerInv, AbstractDrakkarEntity drakkarEntity) {
-        super(ContainerType.GENERIC_9X1, id, drakkarEntity);
+        super(ContainerType.GENERIC_9x1, id, drakkarEntity);
 
         for (int i = 0; i < 1; i++) {// row/reihe
             for (int j = 0; j < 9; j++)

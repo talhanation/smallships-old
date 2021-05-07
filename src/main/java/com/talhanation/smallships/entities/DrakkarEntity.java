@@ -25,12 +25,13 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
     public boolean Cargo_0 = true;
     public boolean Cargo_1 = true;
 
-    private static final DataParameter<Integer> CARGO = EntityDataManager.createKey(AbstractDrakkarEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> CARGO = EntityDataManager.defineId(AbstractDrakkarEntity.class, DataSerializers.INT);
 
     public DrakkarEntity(EntityType<? extends AbstractDrakkarEntity> entityType, World worldIn) {
         super(entityType, worldIn);
     }
 
+    @Override
     public void tick(){
         super.tick();
         this.getCargo();
@@ -41,20 +42,20 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
 
     }
 
-
-    public ActionResultType processInitialInteract(PlayerEntity player, Hand hand) {
+    @Override
+    public ActionResultType interact(PlayerEntity player, Hand hand) {
         if (player.isSecondaryUseActive()) {
-            if (this.isBeingRidden() && !(getControllingPassenger() instanceof PlayerEntity)){
-                this.removePassengers();
+            if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
+                this.ejectPassengers();
                 this.passengerwaittime = 200;
             }
             else {
                 if (!(getControllingPassenger() instanceof PlayerEntity)) {
                    openContainer(player);
-                } return ActionResultType.func_233537_a_(this.world.isRemote);
+                } return ActionResultType.sidedSuccess(this.level.isClientSide);
             } return ActionResultType.PASS;
         } else if (this.outOfControlTicks < 60.0F) {
-            if (!this.world.isRemote) {
+            if (!this.level.isClientSide) {
                 return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
 
             } else {
@@ -67,27 +68,30 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
 
     public DrakkarEntity(World worldIn, double x, double y, double z) {
         this((EntityType<? extends AbstractDrakkarEntity>) ModEntityTypes.DRAKKAR_ENTITY.get(), worldIn);
-        setPosition(x, y, z);
-        setMotion(Vector3d.ZERO);
-        this.prevPosX = x;
-        this.prevPosY = y;
-        this.prevPosZ = z;
+        setPos(x, y, z);
+        setDeltaMovement(Vector3d.ZERO);
+        this.xo = x;
+        this.yo = y;
+        this.zo = z;
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void handleStatusUpdate(byte id) {
-        super.handleStatusUpdate(id);
+    @Override
+    public void handleEntityEvent(byte id) {
+        super.handleEntityEvent(id);
     }
 
-    public double getMountedYOffset() {
+    @Override
+    public double getPassengersRidingOffset() {
         return 0.75D;
     }
 
-    public void updatePassenger(Entity passenger) {
-        if (isPassenger(passenger)) {
+    @Override
+    public void positionRider(Entity passenger) {
+        if (hasPassenger(passenger)) {
             float f = -2.25F; //driver x pos
             float d = 0.0F;   //driver z pos
-            float f1 = (float) ((this.removed ? 0.02D : getMountedYOffset()) + passenger.getYOffset());
+            float f1 = (float) ((this.removed ? 0.02D : getPassengersRidingOffset()) + passenger.getMyRidingOffset());
             if (getPassengers().size() == 2) {
                 int i = getPassengers().indexOf(passenger);
                 if (i == 0) {
@@ -215,10 +219,10 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
                     d = 0.0F;
                 }
             }
-            Vector3d vector3d = (new Vector3d((double) f, 0.0D, d)).rotateYaw(-this.rotationYaw * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-            passenger.setPosition(this.getPosX() + vector3d.x, this.getPosY() + (double) f1, +this.getPosZ() + vector3d.z);
-            passenger.rotationYaw += this.deltaRotation;
-            applyYawToEntity(passenger);
+            Vector3d vector3d = (new Vector3d((double) f, 0.0D, d)).yRot(-this.yRot * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
+            passenger.setPos(this.getX() + vector3d.x, this.getY() + (double) f1, +this.getZ() + vector3d.z);
+            passenger.yRot += this.deltaRotation;
+            clampRotation(passenger);
         }
     }
 
@@ -326,38 +330,40 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
                 } else {
                     sigma = 0;
                 }
-                ((DrakkarEntity)this.drakkar).getDataManager().set(DrakkarEntity.CARGO, Integer.valueOf(sigma));
+                ((DrakkarEntity)this.drakkar).getEntityData().set(DrakkarEntity.CARGO, Integer.valueOf(sigma));
             }
         };
     }
 
     public int getCargo() {
-        return ((Integer)this.dataManager.get(CARGO)).intValue();
+        return ((Integer)this.entityData.get(CARGO)).intValue();
     }
 
     @Override
     public void openContainer(PlayerEntity player) {
-        player.openContainer(new SimpleNamedContainerProvider((id, inv, plyr) -> new DrakkarContainer(id, inv, this),
-
-                getDisplayName()));
+        player.openMenu(new SimpleNamedContainerProvider((id, inv, plyr) -> new DrakkarContainer(id, inv, this), getDisplayName()));
     }
 
-    protected void registerData() {
-        super.registerData();
-        this.dataManager.register(CARGO, Integer.valueOf(0));
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(CARGO, Integer.valueOf(0));
     }
 
-    protected void readAdditional(CompoundNBT compound) {
-        super.readAdditional(compound);
-        this.dataManager.set(CARGO, Integer.valueOf(compound.getInt("Cargo")));
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
+        this.entityData.set(CARGO, Integer.valueOf(compound.getInt("Cargo")));
     }
 
-    protected void writeAdditional(CompoundNBT compound) {
-        super.writeAdditional(compound);
-        compound.putInt("Cargo", ((Integer)this.dataManager.get(CARGO)).intValue());
+    @Override
+    protected void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putInt("Cargo", ((Integer)this.entityData.get(CARGO)).intValue());
     }
 
-    protected boolean canFitPassenger(Entity passenger) {
+    @Override
+    protected boolean canAddPassenger(Entity passenger) {
         return (getPassengers().size() < 7);
     }
 }

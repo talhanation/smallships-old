@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class CogItem extends Item {
-    private static final Predicate<Entity> X = EntityPredicates.NOT_SPECTATING.and(Entity::canBeCollidedWith);
+    private static final Predicate<Entity> X = EntityPredicates.NO_SPECTATORS.and(Entity::canBeCollidedWith);
     private final CogEntity.Type type;
 
     public CogItem(CogEntity.Type typeIn, Item.Properties properties) {
@@ -27,49 +27,50 @@ public class CogItem extends Item {
         this.type = typeIn;
     }
 
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
-        RayTraceResult raytraceresult = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.ANY);
+    @Override
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
+        RayTraceResult raytraceresult = getPlayerPOVHitResult(worldIn, playerIn, RayTraceContext.FluidMode.ANY);
         if (raytraceresult.getType() == RayTraceResult.Type.MISS) {
-            return ActionResult.resultPass(itemstack);
+            return ActionResult.pass(itemstack);
         } else {
-            Vector3d vector3d = playerIn.getLook(1.0F);
+            Vector3d vector3d = playerIn.getViewVector(1.0F);
             double d0 = 5.0D;
-            List<Entity> list = worldIn.getEntitiesInAABBexcluding(playerIn, playerIn.getBoundingBox().expand(vector3d.scale(5.0D)).grow(1.0D), X);
+            List<Entity> list = worldIn.getEntities(playerIn, playerIn.getBoundingBox().expandTowards(vector3d.scale(5.0D)).inflate(1.0D), X);
             if (!list.isEmpty()) {
                 Vector3d vector3d1 = playerIn.getEyePosition(1.0F);
 
                 for(Entity entity : list) {
-                    AxisAlignedBB axisalignedbb = entity.getBoundingBox().grow((double)entity.getCollisionBorderSize());
+                    AxisAlignedBB axisalignedbb = entity.getBoundingBox().inflate((double)entity.getPickRadius());
                     if (axisalignedbb.contains(vector3d1)) {
-                        return ActionResult.resultPass(itemstack);
+                        return ActionResult.pass(itemstack);
                     }
                 }
             }
 
             if (raytraceresult.getType() == RayTraceResult.Type.BLOCK) {
-                CogEntity boatentity = new CogEntity(worldIn, raytraceresult.getHitVec().x, raytraceresult.getHitVec().y, raytraceresult.getHitVec().z);
+                CogEntity boatentity = new CogEntity(worldIn, raytraceresult.getLocation().x, raytraceresult.getLocation().y, raytraceresult.getLocation().z);
                 boatentity.setBoatType(this.type);
-                boatentity.rotationYaw = playerIn.rotationYaw + 90F;
-                if (!worldIn.hasNoCollisions(boatentity, boatentity.getBoundingBox().grow(-0.1D))) {
-                    return ActionResult.resultFail(itemstack);
+                boatentity.yRot = playerIn.yRot + 90F;
+                if (!worldIn.noCollision(boatentity, boatentity.getBoundingBox().inflate(-0.1D))) {
+                    return ActionResult.fail(itemstack);
                 } else {
-                    if (!worldIn.isRemote) {
-                        worldIn.addEntity(boatentity);
+                    if (!worldIn.isClientSide) {
+                        worldIn.addFreshEntity(boatentity);
                         if (boatentity.getBoatStatus().equals(TNBoatEntity.Status.IN_WATER)) {
-                            worldIn.playSound(null, boatentity.getPosX(), boatentity.getPosY(), boatentity.getPosZ(), SoundEvents.ENTITY_PLAYER_SPLASH, SoundCategory.BLOCKS, 0.75F, 0.8F);
-                            worldIn.playSound(null, boatentity.getPosX(), boatentity.getPosY(), boatentity.getPosZ(), SoundEvents.AMBIENT_UNDERWATER_ENTER, SoundCategory.BLOCKS, 0.75F, 0.8F);
+                            worldIn.playSound(null, boatentity.getX(), boatentity.getY(), boatentity.getZ(), SoundEvents.PLAYER_SPLASH, SoundCategory.BLOCKS, 0.75F, 0.8F);
+                            worldIn.playSound(null, boatentity.getX(), boatentity.getY(), boatentity.getZ(), SoundEvents.AMBIENT_UNDERWATER_ENTER, SoundCategory.BLOCKS, 0.75F, 0.8F);
                         }
-                        if (!playerIn.abilities.isCreativeMode) {
+                        if (!playerIn.abilities.instabuild) {
                             itemstack.shrink(1);
                         }
                     }
 
-                    playerIn.addStat(Stats.ITEM_USED.get(this));
-                    return ActionResult.func_233538_a_(itemstack, worldIn.isRemote());
+                    playerIn.awardStat(Stats.ITEM_USED.get(this));
+                    return ActionResult.sidedSuccess(itemstack, worldIn.isClientSide());
                 }
             } else {
-                return ActionResult.resultPass(itemstack);
+                return ActionResult.pass(itemstack);
             }
         }
     }

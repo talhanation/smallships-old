@@ -24,7 +24,7 @@ public class MessagePaddleState implements Message<MessagePaddleState> {
     }
 
     public void executeServerSide(NetworkEvent.Context context) {
-        Entity riding = context.getSender().getRidingEntity();
+        Entity riding = context.getSender().getVehicle();
         if (!(riding instanceof TNBoatEntity))
             return;
         TNBoatEntity boat = (TNBoatEntity) riding;

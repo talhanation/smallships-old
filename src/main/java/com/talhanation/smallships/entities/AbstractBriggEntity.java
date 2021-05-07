@@ -44,10 +44,12 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
         super(entityType, worldIn);
     }
 
-    protected void registerData() {
-        super.registerData();
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
     }
 
+    @Override
     public void tick() {
         passengerwaittime--;
 
@@ -68,8 +70,8 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
             ++this.outOfControlTicks;
         }
 
-        if (!this.world.isRemote && this.outOfControlTicks >= 60.0F) {
-            this.removePassengers();
+        if (!this.level.isClientSide && this.outOfControlTicks >= 60.0F) {
+            this.ejectPassengers();
         }
 
         if (this.getTimeSinceHit() > 0) {
@@ -78,61 +80,62 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
 
         super.tick();
         this.tickLerp();
-        if (this.canPassengerSteer()) {
+        if (this.isControlledByLocalInstance()) {
             this.updateMotion();
-            if (this.world.isRemote) {
+            if (this.level.isClientSide) {
                 this.controlBoat();
             }
-            this.move(MoverType.SELF, this.getMotion());
+            this.move(MoverType.SELF, this.getDeltaMovement());
         } else {
-            this.setMotion(Vector3d.ZERO);
+            this.setDeltaMovement(Vector3d.ZERO);
         }
 
         if (getSailState() && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get() ) {
-            this.world.playSound(null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_GENERIC_SWIM, this.getSoundCategory(), 0.05F, 0.8F + 0.4F * this.rand.nextFloat());
+            this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_SWIM, this.getSoundSource(), 0.05F, 0.8F + 0.4F * this.random.nextFloat());
 
         }
 
-        this.doBlockCollisions();
-        List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().grow((double) 0.2F, (double) -0.01F, (double) 0.2F), EntityPredicates.pushableBy(this));
+        this.checkInsideBlocks();
+        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate((double) 0.2F, (double) -0.01F, (double) 0.2F), EntityPredicates.pushableBy(this));
         if (!list.isEmpty()) {
-            boolean flag = !this.world.isRemote && !(this.getControllingPassenger() instanceof PlayerEntity);
+            boolean flag = !this.level.isClientSide && !(this.getControllingPassenger() instanceof PlayerEntity);
 
             for (int j = 0; j < list.size(); ++j) {
                 Entity entity = list.get(j);
-                if (!entity.isPassenger(this)) {
-                    if (flag && this.getPassengers().size() < 10 && !entity.isPassenger() && entity.getWidth() < this.getWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
+                if (!entity.hasPassenger(this)) {
+                    if (flag && this.getPassengers().size() < 10 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
                         if (passengerwaittime < 0) {
                             entity.startRiding(this);
                         }
                     } else {
-                        this.applyEntityCollision(entity);
+                        this.push(entity);
                     }
                 }
             }
         }
     }
 
+    @Override
     public void tickLerp() {
     }
 
     @Override
     public void Watersplash(){
         super.Watersplash();
-        Vector3d vector3d = this.getLook(0.0F);
-        float f0 = MathHelper.cos(this.rotationYaw * ((float)Math.PI / 180F)) * 1.2F;
-        float f1 = MathHelper.sin(this.rotationYaw * ((float)Math.PI / 180F)) * 1.2F;
-        float f2 =  4F - this.rand.nextFloat() * 0.7F;
+        Vector3d vector3d = this.getViewVector(0.0F);
+        float f0 = MathHelper.cos(this.yRot * ((float)Math.PI / 180F)) * 1.2F;
+        float f1 = MathHelper.sin(this.yRot * ((float)Math.PI / 180F)) * 1.2F;
+        float f2 =  4F - this.random.nextFloat() * 0.7F;
         for (int i = 0; i < 2; ++i) {
-            this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 + (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 + (double) f1, 0.0D, 0.0D, 0.0D);
-            this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1, 0.0D, 0.0D, 0.0D);
-            this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 + (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 + (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
-            this.world.addParticle(ParticleTypes.DOLPHIN, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.5D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
+            this.level.addParticle(ParticleTypes.DOLPHIN, this.getX() - vector3d.x * (double) f2 + (double) f0, this.getY() - vector3d.y + 0.5D, this.getZ() - vector3d.z * (double) f2 + (double) f1, 0.0D, 0.0D, 0.0D);
+            this.level.addParticle(ParticleTypes.DOLPHIN, this.getX() - vector3d.x * (double) f2 - (double) f0, this.getY() - vector3d.y + 0.5D, this.getZ() - vector3d.z * (double) f2 - (double) f1, 0.0D, 0.0D, 0.0D);
+            this.level.addParticle(ParticleTypes.DOLPHIN, this.getX() - vector3d.x * (double) f2 + (double) f0, this.getY() - vector3d.y + 0.5D, this.getZ() - vector3d.z * (double) f2 + (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
+            this.level.addParticle(ParticleTypes.DOLPHIN, this.getX() - vector3d.x * (double) f2 - (double) f0, this.getY() - vector3d.y + 0.5D, this.getZ() - vector3d.z * (double) f2 - (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
 
-            this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() - vector3d.x * (double) f2 + (double) f0, this.getPosY() - vector3d.y + 0.8D, this.getPosZ() - vector3d.z * (double) f2 + (double) f1, 0.0D, 0.0D, 0.0D);
-            this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.8D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1, 0.0D, 0.0D, 0.0D);
-            this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() - vector3d.x * (double) f2 + (double) f0, this.getPosY() - vector3d.y + 0.8D, this.getPosZ() - vector3d.z * (double) f2 + (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
-            this.world.addParticle(ParticleTypes.SPLASH, this.getPosX() - vector3d.x * (double) f2 - (double) f0, this.getPosY() - vector3d.y + 0.8D, this.getPosZ() - vector3d.z * (double) f2 - (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
+            this.level.addParticle(ParticleTypes.SPLASH, this.getX() - vector3d.x * (double) f2 + (double) f0, this.getY() - vector3d.y + 0.8D, this.getZ() - vector3d.z * (double) f2 + (double) f1, 0.0D, 0.0D, 0.0D);
+            this.level.addParticle(ParticleTypes.SPLASH, this.getX() - vector3d.x * (double) f2 - (double) f0, this.getY() - vector3d.y + 0.8D, this.getZ() - vector3d.z * (double) f2 - (double) f1, 0.0D, 0.0D, 0.0D);
+            this.level.addParticle(ParticleTypes.SPLASH, this.getX() - vector3d.x * (double) f2 + (double) f0, this.getY() - vector3d.y + 0.8D, this.getZ() - vector3d.z * (double) f2 + (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
+            this.level.addParticle(ParticleTypes.SPLASH, this.getX() - vector3d.x * (double) f2 - (double) f0, this.getY() - vector3d.y + 0.8D, this.getZ() - vector3d.z * (double) f2 - (double) f1 * 1.1, 0.0D, 0.0D, 0.0D);
 
         }
     }
@@ -155,7 +158,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
 
     public void updateMotion() {
         double d0 = -0.04D; // down/up moment
-        double d1 = hasNoGravity() ? 0.0D : d0;
+        double d1 = isNoGravity() ? 0.0D : d0;
         double d2 = 0.0D;  //
         double BriggTurnFactor = SmallShipsConfig.BriggTurnFactor.get();
         this.momentum = 1.0F;
@@ -167,13 +170,13 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
         if (this.getPassengers().size() > 8)  this.passengerfaktor = 0.1200F;
 
         if (this.previousStatus == Status.IN_AIR && this.status != Status.IN_AIR && this.status != Status.ON_LAND) {
-            this.waterLevel = (getBoundingBox()).minY + getHeight();
-            setPosition(getPosX(), (getWaterLevelAbove() - getHeight()) + 0.101D, getPosZ());
-            setMotion(getMotion().mul(10.0D, 0.0D, 10.0D));
+            this.waterLevel = (getBoundingBox()).minY + getBbHeight();
+            setPos(getX(), (getWaterLevelAbove() - getBbHeight()) + 0.101D, getZ());
+            setDeltaMovement(getDeltaMovement().multiply(10.0D, 0.0D, 10.0D));
             this.status = Status.IN_WATER;
         } else {
             if (this.status == Status.IN_WATER) {
-                d2 = (this.waterLevel - (getBoundingBox()).minY + 0.1D) / getHeight();
+                d2 = (this.waterLevel - (getBoundingBox()).minY + 0.1D) / getBbHeight();
                 this.momentum = 0.9F;
             } else if (this.status == Status.UNDER_FLOWING_WATER) {
                 d1 = -7.0E-4D;
@@ -188,19 +191,19 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
                 if (getControllingPassenger() instanceof PlayerEntity)
                     this.boatGlide /= 1.0F;
             }
-            Vector3d vec3d = getMotion();
-            setMotion(vec3d.x * (this.momentum - this.passengerfaktor), vec3d.y + d1, vec3d.z * (this.momentum - this.passengerfaktor));
+            Vector3d vec3d = getDeltaMovement();
+            setDeltaMovement(vec3d.x * (this.momentum - this.passengerfaktor), vec3d.y + d1, vec3d.z * (this.momentum - this.passengerfaktor));
             this.deltaRotation *= (this.momentum - this.passengerfaktor) * BriggTurnFactor;
             if (d2 > 0.0D) {
-                Vector3d vec3d1 = getMotion();
-                setMotion(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
+                Vector3d vec3d1 = getDeltaMovement();
+                setDeltaMovement(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
             }
         }
     }
 
     protected void controlBoat() {
         double BriggSpeedFactor = SmallShipsConfig.BriggSpeedFactor.get();
-        if (this.isBeingRidden()) {
+        if (this.isVehicle()) {
             float f = 0.0F;
             if (this.leftInputDown) {
                 --this.deltaRotation;
@@ -211,7 +214,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
             if (this.rightInputDown != this.leftInputDown && !this.forwardInputDown && !this.backInputDown) {
                 f += 0.005F;
             }
-            this.rotationYaw += this.deltaRotation;
+            this.yRot += this.deltaRotation;
 
             if (getSailState()) {
                 f += (0.04F * BriggSpeedFactor);
@@ -222,12 +225,13 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
             if (this.forwardInputDown) {
                 f += (0.01F * BriggSpeedFactor);
             }
-            this.setMotion(this.getMotion().add((double) (MathHelper.sin(-this.rotationYaw * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.rotationYaw * ((float) Math.PI / 180F)) * f)));
+            this.setDeltaMovement(this.getDeltaMovement().add((double) (MathHelper.sin(-this.yRot * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.yRot * ((float) Math.PI / 180F)) * f)));
             setSteerState(this.rightInputDown && !this.leftInputDown, this.leftInputDown && !this.rightInputDown);
         }
     }
 
-    public IPacket<?> createSpawnPacket() {
+    @Override
+    public IPacket<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket((Entity) this);
     }
 
@@ -247,9 +251,9 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
                 for (int i2 = i1; i2 < j1; ++i2) {
-                    blockpos$mutable.setPos(k1, l1, i2);
-                    FluidState fluidstate = this.world.getFluidState(blockpos$mutable);
-                    if (fluidstate.isTagged(FluidTags.WATER) && d0 < (double) ((float) blockpos$mutable.getY() + fluidstate.getActualHeight(this.world, blockpos$mutable))) {
+                    blockpos$mutable.set(k1, l1, i2);
+                    FluidState fluidstate = this.level.getFluidState(blockpos$mutable);
+                    if (fluidstate.is(FluidTags.WATER) && d0 < (double) ((float) blockpos$mutable.getY() + fluidstate.getHeight(this.level, blockpos$mutable))) {
                         if (!fluidstate.isSource()) {
                             return Status.UNDER_FLOWING_WATER;
                         }
@@ -278,10 +282,10 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
                 for (int i2 = i1; i2 < j1; ++i2) {
-                    blockpos$mutable.setPos(k1, l1, i2);
-                    FluidState fluidstate = this.world.getFluidState(blockpos$mutable);
-                    if (fluidstate.isTagged(FluidTags.WATER)) {
-                        float f = (float) l1 + fluidstate.getActualHeight(this.world, blockpos$mutable);
+                    blockpos$mutable.set(k1, l1, i2);
+                    FluidState fluidstate = this.level.getFluidState(blockpos$mutable);
+                    if (fluidstate.is(FluidTags.WATER)) {
+                        float f = (float) l1 + fluidstate.getHeight(this.level, blockpos$mutable);
                         this.waterLevel = Math.max((double) f, this.waterLevel);
                         flag |= axisalignedbb.minY < (double) f;
                     }
@@ -293,27 +297,28 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
     }
 
     @Override
-    public boolean canBePushed() {
+    public boolean isPushable() {
         return false;
     }
 
     @Override
-    public void applyEntityCollision(Entity entityIn) {
-        super.applyEntityCollision(entityIn);
+    public void push(Entity entityIn) {
+        super.push(entityIn);
     }
 
-    public boolean attackEntityFrom(DamageSource source, float amount) {
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
         if (isInvulnerableTo(source))
             return false;
-        if (!this.world.isRemote && isAlive()) {
+        if (!this.level.isClientSide && isAlive()) {
             if (source == DamageSource.CACTUS)
                 return false;
-            if (source instanceof IndirectEntityDamageSource && source.getTrueSource() != null && isPassenger(source.getTrueSource()))
+            if (source instanceof IndirectEntityDamageSource && source.getEntity() != null && hasPassenger(source.getEntity()))
                 return false;
             setForwardDirection(-getForwardDirection());
             setTimeSinceHit(3);
             setDamageTaken(getDamageTaken() + amount * 10.0F);
-            boolean flag = (source.getTrueSource() instanceof PlayerEntity && ((PlayerEntity) source.getTrueSource()).abilities.isCreativeMode);
+            boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
             if (flag || getDamageTaken() > 600.0F) {
                 onDestroyed(source, flag);
                 remove();
@@ -323,12 +328,14 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
         return false;
     }
 
+    @Override
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);
     }
 
-    public Vector3d func_230268_c_(final LivingEntity rider) {
-        return super.func_230268_c_(rider);
+    @Override
+    public Vector3d getDismountLocationForPassenger(final LivingEntity rider) {
+        return super.getDismountLocationForPassenger(rider);
     }
 
     public PlayerEntity getDriver() {
