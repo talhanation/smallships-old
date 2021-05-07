@@ -75,6 +75,8 @@ public class TNBoatEntity extends Entity {
     private float rockingIntensity;
     private float rockingAngle;
     private float prevRockingAngle;
+    private float waveAngle;
+    private float prevWaveAngle;
 
     public TNBoatEntity(EntityType<? extends TNBoatEntity> type, World world) {
         super(type, world);
@@ -95,24 +97,25 @@ public class TNBoatEntity extends Entity {
 
     }
 
-    public void onSprintPressed(){
+    public void onSprintPressed() {
 
     }
 
-    public void onInvPressed(PlayerEntity player){
+    public void onInvPressed(PlayerEntity player) {
 
     }
 
-    public void onDismountPressed(){
+    public void onDismountPressed() {
         this.ejectPassengers();
     }
-/*
-    public void removePassengersExceptPlayer() {
-        for(int i = this.passengers.size() - 1; i >= 1; --i) {
-            this.passengers.get(i).stopRiding();
+
+    /*
+        public void removePassengersExceptPlayer() {
+            for(int i = this.passengers.size() - 1; i >= 1; --i) {
+                this.passengers.get(i).stopRiding();
+            }
         }
-    }
-*/
+    */
     @Override
     protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return sizeIn.height;
@@ -418,6 +421,18 @@ public class TNBoatEntity extends Entity {
 
     }
 
+    public float getWaveFactor() {
+        return level.isRaining() ? 3F : 1F;
+    }
+
+    public float getWaveSpeed() {
+        return level.isRaining() ? 0.25F : 0.125F;
+    }
+
+    public float getWaveAngle(float partialTicks) {
+        return MathHelper.lerp(partialTicks, this.prevWaveAngle, this.waveAngle);
+    }
+
     private void tickBubbleColumn() {
         if (this.level.isClientSide) {
             int i = this.getRockingTicks();
@@ -430,6 +445,9 @@ public class TNBoatEntity extends Entity {
             this.rockingIntensity = MathHelper.clamp(this.rockingIntensity, 0.0F, 1.0F);
             this.prevRockingAngle = this.rockingAngle;
             this.rockingAngle = 10.0F * (float) Math.sin((double) (0.5F * (float) this.level.getGameTime())) * this.rockingIntensity;
+
+            this.prevWaveAngle = this.waveAngle;
+            this.waveAngle = (float) Math.sin(getWaveSpeed() * (float) tickCount) * getWaveFactor();
         } else {
             if (!this.rocking) {
                 this.setRockingTicks(0);
@@ -1018,7 +1036,6 @@ public class TNBoatEntity extends Entity {
         ENVI_CHERRY("envi_cherry"),
         ENVI_WISTERIA("envi_wisteria"),
         ENVI_WILLOW("envi_willow");
-
 
 
         private final String name;
