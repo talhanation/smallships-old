@@ -118,7 +118,7 @@ public abstract class AbstractWarGalleyEntity extends AbstractSailBoat {
                     }
                 }
 
-                this.paddlePositions[i] = (float)((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F));
+                this.paddlePositions[i] = (float) ((double) this.paddlePositions[i] + (double) ((float) Math.PI / 8F));
             } else {
                 this.paddlePositions[i] = 0.0F;
             }
@@ -371,13 +371,17 @@ public abstract class AbstractWarGalleyEntity extends AbstractSailBoat {
         super.addPassenger(passenger);
     }
 
-    @Override
+    @OnlyIn(Dist.CLIENT)
+    public float getRowingTime(int side, float limbSwing) {
+        return this.getPaddleState(side) ? (float)MathHelper.clampedLerp((double)this.paddlePositions[side] - (double)((float)Math.PI / 8F), (double)this.paddlePositions[side], (double)limbSwing) : 0.0F;
+    }
+
     public void setPaddleState(boolean left, boolean right) {
         super.setPaddleState(left, right);
     }
 
     @Nullable
-    @Override
+
     protected SoundEvent getPaddleSound() {
         switch(this.getBoatStatus()) {
             case IN_WATER:
