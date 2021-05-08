@@ -3,6 +3,7 @@ package com.talhanation.smallships.entities;
 import com.google.common.collect.Lists;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
+import com.talhanation.smallships.compatiblity.Environmental;
 import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.network.MessagePaddleState;
@@ -42,7 +43,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class TNBoatEntity extends Entity {
+public abstract class TNBoatEntity extends Entity {
     private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
     private static final DataParameter<Integer> FORWARD_DIRECTION = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
     private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.FLOAT);
@@ -81,15 +82,6 @@ public class TNBoatEntity extends Entity {
     public TNBoatEntity(EntityType<? extends TNBoatEntity> type, World world) {
         super(type, world);
         this.blocksBuilding = true;
-    }
-
-    public TNBoatEntity(World worldIn, double x, double y, double z) {
-        this(ModEntityTypes.TNBOAT.get(), worldIn);
-        setPos(x, y, z);
-        setDeltaMovement(Vector3d.ZERO);
-        this.xo = x;
-        this.yo = y;
-        this.zo = z;
     }
 
 
@@ -292,6 +284,15 @@ public class TNBoatEntity extends Entity {
                 return LordOfTheRingsMod.PINE_BOAT;
             case LOTR_ROTTEN:
                 return LordOfTheRingsMod.ROTTEN_BOAT;
+
+            ///////////////ENVI//////////////////
+
+            case ENVI_CHERRY:
+                return Environmental.CHERRY_BOAT;
+            case ENVI_WILLOW:
+                return Environmental.WILLOW_BOAT;
+            case ENVI_WISTERIA:
+                return Environmental.WISTERIA_BOAT;
         }
     }
 
@@ -422,11 +423,11 @@ public class TNBoatEntity extends Entity {
     }
 
     public float getWaveFactor() {
-        return level.isRaining() ? 3F : 1F;
+        return level.isRaining() ? 3F : 1.125F;
     }
 
     public float getWaveSpeed() {
-        return level.isRaining() ? 0.25F : 0.125F;
+        return level.isRaining() ? 0.15F : 0.06F;
     }
 
     public float getWaveAngle(float partialTicks) {

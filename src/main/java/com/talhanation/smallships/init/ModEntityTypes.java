@@ -31,14 +31,6 @@ public class ModEntityTypes {
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "galley").toString()));
 
-    // TODO Remove this, as it is no actual entity that needs to be registered
-    public static final RegistryObject<EntityType<TNBoatEntity>> TNBOAT = ENTITY_TYPES.register("tnboat",
-            () -> EntityType.Builder.<TNBoatEntity>of(TNBoatEntity::new, EntityClassification.MISC)
-                    .clientTrackingRange(20)
-                    .setUpdateInterval(10)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .build(new ResourceLocation(Main.MOD_ID, "tnboat").toString()));
-
     public static final RegistryObject<EntityType<WarGalleyEntity>> WAR_GALLEY_ENTITY = ENTITY_TYPES.register("war_galley",
             () -> EntityType.Builder.<WarGalleyEntity>of(WarGalleyEntity::new, EntityClassification.MISC)
                     .sized(5.5F, 1.50F)

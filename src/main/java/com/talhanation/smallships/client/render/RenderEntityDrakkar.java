@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.client.model.ModelDrakkar;
+import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.entities.DrakkarEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -59,8 +60,8 @@ public class RenderEntityDrakkar extends EntityRenderer<DrakkarEntity>{
 
             //ENVI//
             new ResourceLocation(Main.MOD_ID,"textures/entity/mod/envi/galley/envi_cherry_galley.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/envi/gelley/envi_wisteria_galley.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/envi/gelley/envi_willow_galley.png")
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/envi/galley/envi_wisteria_galley.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/mod/envi/galley/envi_willow_galley.png")
 
     };
 
@@ -84,9 +85,11 @@ public class RenderEntityDrakkar extends EntityRenderer<DrakkarEntity>{
         if (f > 0.0F)
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.sin(f) * f * f1 / 10.0F * entityIn.getForwardDirection()));
 
-        float waveAngle = entityIn.getWaveAngle(partialTicks);
-        if (!MathHelper.equal(waveAngle, 0F)) {
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(waveAngle));
+        if (SmallShipsConfig.MakeWaveAnimation.get()) {
+            float waveAngle = entityIn.getWaveAngle(partialTicks);
+            if (!MathHelper.equal(waveAngle, 0F)) {
+                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(waveAngle));
+            }
         }
 
         float f2 = entityIn.getRockingAngle(partialTicks);

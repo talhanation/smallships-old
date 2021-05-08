@@ -5,22 +5,24 @@
   }],
   "type": "minecraft:crafting_shaped",
   "group":"drakkar",
-  "pattern": [
+"pattern": [
+    "sys",
     "lxl",
-    "sxs",
     "bbb"
   ],
   "key": {
-    "l": {
-      "item": "minecraft:lead"
+    "y": {
+      "item": "smallships:sail_item"
     },
     "x": {
       "tag": "forge:chests/wooden"
     },
-    "s": {
-      "item": "smallships:sail_item"
+    "l": {
+      "item": "minecraft:lead"
     },
-    "b": {
+    "s": {
+      "item": "minecraft:string"
+    },    "b": {
       "item": "environmental:willow_boat"
     }
   },

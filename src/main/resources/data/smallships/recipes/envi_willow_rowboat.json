@@ -1,6 +1,23 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "smallships:item/mod/envi/envi_willow_rowboat_item"
+  "conditions": [{
+  "type": "forge:mod_loaded",
+  "modid": "environmental"
+  }],
+  "type": "minecraft:crafting_shaped",
+  "group":"rowboat",
+ "pattern": [
+    "x",
+    "b"
+  ],
+  "key": {
+    "x": {
+      "tag": "forge:chests/wooden"
+    },
+    "b": {
+      "item": "environmental:willow_boat"
+    }
+  },
+  "result": {
+    "item": "smallships:envi_willow_rowboat"
   }
 }

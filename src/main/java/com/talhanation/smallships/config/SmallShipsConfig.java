@@ -17,7 +17,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec CONFIG;
 
     public static ForgeConfigSpec.IntValue VERSION;
-    public static final int NEW_VERSION = 6;
+    public static final int NEW_VERSION = 7;
 
     public static ForgeConfigSpec.BooleanValue PlaySwimmSound;
     public static ForgeConfigSpec.BooleanValue WaterMobFlee;
@@ -36,6 +36,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue BriggTurnFactor;
     public static ForgeConfigSpec.DoubleValue ShipZoom;
     public static ForgeConfigSpec.BooleanValue EnterThirdPerson;
+    public static ForgeConfigSpec.BooleanValue MakeWaveAnimation;
 
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
 
@@ -145,6 +146,12 @@ public class SmallShipsConfig {
                 "\t" + "default: true")
                 .worldRestart()
                 .define("EnterThirdPerson", true);
+
+        MakeWaveAnimation = BUILDER.comment("\n" +"----Should the Ships make waving animation?----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: true")
+                .worldRestart()
+                .define("MakeWaveAnimation", true);
 
         CONFIG = BUILDER.build();
     }

@@ -5,22 +5,24 @@
   }],
   "type": "minecraft:crafting_shaped",
   "group":"galley",
-  "pattern": [
-    "lxl",
-    "sxs",
+"pattern": [
+    "lyl",
+    "txt",
     "bbb"
   ],
   "key": {
-    "l": {
-      "item": "minecraft:lead"
+    "y": {
+      "item": "smallships:sail_item"
     },
     "x": {
       "tag": "forge:chests/wooden"
     },
-    "s": {
-      "item": "smallships:sail_item"
+    "l": {
+      "item": "minecraft:lead"
     },
-    "b": {
+    "t": {
+      "item": "minecraft:tripwire_hook"
+    },    "b": {
       "item": "environmental:willow_boat"
     }
   },

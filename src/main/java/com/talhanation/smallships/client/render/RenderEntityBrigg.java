@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.client.model.ModelBrigg;
+import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.entities.BriggEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -84,11 +85,12 @@ public class RenderEntityBrigg extends EntityRenderer<BriggEntity>{
         if (f > 0.0F)
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.sin(f) * f * f1 / 10.0F * entityIn.getForwardDirection()));
 
-        float waveAngle = entityIn.getWaveAngle(partialTicks);
-        if (!MathHelper.equal(waveAngle, 0F)) {
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(waveAngle));
+        if (SmallShipsConfig.MakeWaveAnimation.get()) {
+            float waveAngle = entityIn.getWaveAngle(partialTicks);
+            if (!MathHelper.equal(waveAngle, 0F)) {
+                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(waveAngle));
+            }
         }
-
         float f2 = entityIn.getRockingAngle(partialTicks);
         if (!MathHelper.equal(f2, 0.0F))
             matrixStackIn.mulPose(new Quaternion(new Vector3f(1.0F, 0.0F, 1.0F), entityIn.getRockingAngle(partialTicks), true));

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.client.model.ModelCog;
+import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.entities.CogEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -82,9 +83,11 @@ public class RenderEntityCog extends EntityRenderer<CogEntity>{
         if (f > 0.0F)
             matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(MathHelper.sin(f) * f * f1 / 10.0F * entityIn.getForwardDirection()));
 
-        float waveAngle = entityIn.getWaveAngle(partialTicks);
-        if (!MathHelper.equal(waveAngle, 0F)) {
-            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(waveAngle));
+        if (SmallShipsConfig.MakeWaveAnimation.get()) {
+            float waveAngle = entityIn.getWaveAngle(partialTicks);
+            if (!MathHelper.equal(waveAngle, 0F)) {
+                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(waveAngle));
+            }
         }
 
         float f2 = entityIn.getRockingAngle(partialTicks);

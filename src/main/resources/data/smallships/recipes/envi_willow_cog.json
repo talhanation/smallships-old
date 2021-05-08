@@ -5,19 +5,18 @@
   }],
   "type": "minecraft:crafting_shaped",
   "group":"cog",
-  "pattern": [
-    "lxl",
-    "sxs",
+ "pattern": [
+    "sss",
+    "xyx",
     "bbb"
   ],
   "key": {
-    "l": {
-      "item": "minecraft:lead"
-    },
-    "x": {
+    "s": {
+      "item": "minecraft:string"
+    },    "x": {
       "tag": "forge:chests/wooden"
     },
-    "s": {
+    "y": {
       "item": "smallships:sail_item"
     },
     "b": {
