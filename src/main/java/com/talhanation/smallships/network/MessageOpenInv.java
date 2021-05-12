@@ -1,7 +1,6 @@
 package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.entities.AbstractInventoryBoat;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
@@ -24,14 +23,9 @@ public class MessageOpenInv implements Message<MessageOpenInv> {
 
 
     public void executeServerSide(NetworkEvent.Context context) {
-        Minecraft minecraft = Minecraft.getInstance();
-        Entity riding = context.getSender().getVehicle();
-        AbstractInventoryBoat invBoat = (AbstractInventoryBoat) riding;
-        PlayerEntity playerEntity = minecraft.player;
-
-        if (invBoat.getPassengers().contains(playerEntity)) {
-            invBoat.openContainer(context.getSender());
-        }
+        Entity e = (Entity) context.getSender().getVehicle();
+        if (e instanceof AbstractInventoryBoat)
+            ((AbstractInventoryBoat)e).openContainer(context.getSender());
     }
 
 
