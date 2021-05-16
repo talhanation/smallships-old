@@ -68,6 +68,10 @@ public class Main {
         SIMPLE_CHANNEL.registerMessage(3, MessageOpenInv.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessageOpenInv()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
+
+        SIMPLE_CHANNEL.registerMessage(4, MessageBanner.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessageBanner()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
     }
 
 

@@ -10,6 +10,7 @@ import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -88,17 +89,31 @@ public class CogEntity extends AbstractCogEntity {
 
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
-        if (player.isSecondaryUseActive()) {
+        ItemStack itemInHand = player.getItemInHand(hand);
+
+        if (!this.getHasBanner()) {
+            if (isBanner(player, itemInHand))
+                return ActionResultType.SUCCESS;
+            return ActionResultType.CONSUME;
+        }
+
+        else if (player.isSecondaryUseActive()) {
+
             if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
                     this.ejectPassengers();
                     this.passengerwaittime = 200;
             }
+
             else {
+
                 if (!(getControllingPassenger() instanceof PlayerEntity)) {
                     openContainer(player);
                 } return ActionResultType.sidedSuccess(this.level.isClientSide);
             } return ActionResultType.PASS;
-        } else if (this.outOfControlTicks < 60.0F) {
+        }
+
+        else if (this.outOfControlTicks < 60.0F) {
+
             if (!this.level.isClientSide) {
                 return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
 
@@ -108,6 +123,7 @@ public class CogEntity extends AbstractCogEntity {
         } else {
             return ActionResultType.PASS;
         }
+
     }
 
     @OnlyIn(Dist.CLIENT)
