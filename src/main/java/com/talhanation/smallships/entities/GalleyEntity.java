@@ -9,6 +9,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -43,7 +44,15 @@ public class GalleyEntity extends AbstractGalleyEntity {
 
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
-        if (player.isSecondaryUseActive()) {
+        ItemStack itemInHand = player.getItemInHand(hand);
+
+        if (!this.getHasBanner()) {
+            if (isBanner(player, itemInHand))
+                return ActionResultType.SUCCESS;
+            return ActionResultType.CONSUME;
+        }
+
+        else if (player.isSecondaryUseActive()) {
             if (this.isVehicle() && !(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)){
                 this.ejectPassengers();
                 this.passengerwaittime = 200;

@@ -31,18 +31,28 @@ public class RenderBanner {
             EntityType<?> entityType = abstractBannerUser.getType();
 
             //banner pos for ships!
+            matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
             if (entityType == ModEntityTypes.COG_ENTITY.get()) {
-                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-                matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
                 //                                  hight
-                matrixStackIn.translate(-2.8D, 0.5D, 0.05D);
-            } else {
-                matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
-                matrixStackIn.translate(0.7D, 2.35D, 0.05D);
-                if (entityType == ModEntityTypes.BRIGG_ENTITY.get())
-                    matrixStackIn.translate(1.1D, 0.0D, 0.0D);
+                matrixStackIn.translate(-2.9D, 0.5D, 0.05D);
+
+            } else if(entityType == ModEntityTypes.BRIGG_ENTITY.get()){
+                matrixStackIn.translate(-6.6D, -0.7D, 0.0D);
+
+            } else if(entityType == ModEntityTypes.DRAKKAR_ENTITY.get()){
+                matrixStackIn.translate(-3.6D, 0.1D, 0.05D);
+
             }
+            else if(entityType == ModEntityTypes.GALLEY_ENTITY.get()){
+                matrixStackIn.translate(-4.3D, 0.5D, 0.05D);
+
+            }
+            else if(entityType == ModEntityTypes.WAR_GALLEY_ENTITY.get()){
+                matrixStackIn.translate(-5.5D, 1.4D, 0.1D);
+
+            }
+
             matrixStackIn.scale(0.5F, 0.5F, 0.5F);
 
             BannerItem item = (BannerItem)banner.getItem();

@@ -24,7 +24,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractBriggEntity extends AbstractSailBoat {
+public abstract class AbstractBriggEntity extends AbstractBannerUser {
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;

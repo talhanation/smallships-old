@@ -27,7 +27,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractWarGalleyEntity extends AbstractSailBoat {
+public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
    private final float[] paddlePositions = new float[2];
     public float momentum;
     public float outOfControlTicks;

@@ -119,13 +119,11 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     public boolean isBanner(PlayerEntity playerEntity, ItemStack itemStack) {
         onInteraction(itemStack, playerEntity);
-        if (!playerEntity.isCreative()) {
-            itemStack.shrink(1);
-            if (!this.level.isClientSide()){
-                setHasBanner(true);// replace later with sendHasBannerToServer(true);
-                return true;
-            }
-            return false;
+        if (!this.level.isClientSide()){
+            setHasBanner(true);// replace later with sendHasBannerToServer(true);
+            if (!playerEntity.isCreative())
+                itemStack.shrink(1);
+            return true;
         }
         else
             return false;

@@ -23,7 +23,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractGalleyEntity extends AbstractSailBoat {
+public abstract class AbstractGalleyEntity extends AbstractBannerUser {
    private final float[] paddlePositions = new float[2];
     public float momentum;
     public float outOfControlTicks;
