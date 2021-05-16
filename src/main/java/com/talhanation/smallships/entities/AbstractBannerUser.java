@@ -27,8 +27,8 @@ import net.minecraftforge.fml.network.NetworkHooks;
 public abstract class AbstractBannerUser extends AbstractSailBoat {
     private static final DataParameter<Boolean> HAS_BANNER = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     public ItemStack banner;
-    public float rotation;
-    public float prevRotation;
+    private float bannerWaveAngle;
+    private float prevBannerWaveAngle;
     protected AbstractSailBoat abstractSailBoat;
 
 
@@ -36,6 +36,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
         super(type, world);
         this.banner = Items.WHITE_BANNER.getDefaultInstance();
         this.abstractSailBoat = abstractSailBoat;
+
     }
 
     ////////////////////////////////////TICK////////////////////////////////////
@@ -43,15 +44,10 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     @Override
     public void tick() {
         super.tick();
-        //this.prevRotation = ;
-        //this.rotation = ;
-
-    }
-
-    public void tickLerp() {
         //for banner wave
-        //this.prevRotation = this.rotation;
-        //this.rotation = lerpAngle(0.05F, this.rotation, this.prevRotationYaw);
+        this.prevBannerWaveAngle = this.bannerWaveAngle;
+        this.bannerWaveAngle = (float) Math.sin(getBannerWaveSpeed() * (float) tickCount) * getBannerWaveFactor();
+
     }
 
     ////////////////////////////////////REGISTER////////////////////////////////////
@@ -79,6 +75,18 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     public boolean getHasBanner() {
         return entityData.get(HAS_BANNER);
+    }
+
+    public float getBannerWaveFactor() {
+        return level.isRaining() ? 2.5F : 1.0F;
+    }
+
+    public float getBannerWaveSpeed() {
+        return level.isRaining() ? 0.75F : 0.35F;
+    }
+
+    public float getBannerWaveAngle(float partialTicks) {
+        return MathHelper.lerp(partialTicks, this.prevBannerWaveAngle, this.bannerWaveAngle);
     }
 
 
@@ -134,10 +142,6 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer ,int packedLight, float partialTicks) {
         RenderBanner.renderBanner(this, partialTicks, matrixStack, buffer, this.banner, packedLight, BannerTileEntityRenderer.makeFlag());
-    }
-
-    private static float lerpAngle(float perc, float start, float end) {
-        return start + perc * MathHelper.wrapDegrees(end - start);
     }
 
     @Override
