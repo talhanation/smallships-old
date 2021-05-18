@@ -321,6 +321,7 @@ public abstract class AbstractBriggEntity extends AbstractBannerUser {
             boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
             if (flag || getDamageTaken() > 600.0F) {
                 onDestroyed(source, flag);
+                dropBanner();
                 remove();
             }
             return true;

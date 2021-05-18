@@ -390,6 +390,7 @@ public abstract class AbstractDrakkarEntity extends AbstractBannerUser {
             boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
             if (flag || getDamageTaken() > 360.0F) {
                 onDestroyed(source, flag);
+                dropBanner();
                 remove();
             }
             return true;

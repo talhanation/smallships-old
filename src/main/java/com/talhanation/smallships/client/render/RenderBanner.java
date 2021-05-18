@@ -38,7 +38,8 @@ public class RenderBanner {
                 matrixStackIn.translate(-2.9D, 0.5D, 0.05D);
 
             } else if(entityType == ModEntityTypes.BRIGG_ENTITY.get()){
-                matrixStackIn.translate(-6.6D, -0.7D, 0.0D);
+
+                matrixStackIn.translate(-5.8D, 1.65D, 0.0D);
 
             } else if(entityType == ModEntityTypes.DRAKKAR_ENTITY.get()){
                 matrixStackIn.translate(-3.6D, 0.1D, 0.05D);

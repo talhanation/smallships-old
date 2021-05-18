@@ -4,9 +4,9 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.client.render.RenderBanner;
 import com.talhanation.smallships.network.MessageBanner;
+import com.talhanation.smallships.network.MessageHasBanner;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.BannerTileEntityRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BannerItem;
@@ -59,12 +59,14 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     }
 
+    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT compoundNBT = new CompoundNBT();
         compoundNBT.put("banner", this.banner.serializeNBT());
         return compoundNBT;
     }
 
+    @Override
     public void deserializeNBT(CompoundNBT nbt) {
         INBT banner = nbt.get("banner");
         if (banner instanceof CompoundNBT)
@@ -78,11 +80,11 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     }
 
     public float getBannerWaveFactor() {
-        return level.isRaining() ? 2.5F : 1.0F;
+        return level.isRaining() ? 4.5F : 3.0F;
     }
 
     public float getBannerWaveSpeed() {
-        return level.isRaining() ? 0.75F : 0.35F;
+        return level.isRaining() ? 0.55F : 0.25F;
     }
 
     public float getBannerWaveAngle(float partialTicks) {
@@ -93,19 +95,40 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     ////////////////////////////////////SET////////////////////////////////////
 
 
-    public void setHasBanner(boolean banner) {
-        if (banner != getSailState()) {
-            playBannerSound(banner);
-            entityData.set(HAS_BANNER, banner);
+    public void setHasBanner(boolean hasbanner) {
+        if (hasbanner != getHasBanner()) {
+            playBannerSound(hasbanner);
+            entityData.set(HAS_BANNER, hasbanner);
         }
+    }
+
+    public void setBanner(ItemStack itemStack) {
+            this.banner = itemStack.copy();
+            this.banner.setCount(1);
     }
 
     ////////////////////////////////////SERVER////////////////////////////////////
 
-    public void sendHasBannerToServer(boolean banner){
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(banner));
+    public void sendHasBannerToServer(boolean hasbanner){
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageHasBanner(hasbanner));
     }
 
+    public void sendBannerToServer(ItemStack itemStack){
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(itemStack));
+    }
+
+    /*
+    // test to save banner - did not work
+    @Override
+    public void addAdditionalSaveData(CompoundNBT nbt) {
+        nbt.write(ItemStack.of(banner));
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT nbt) {
+        banner = ItemStack.of(nbt.copy());
+    }
+*/
 
     ////////////////////////////////////SOUND////////////////////////////////////
 
@@ -120,7 +143,6 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     public boolean isBanner(PlayerEntity playerEntity, ItemStack itemStack) {
         onInteraction(itemStack, playerEntity);
         if (!this.level.isClientSide()){
-            setHasBanner(true);// replace later with sendHasBannerToServer(true);
             if (!playerEntity.isCreative())
                 itemStack.shrink(1);
             return true;
@@ -130,10 +152,13 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     }
 
     public void onInteraction(ItemStack itemStack, PlayerEntity playerEntity) {
-        if (itemStack.getItem() instanceof BannerItem) {
-            this.banner = itemStack.copy();
-            this.banner.setCount(1);
+        if (banner.getItem() instanceof BannerItem) {
+            //sendHasBannerToServer(true);
+            //sendBannerToServer(itemStack);
+            setHasBanner(true);
+            setBanner(itemStack);
         }
+
     }
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
@@ -148,6 +173,6 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     }
 
     public void dropBanner() {
-        //this.abstractSailBoat.spawnAtLocation(this.banner); //does not work
+        this.spawnAtLocation(banner);
     }
 }
