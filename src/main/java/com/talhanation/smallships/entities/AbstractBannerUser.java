@@ -22,9 +22,11 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public abstract class AbstractBannerUser extends AbstractSailBoat {
+public abstract class AbstractBannerUser extends AbstractSailBoat implements IEntityAdditionalSpawnData
+{
     private static final DataParameter<Boolean> HAS_BANNER = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     public ItemStack banner;
     private float bannerWaveAngle;
@@ -36,6 +38,13 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
         super(type, world);
         this.banner = Items.WHITE_BANNER.getDefaultInstance();
         this.abstractSailBoat = abstractSailBoat;
+
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(HAS_BANNER, false);
 
     }
 
@@ -53,24 +62,18 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     ////////////////////////////////////REGISTER////////////////////////////////////
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(HAS_BANNER, false);
-
-    }
-
-    @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT compoundNBT = new CompoundNBT();
-        compoundNBT.put("banner", this.banner.serializeNBT());
+        compoundNBT.put("banner", banner.serializeNBT());
         return compoundNBT;
     }
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
-        INBT banner = nbt.get("banner");
-        if (banner instanceof CompoundNBT)
-            this.banner = ItemStack.of((CompoundNBT)banner);
+        final INBT banner = nbt.get("banner");
+        if (banner instanceof CompoundNBT) {
+            this.banner = ItemStack.of((CompoundNBT) banner);
+        }
     }
 
     ////////////////////////////////////GET////////////////////////////////////
@@ -91,9 +94,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
         return MathHelper.lerp(partialTicks, this.prevBannerWaveAngle, this.bannerWaveAngle);
     }
 
-
     ////////////////////////////////////SET////////////////////////////////////
-
 
     public void setHasBanner(boolean hasbanner) {
         if (hasbanner != getHasBanner()) {
@@ -109,39 +110,52 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     ////////////////////////////////////SERVER////////////////////////////////////
 
-    public void sendHasBannerToServer(boolean hasbanner){
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageHasBanner(hasbanner));
+    public void sendHasBannerToServer(boolean hasbanner, AbstractBannerUser abstractBannerUser){
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageHasBanner(hasbanner, abstractBannerUser));
     }
 
     public void sendBannerToServer(ItemStack itemStack){
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(itemStack));
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(itemStack, this));
     }
 
-    /*
-    // test to save banner - did not work
+    // test to save banner
+    @SuppressWarnings("ConstantConditions")
     @Override
-    public void addAdditionalSaveData(CompoundNBT nbt) {
-        nbt.write(ItemStack.of(banner));
+    public void readSpawnData(PacketBuffer additionalData) {
+
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT nbt) {
-        banner = ItemStack.of(nbt.copy());
+    public void writeSpawnData(PacketBuffer buffer) {
+
     }
-*/
+
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
+        CompoundNBT bannerNBT = compound.getCompound("banner");
+        this.deserializeNBT(bannerNBT);
+
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
+        compound.put("banner",serializeNBT());
+    }
 
     ////////////////////////////////////SOUND////////////////////////////////////
 
-    public void playBannerSound(boolean banner) {
-        if (banner) {
+    public void playBannerSound(boolean hasbanner) {
+        if (hasbanner) {
             this.level.playSound(null, this.getX(), this.getY() + 4 , this.getZ(),SoundEvents.WOOL_HIT, this.getSoundSource(), 15.0F, 0.8F + 0.4F * this.random.nextFloat());
         }
     }
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
 
-    public boolean isBanner(PlayerEntity playerEntity, ItemStack itemStack) {
-        onInteraction(itemStack, playerEntity);
+    public boolean isBanner(PlayerEntity playerEntity, ItemStack itemStack, AbstractBannerUser abstractBannerUser) {
+        onInteraction(itemStack, playerEntity, abstractBannerUser);
         if (!this.level.isClientSide()){
             if (!playerEntity.isCreative())
                 itemStack.shrink(1);
@@ -151,12 +165,10 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
             return false;
     }
 
-    public void onInteraction(ItemStack itemStack, PlayerEntity playerEntity) {
+    public void onInteraction(ItemStack itemStack, PlayerEntity playerEntity, AbstractBannerUser abstractBannerUser) {
         if (banner.getItem() instanceof BannerItem) {
-            //sendHasBannerToServer(true);
-            //sendBannerToServer(itemStack);
-            setHasBanner(true);
-            setBanner(itemStack);
+            setHasBanner(true);//replace with sendHasBannerToServer(true, abstractBannerUser);
+            setBanner(itemStack); //replace with sendBannerToServer(itemStack);
         }
 
     }
@@ -173,6 +185,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     }
 
     public void dropBanner() {
+        if (getHasBanner())
         this.spawnAtLocation(banner);
     }
 }

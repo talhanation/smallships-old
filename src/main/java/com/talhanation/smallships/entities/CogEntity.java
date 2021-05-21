@@ -12,6 +12,7 @@ import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -92,7 +93,7 @@ public class CogEntity extends AbstractCogEntity {
         ItemStack itemInHand = player.getItemInHand(hand);
 
         if (!this.getHasBanner()) {
-            if (isBanner(player, itemInHand))
+            if (isBanner(player, itemInHand, this))
                 return ActionResultType.SUCCESS;
             return ActionResultType.CONSUME;
         }
@@ -331,6 +332,5 @@ public class CogEntity extends AbstractCogEntity {
     protected boolean canAddPassenger(Entity passenger) {
         return (getPassengers().size() < 5);
     }
-
 
 }
