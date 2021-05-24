@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,6 +17,7 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -60,6 +62,12 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
                 fleeEntity(ent);
         }
 
+
+        if (!level.isClientSide && this.getSailState() || this.forwardInputDown) {
+            this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
+            this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
+
+        }
     }
 
     public void tickLerp() {
@@ -164,6 +172,21 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         if (hasBroken) {
             level.playSound(null, getX(), getY(), getZ(), SoundEvents.CROP_BREAK, SoundCategory.BLOCKS, 1F, 0.9F + 0.2F * random.nextFloat());
         }
+    }
+
+    private void knockBack(List<Entity> entities) {
+        double d0 = (this.getBoundingBox().minX + this.getBoundingBox().maxX) / 2.0D;
+        double d1 = (this.getBoundingBox().minZ + this.getBoundingBox().maxZ) / 2.0D;
+
+        for(Entity entity : entities) {
+            if (entity instanceof LivingEntity) {
+                double d2 = entity.getX() - d0;
+                double d3 = entity.getZ() - d1;
+                double d4 = Math.max(d2 * d2 + d3 * d3, 0.1D);
+                entity.push(d2 / d4 * 0.4D, (double)0.0F, d3 / d4 * 0.4D);
+            }
+        }
+
     }
 
     @Override
