@@ -25,20 +25,17 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
-public abstract class AbstractBannerUser extends AbstractSailBoat implements IEntityAdditionalSpawnData
-{
+public abstract class AbstractBannerUser extends AbstractSailBoat {
     private static final DataParameter<Boolean> HAS_BANNER = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
+    public static final DataParameter<ItemStack> BANNER = EntityDataManager.defineId(AbstractBannerUser.class, DataSerializers.ITEM_STACK);
+
     public ItemStack banner;
     private float bannerWaveAngle;
     private float prevBannerWaveAngle;
-    protected AbstractSailBoat abstractSailBoat;
-
 
     public AbstractBannerUser(EntityType<? extends TNBoatEntity> type, World world) {
         super(type, world);
         this.banner = Items.WHITE_BANNER.getDefaultInstance();
-        this.abstractSailBoat = abstractSailBoat;
-
     }
 
     @Override
@@ -99,12 +96,12 @@ public abstract class AbstractBannerUser extends AbstractSailBoat implements IEn
     public void setHasBanner(boolean hasbanner) {
         if (hasbanner != getHasBanner()) {
             playBannerSound(hasbanner);
-            entityData.set(HAS_BANNER, hasbanner);
+            entityData.set(HAS_BANNER, true);
         }
     }
 
-    public void setBanner(ItemStack itemStack) {
-            this.banner = itemStack.copy();
+    public void setBanner(ItemStack banner) {
+            this.banner = banner.copy();
             this.banner.setCount(1);
     }
 
@@ -116,18 +113,6 @@ public abstract class AbstractBannerUser extends AbstractSailBoat implements IEn
 
     public void sendBannerToServer(ItemStack itemStack){
         Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(itemStack, this));
-    }
-
-    // test to save banner
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public void readSpawnData(PacketBuffer additionalData) {
-
-    }
-
-    @Override
-    public void writeSpawnData(PacketBuffer buffer) {
-
     }
 
     @Override
@@ -154,29 +139,21 @@ public abstract class AbstractBannerUser extends AbstractSailBoat implements IEn
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
 
-    public boolean isBanner(PlayerEntity playerEntity, ItemStack itemStack, AbstractBannerUser abstractBannerUser) {
-        onInteraction(itemStack, playerEntity, abstractBannerUser);
-        if (!this.level.isClientSide()){
-            if (!playerEntity.isCreative())
-                itemStack.shrink(1);
+    public boolean onInteractionWithBanner(ItemStack banner, PlayerEntity playerEntity, AbstractBannerUser abstractBannerUser) {
+        setBanner(banner); //replace with sendBannerToServer(itemStack);
+        setHasBanner(true);//replace with sendHasBannerToServer(true, abstractBannerUser);
+
+        if (!this.level.isClientSide()) {
+            if (!playerEntity.isCreative()) banner.shrink(1);
             return true;
         }
-        else
-            return false;
-    }
-
-    public void onInteraction(ItemStack itemStack, PlayerEntity playerEntity, AbstractBannerUser abstractBannerUser) {
-        if (banner.getItem() instanceof BannerItem) {
-            setHasBanner(true);//replace with sendHasBannerToServer(true, abstractBannerUser);
-            setBanner(itemStack); //replace with sendBannerToServer(itemStack);
-        }
-
+        return false;
     }
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
 
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer ,int packedLight, float partialTicks) {
-        RenderBanner.renderBanner(this, partialTicks, matrixStack, buffer, this.banner, packedLight, BannerTileEntityRenderer.makeFlag());
+        RenderBanner.renderBanner(this, partialTicks, matrixStack, buffer, banner, packedLight, BannerTileEntityRenderer.makeFlag());
     }
 
     @Override

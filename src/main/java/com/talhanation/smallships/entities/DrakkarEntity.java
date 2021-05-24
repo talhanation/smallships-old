@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.item.BannerItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -48,11 +49,12 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
     public ActionResultType interact(PlayerEntity player, Hand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
 
-        if (!this.getHasBanner()) {
-            if (isBanner(player, itemInHand, this))
+        if (!this.getHasBanner() && itemInHand.getItem() instanceof BannerItem){
+            if (onInteractionWithBanner(itemInHand, player, this))
                 return ActionResultType.SUCCESS;
             return ActionResultType.CONSUME;
         }
+
 
         else if (player.isSecondaryUseActive()) {
             if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
