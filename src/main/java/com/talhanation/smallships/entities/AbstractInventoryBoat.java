@@ -2,6 +2,8 @@ package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.network.MessageOpenInv;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -11,6 +13,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Direction;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,6 +33,13 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
 
     public AbstractInventoryBoat(EntityType<? extends TNBoatEntity> type, World world) {
         super(type, world);
+    }
+    ////////////////////////////////////TICK////////////////////////////////////
+
+    @Override
+    public void tick() {
+        super.tick();
+        breakLily();
     }
 
     ////////////////////////////////////REGISTER////////////////////////////////////
@@ -99,6 +112,32 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
         if (!keepData && this.itemHandler != null) {
             this.itemHandler.invalidate();
             this.itemHandler = null;
+        }
+    }
+
+    private void breakLily() {
+        AxisAlignedBB boundingBox = getBoundingBox();
+        double offset = 0.75D;
+        BlockPos start = new BlockPos(boundingBox.minX - offset, boundingBox.minY - offset, boundingBox.minZ - offset);
+        BlockPos end = new BlockPos(boundingBox.maxX + offset, boundingBox.maxY + offset, boundingBox.maxZ + offset);
+        BlockPos.Mutable pos = new BlockPos.Mutable();
+        boolean hasBroken = false;
+        if (level.hasChunksAt(start, end)) {
+            for (int i = start.getX(); i <= end.getX(); ++i) {
+                for (int j = start.getY(); j <= end.getY(); ++j) {
+                    for (int k = start.getZ(); k <= end.getZ(); ++k) {
+                        pos.set(i, j, k);
+                        BlockState blockstate = level.getBlockState(pos);
+                        if (blockstate.getBlock() instanceof LilyPadBlock) {
+                            level.destroyBlock(pos, true);
+                            hasBroken = true;
+                        }
+                    }
+                }
+            }
+        }
+        if (hasBroken) {
+            level.playSound(null, getX(), getY(), getZ(), SoundEvents.CROP_BREAK, SoundCategory.BLOCKS, 1F, 0.9F + 0.2F * random.nextFloat());
         }
     }
 

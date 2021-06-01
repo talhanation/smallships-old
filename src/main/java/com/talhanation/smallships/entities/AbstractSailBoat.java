@@ -3,6 +3,7 @@ package com.talhanation.smallships.entities;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
+import com.talhanation.smallships.network.MessageIsForward;
 import com.talhanation.smallships.network.MessageSailState;
 import com.talhanation.smallships.network.MessageSteerState;
 import net.minecraft.block.BlockState;
@@ -13,15 +14,18 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.EntityPredicates;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -32,10 +36,12 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> IS_FORWARD = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
 
     public AbstractSailBoat(EntityType<? extends TNBoatEntity> type, World world) {
         super(type, world);
     }
+    private double waterLevel;
 
     ////////////////////////////////////TICK////////////////////////////////////
 
@@ -43,17 +49,26 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     public void tick() {
         super.tick();
 
+        if (getIsForward()){
+
+            if (this.checkInWater())
+                Watersplash();
+        }
+
         if (this.isControlledByLocalInstance()) {
             if (this.level.isClientSide) {
                 this.sendSteerStateToServer();
+                this.sendIsForwardToServer();
             }
         }
 
+
         if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& getSailState()) {
             setSailState(false);
+            setIsForward(false);
         }
 
-        breakLily();
+
 
         if (SmallShipsConfig.WaterMobFlee.get()) {
             double radius = 15.0D;
@@ -63,15 +78,16 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         }
 
 
-        if (!level.isClientSide && this.getSailState() || this.forwardInputDown) {
+        if (!level.isClientSide && this.getSailState() || this.getIsForward()) {
             this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
             this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
 
         }
+
+
     }
 
-    public void tickLerp() {
-    }
+    public void tickLerp(){}
 
     ////////////////////////////////////REGISTER////////////////////////////////////
 
@@ -80,6 +96,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         super.defineSynchedData();
         this.entityData.define(IS_LEFT, false);
         this.entityData.define(IS_RIGHT, false);
+        this.entityData.define(IS_FORWARD, false);
         this.entityData.define(SAIL_STATE, false);
     }
 
@@ -91,6 +108,10 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     public boolean getSailState() {
         return entityData.get(SAIL_STATE);
+    }
+
+    public boolean getIsForward() {
+        return entityData.get(IS_FORWARD);
     }
 
     ////////////////////////////////////SET////////////////////////////////////
@@ -108,6 +129,15 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         this.entityData.set(IS_RIGHT, right);
     }
 
+    public void setIsForward(boolean forward){
+        this.entityData.set(IS_FORWARD, forward);
+        if(getSailState())
+            this.entityData.set(IS_FORWARD,true);
+
+
+
+    }
+
     ////////////////////////////////////SERVER////////////////////////////////////
 
     public void sendSailStateToServer(boolean state) {
@@ -119,6 +149,11 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     public void sendSteerStateToServer(){
         Main.SIMPLE_CHANNEL.sendToServer(new MessageSteerState(this.getSteerState(0), this.getSteerState(1)));
     }
+
+    public void sendIsForwardToServer(){
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageIsForward(this.getIsForward()));
+    }
+
 
     ////////////////////////////////////SOUND////////////////////////////////////
 
@@ -148,32 +183,6 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         entity.getNavigation().moveTo(fleePos.x, fleePos.y, fleePos.z, 10.0D);
     }
 
-    private void breakLily() {
-        AxisAlignedBB boundingBox = getBoundingBox();
-        double offset = 0.75D;
-        BlockPos start = new BlockPos(boundingBox.minX - offset, boundingBox.minY - offset, boundingBox.minZ - offset);
-        BlockPos end = new BlockPos(boundingBox.maxX + offset, boundingBox.maxY + offset, boundingBox.maxZ + offset);
-        BlockPos.Mutable pos = new BlockPos.Mutable();
-        boolean hasBroken = false;
-        if (level.hasChunksAt(start, end)) {
-            for (int i = start.getX(); i <= end.getX(); ++i) {
-                for (int j = start.getY(); j <= end.getY(); ++j) {
-                    for (int k = start.getZ(); k <= end.getZ(); ++k) {
-                        pos.set(i, j, k);
-                        BlockState blockstate = level.getBlockState(pos);
-                        if (blockstate.getBlock() instanceof LilyPadBlock) {
-                            level.destroyBlock(pos, true);
-                            hasBroken = true;
-                        }
-                    }
-                }
-            }
-        }
-        if (hasBroken) {
-            level.playSound(null, getX(), getY(), getZ(), SoundEvents.CROP_BREAK, SoundCategory.BLOCKS, 1F, 0.9F + 0.2F * random.nextFloat());
-        }
-    }
-
     private void knockBack(List<Entity> entities) {
         double d0 = (this.getBoundingBox().minX + this.getBoundingBox().maxX) / 2.0D;
         double d1 = (this.getBoundingBox().minZ + this.getBoundingBox().maxZ) / 2.0D;
@@ -187,6 +196,35 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
             }
         }
 
+    }
+
+    private boolean checkInWater() {
+        AxisAlignedBB axisalignedbb = this.getBoundingBox();
+        int i = MathHelper.floor(axisalignedbb.minX);
+        int j = MathHelper.ceil(axisalignedbb.maxX);
+        int k = MathHelper.floor(axisalignedbb.minY);
+        int l = MathHelper.ceil(axisalignedbb.minY + 0.001D);
+        int i1 = MathHelper.floor(axisalignedbb.minZ);
+        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
+        boolean flag = false;
+        this.waterLevel = Double.MIN_VALUE;
+        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+
+        for (int k1 = i; k1 < j; ++k1) {
+            for (int l1 = k; l1 < l; ++l1) {
+                for (int i2 = i1; i2 < j1; ++i2) {
+                    blockpos$mutable.set(k1, l1, i2);
+                    FluidState fluidstate = this.level.getFluidState(blockpos$mutable);
+                    if (fluidstate.is(FluidTags.WATER)) {
+                        float f = (float) l1 + fluidstate.getHeight(this.level, blockpos$mutable);
+                        this.waterLevel = Math.max((double) f, this.waterLevel);
+                        flag |= axisalignedbb.minY < (double) f;
+                    }
+                }
+            }
+        }
+
+        return flag;
     }
 
     @Override

@@ -17,7 +17,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec CONFIG;
 
     public static ForgeConfigSpec.IntValue VERSION;
-    public static final int NEW_VERSION = 7;
+    public static final int NEW_VERSION = 8;
 
     public static ForgeConfigSpec.BooleanValue PlaySwimmSound;
     public static ForgeConfigSpec.BooleanValue WaterMobFlee;
@@ -37,6 +37,12 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue ShipZoom;
     public static ForgeConfigSpec.BooleanValue EnterThirdPerson;
     public static ForgeConfigSpec.BooleanValue MakeWaveAnimation;
+    public static ForgeConfigSpec.DoubleValue BriggHealth;
+    public static ForgeConfigSpec.DoubleValue CogHealth;
+    public static ForgeConfigSpec.DoubleValue DrakkarHealth;
+    public static ForgeConfigSpec.DoubleValue GalleyHealth;
+    public static ForgeConfigSpec.DoubleValue RowBoatHealth;
+    public static ForgeConfigSpec.DoubleValue WarGalleyHealth;
 
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
 
@@ -152,6 +158,51 @@ public class SmallShipsConfig {
                 "\t" + "default: true")
                 .worldRestart()
                 .define("MakeWaveAnimation", true);
+
+        BriggHealth = BUILDER.comment("\n" +"----Brigg Health.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "(vanilla boat value = 60)" + "\n" +
+                "\t" + "default: 600")
+                .worldRestart()
+                .defineInRange("BriggHealth", 600.0, 0.0, 10000.0);
+
+        CogHealth = BUILDER.comment("\n" +"----Cog Health.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "(vanilla boat value = 60)" + "\n" +
+                "\t" + "default: 300.0")
+                .worldRestart()
+                .defineInRange("CogHealth", 300.0, 0.0, 10000.0);
+
+        DrakkarHealth = BUILDER.comment("\n" +"----Drakkar Health.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "(vanilla boat value = 60)" + "\n" +
+                "\t" + "default: 360")
+                .worldRestart()
+                .defineInRange("DrakkarHealth", 360.0, 0.0, 10000.0);
+
+        GalleyHealth = BUILDER.comment("\n" +"----Galley Health.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "(vanilla boat value = 60)" + "\n" +
+                "\t" + "default: 600")
+                .worldRestart()
+                .defineInRange("GalleyHealth", 600.0, 0.0, 10000.0);
+
+        RowBoatHealth = BUILDER.comment("\n" +"----Row Boat Health.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "(vanilla boat value = 60)" + "\n" +
+                "\t" + "default: 100")
+                .worldRestart()
+                .defineInRange("RowBoatHealth", 100.0, 0.0, 10000.0);
+
+        WarGalleyHealth = BUILDER.comment("\n" +"----War Galley Health.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "(vanilla boat value = 60)" + "\n" +
+                "\t" + "default: 600")
+                .worldRestart()
+                .defineInRange("WarGalleyHealth", 600.0, 0.0, 10000.0);
+
+
+
 
         CONFIG = BUILDER.build();
     }
