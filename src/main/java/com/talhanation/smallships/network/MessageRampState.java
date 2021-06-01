@@ -24,7 +24,7 @@ public class MessageRampState implements Message<MessageRampState> {
     public void executeServerSide(NetworkEvent.Context context) {
         Entity entity = context.getSender().getEntity();
         AbstractSailBoat sailBoat = (AbstractSailBoat) entity;
-            sailBoat.setRampState(rampState);
+            //sailBoat.setRampState(rampState);
     }
 
     public MessageRampState fromBytes(PacketBuffer buf) {

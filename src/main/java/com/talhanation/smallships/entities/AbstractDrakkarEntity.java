@@ -62,15 +62,6 @@ public abstract class AbstractDrakkarEntity extends AbstractSailBoat {
     public void tick() {
         passengerwaittime--;
         icebreakcounter--;
-        if ((this.getControllingPassenger() == null || !(this.getControllingPassenger() instanceof PlayerEntity)) && getSailState()) {
-            setSailState(false);
-        }
-
-        if (!(this.getControllingPassenger() == null) && (this.getControllingPassenger() instanceof PlayerEntity ) && this.forwardInputDown || this.getSailState()){
-            if (this.getBoatStatus().equals(Status.IN_WATER))
-                Watersplash();
-        }
-
         this.previousStatus = this.status;
         this.status = this.getBoatStatus();
         if (this.status != Status.UNDER_WATER && this.status != Status.UNDER_FLOWING_WATER) {
@@ -296,7 +287,7 @@ public abstract class AbstractDrakkarEntity extends AbstractSailBoat {
 
             this.setDeltaMovement(this.getDeltaMovement().add((double) (MathHelper.sin(-this.yRot * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.yRot * ((float) Math.PI / 180F)) * f)));
             this.setPaddleState(this.rightInputDown && !this.leftInputDown || this.forwardInputDown, this.leftInputDown && !this.rightInputDown || this.forwardInputDown);
-
+            this.setIsForward(this.forwardInputDown);
         }
     }
 
@@ -378,6 +369,7 @@ public abstract class AbstractDrakkarEntity extends AbstractSailBoat {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        double DrakkarHealth = SmallShipsConfig.DrakkarHealth.get();
         if (isInvulnerableTo(source))
             return false;
         if (!this.level.isClientSide && isAlive()) {
@@ -389,7 +381,7 @@ public abstract class AbstractDrakkarEntity extends AbstractSailBoat {
             setTimeSinceHit(3);
             setDamageTaken(getDamageTaken() + amount * 10.0F);
             boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
-            if (flag || getDamageTaken() > 360.0F) {
+            if (flag || getDamageTaken() > DrakkarHealth) {
                 onDestroyed(source, flag);
                 remove();
             }

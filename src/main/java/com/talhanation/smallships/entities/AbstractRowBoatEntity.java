@@ -321,6 +321,7 @@ public abstract class AbstractRowBoatEntity extends AbstractInventoryBoat {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
+        double RowBoatHealth = SmallShipsConfig.RowBoatHealth.get();
         if (isInvulnerableTo(source))
             return false;
         if (!this.level.isClientSide && isAlive()) {
@@ -331,8 +332,8 @@ public abstract class AbstractRowBoatEntity extends AbstractInventoryBoat {
             setForwardDirection(-getForwardDirection());
             setTimeSinceHit(3);
             setDamageTaken(getDamageTaken() + amount * 10.0F);
-            boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity)source.getEntity()).abilities.instabuild);
-            if (flag || getDamageTaken() > 100.0F) {
+            boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
+            if (flag || getDamageTaken() > RowBoatHealth) {
                 onDestroyed(source, flag);
                 remove();
             }

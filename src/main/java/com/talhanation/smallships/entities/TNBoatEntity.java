@@ -148,7 +148,7 @@ public abstract class TNBoatEntity extends Entity {
      */
     @Override
     public boolean isPushable() {
-        return true;
+        return false;
     }
 
     @Override
