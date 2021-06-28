@@ -17,7 +17,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec CONFIG;
 
     public static ForgeConfigSpec.IntValue VERSION;
-    public static final int NEW_VERSION = 8;
+    public static final int NEW_VERSION = 9;
 
     public static ForgeConfigSpec.BooleanValue PlaySwimmSound;
     public static ForgeConfigSpec.BooleanValue WaterMobFlee;
@@ -34,6 +34,8 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue RowBoatTurnFactor;
     public static ForgeConfigSpec.DoubleValue BriggSpeedFactor;
     public static ForgeConfigSpec.DoubleValue BriggTurnFactor;
+    public static ForgeConfigSpec.DoubleValue DhowSpeedFactor;
+    public static ForgeConfigSpec.DoubleValue DhowTurnFactor;
     public static ForgeConfigSpec.DoubleValue ShipZoom;
     public static ForgeConfigSpec.BooleanValue EnterThirdPerson;
     public static ForgeConfigSpec.BooleanValue MakeWaveAnimation;
@@ -43,6 +45,7 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue GalleyHealth;
     public static ForgeConfigSpec.DoubleValue RowBoatHealth;
     public static ForgeConfigSpec.DoubleValue WarGalleyHealth;
+    public static ForgeConfigSpec.DoubleValue DhowHealth;
 
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
 
@@ -131,6 +134,18 @@ public class SmallShipsConfig {
                 .worldRestart()
                 .defineInRange("BriggTurnFactor", 0.2, 0.0, 1.0);
 
+        DhowSpeedFactor = BUILDER.comment("\n" +"----Dhow Speed Factor.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: 1.35" )
+                .worldRestart()
+                .defineInRange("BriggSpeedFactor", 1.35, 0.0, 2.0);
+
+        DhowTurnFactor = BUILDER.comment("\n" +"----Dhow Turn Factor.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "default: 0.3")
+                .worldRestart()
+                .defineInRange("BriggTurnFactor", 0.3, 0.0, 1.0);
+
         PlaySwimmSound = BUILDER.comment("\n" + "----Should Ships Make Swimming sounds?----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: true")
@@ -201,7 +216,12 @@ public class SmallShipsConfig {
                 .worldRestart()
                 .defineInRange("WarGalleyHealth", 600.0, 0.0, 10000.0);
 
-
+        DhowHealth = BUILDER.comment("\n" +"----Dhow Health.----" + "\n" +
+                "\t" + "(takes effect after restart)" + "\n" +
+                "\t" + "(vanilla boat value = 60)" + "\n" +
+                "\t" + "default: 400")
+                .worldRestart()
+                .defineInRange("DhowHealth", 400.0, 0.0, 10000.0);
 
 
         CONFIG = BUILDER.build();

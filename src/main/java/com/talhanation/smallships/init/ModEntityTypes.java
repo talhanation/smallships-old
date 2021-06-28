@@ -62,4 +62,12 @@ public class ModEntityTypes {
                     .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "brigg").toString()));
+
+    public static final RegistryObject<EntityType<DhowEntity>> DHOW_ENTITY = ENTITY_TYPES.register("dhow",
+            () -> EntityType.Builder.<DhowEntity>of(DhowEntity::new, EntityClassification.MISC)
+                    .sized(5.5F, 1.25F)
+                    .clientTrackingRange(20)
+                    .setUpdateInterval(10)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .build(new ResourceLocation(Main.MOD_ID, "dhow").toString()));
 }

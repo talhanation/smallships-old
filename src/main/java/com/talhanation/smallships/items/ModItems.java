@@ -58,6 +58,13 @@ public class ModItems {
     public static final RegistryObject<Item> ACACIA_BRIGG_ITEM =      createBrigg("acacia", AbstractBriggEntity.Type.ACACIA, true);
     public static final RegistryObject<Item> DARK_OAK_BRIGG_ITEM =    createBrigg("dark_oak", AbstractBriggEntity.Type.DARK_OAK, true);
 
+    public static final RegistryObject<Item> OAK_DHOW_ITEM =         createDhow("oak", AbstractDhowEntity.Type.OAK, true);
+    public static final RegistryObject<Item> SPRUCE_DHOW_ITEM =      createDhow("spruce", AbstractDhowEntity.Type.SPRUCE, true);
+    public static final RegistryObject<Item> BIRCH_DHOW_ITEM =       createDhow("birch", AbstractDhowEntity.Type.BIRCH, true);
+    public static final RegistryObject<Item> JUNGLE_DHOW_ITEM =      createDhow("jungle", AbstractDhowEntity.Type.JUNGLE, true);
+    public static final RegistryObject<Item> ACACIA_DHOW_ITEM =      createDhow("acacia", AbstractDhowEntity.Type.ACACIA, true);
+    public static final RegistryObject<Item> DARK_OAK_DHOW_ITEM =    createDhow("dark_oak", AbstractDhowEntity.Type.DARK_OAK, true);
+
             //BOP
     public static final RegistryObject<Item> BOP_CHERRY_COG_ITEM =      createCog("bop_cherry", AbstractCogEntity.Type.BOP_CHERRY, BiomesOPlenty.isInstalled());
     public static final RegistryObject<Item> BOP_CHERRY_GALLEY_ITEM =      createGalley("bop_cherry", AbstractGalleyEntity.Type.BOP_CHERRY, BiomesOPlenty.isInstalled());
@@ -324,6 +331,10 @@ public class ModItems {
 
     private static RegistryObject<Item> createBrigg(String name, TNBoatEntity.Type type, boolean compatiblity ){
         return ITEMS.register(name + "_brigg", () -> new BriggItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
+    }
+
+    private static RegistryObject<Item> createDhow(String name, TNBoatEntity.Type type, boolean compatiblity ){
+        return ITEMS.register(name + "_dhow", () -> new DhowItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
     }
 }
 
