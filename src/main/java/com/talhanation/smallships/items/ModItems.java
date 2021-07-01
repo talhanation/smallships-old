@@ -5,6 +5,7 @@ import com.talhanation.smallships.compatiblity.BiomesOPlenty;
 import com.talhanation.smallships.compatiblity.Environmental;
 import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
 import com.talhanation.smallships.entities.*;
+import com.talhanation.smallships.entities.sailboats.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraftforge.fml.RegistryObject;

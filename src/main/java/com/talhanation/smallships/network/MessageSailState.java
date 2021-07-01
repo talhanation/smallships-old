@@ -8,12 +8,12 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageSailState implements Message<MessageSailState> {
 
-    private boolean state;
+    private int state;
 
     public MessageSailState() {
     }
 
-    public MessageSailState(boolean state) {
+    public MessageSailState(int state) {
         this.state = state;
     }
 
@@ -32,12 +32,12 @@ public class MessageSailState implements Message<MessageSailState> {
     }
 
     public MessageSailState fromBytes(PacketBuffer buf) {
-        this.state = buf.readBoolean();
+        this.state = buf.readInt();
         return this;
     }
 
     public void toBytes(PacketBuffer buf) {
-        buf.writeBoolean(this.state);
+        buf.writeInt(this.state);
     }
 
 }

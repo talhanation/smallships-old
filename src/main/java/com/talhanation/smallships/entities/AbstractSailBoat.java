@@ -6,8 +6,6 @@ import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessageIsForward;
 import com.talhanation.smallships.network.MessageSailState;
 import com.talhanation.smallships.network.MessageSteerState;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -21,8 +19,6 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -35,7 +31,7 @@ import java.util.List;
 public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> SAIL_STATE = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> SAIL_STATE = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.INT);
     private static final DataParameter<Boolean> IS_FORWARD = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
 
     public AbstractSailBoat(EntityType<? extends TNBoatEntity> type, World world) {
@@ -63,8 +59,8 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         }
 
 
-        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& getSailState()) {
-            setSailState(false);
+        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& (getSailState() != 0)) {
+            setSailState(0);
             setIsForward(false);
         }
 
@@ -78,7 +74,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         }
 
 
-        if (!level.isClientSide && this.getSailState() || this.getIsForward()) {
+        if (!level.isClientSide  || this.getIsForward()) {
             this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
             this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
 
@@ -97,7 +93,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         this.entityData.define(IS_LEFT, false);
         this.entityData.define(IS_RIGHT, false);
         this.entityData.define(IS_FORWARD, false);
-        this.entityData.define(SAIL_STATE, false);
+        this.entityData.define(SAIL_STATE, 0);
     }
 
     ////////////////////////////////////GET////////////////////////////////////
@@ -106,7 +102,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         return this.entityData.<Boolean>get(side == 0 ? IS_LEFT : IS_RIGHT) && this.getControllingPassenger() != null;
     }
 
-    public boolean getSailState() {
+    public Integer getSailState() {
         return entityData.get(SAIL_STATE);
     }
 
@@ -117,11 +113,12 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     ////////////////////////////////////SET////////////////////////////////////
 
 
-    public void setSailState(boolean state) {
+    public void setSailState(int state) {
         if (state != getSailState()) {
             playSailSound(state);
             entityData.set(SAIL_STATE, state);
         }
+
     }
 
     public void setSteerState(boolean left, boolean right){
@@ -131,16 +128,14 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     public void setIsForward(boolean forward){
         this.entityData.set(IS_FORWARD, forward);
-        if(getSailState())
+        if(getSailState() != 0)
             this.entityData.set(IS_FORWARD,true);
-
-
 
     }
 
     ////////////////////////////////////SERVER////////////////////////////////////
 
-    public void sendSailStateToServer(boolean state) {
+    public void sendSailStateToServer(int state) {
         if (level.isClientSide) {
             Main.SIMPLE_CHANNEL.sendToServer(new MessageSailState(state));
         }
@@ -157,8 +152,8 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     ////////////////////////////////////SOUND////////////////////////////////////
 
-    public void playSailSound(boolean state) {
-        if (state) {
+    public void playSailSound(int state) {
+        if (state != 0) {
             this.level.playSound(null, this.getX(), this.getY() + 4 , this.getZ(), SoundInit.SHIP_SAIL_0.get(), this.getSoundSource(), 15.0F, 0.8F + 0.4F * this.random.nextFloat());
         } else {
             this.level.playSound(null, this.getX(), this.getY() + 4, this.getZ(), SoundInit.SHIP_SAIL_1.get(), this.getSoundSource(), 10.0F, 0.8F + 0.4F * this.random.nextFloat());
@@ -167,8 +162,17 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
     @Override
-    public void onSprintPressed() {
-        sendSailStateToServer(!getSailState());
+    public void onKeyPressed() {
+        int state = getSailState();
+
+        if (state != 4){
+            state++;
+
+        }else{
+            state = 0;
+        }
+
+        sendSailStateToServer(state);
     }
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////

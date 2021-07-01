@@ -1,6 +1,6 @@
 package com.talhanation.smallships.util;
 
-import com.talhanation.smallships.entities.AbstractBriggEntity;
+import com.talhanation.smallships.entities.sailboats.AbstractBriggEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class BriggItemStackHandler<T extends AbstractBriggEntity> extends ItemStackHandler {

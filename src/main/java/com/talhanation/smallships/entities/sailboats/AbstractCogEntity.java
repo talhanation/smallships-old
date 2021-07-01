@@ -1,6 +1,8 @@
-package com.talhanation.smallships.entities;
+package com.talhanation.smallships.entities.sailboats;
 
 import com.talhanation.smallships.config.SmallShipsConfig;
+import com.talhanation.smallships.entities.AbstractSailBoat;
+import com.talhanation.smallships.entities.TNBoatEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -24,7 +26,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractCogEntity extends AbstractSailBoat{
+public abstract class AbstractCogEntity extends AbstractSailBoat {
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -80,7 +82,7 @@ public abstract class AbstractCogEntity extends AbstractSailBoat{
             this.setDeltaMovement(Vector3d.ZERO);
         }
 
-        if (getSailState() && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get() ) {
+        if (getSailState() != 0 && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get() ) {
             this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_SWIM, this.getSoundSource(), 0.05F, 0.8F + 0.4F * this.random.nextFloat());
 
         }
@@ -205,10 +207,11 @@ public abstract class AbstractCogEntity extends AbstractSailBoat{
                 f += 0.005F;
             }
             this.yRot += this.deltaRotation;
-
+            /*
             if (getSailState()) {
                 f += (0.04F * CogSpeedFactor);
             }
+            */
             if (this.backInputDown) {
                 f -= (0.005F * CogSpeedFactor);
             }

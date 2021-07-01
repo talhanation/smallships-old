@@ -1,6 +1,6 @@
 package com.talhanation.smallships.inventory;
 
-import com.talhanation.smallships.entities.AbstractCogEntity;
+import com.talhanation.smallships.entities.sailboats.AbstractCogEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.ContainerType;

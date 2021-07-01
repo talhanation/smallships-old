@@ -1,6 +1,6 @@
 package com.talhanation.smallships.util;
 
-import com.talhanation.smallships.entities.AbstractDhowEntity;
+import com.talhanation.smallships.entities.sailboats.AbstractDhowEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class DhowItemStackHandler<T extends AbstractDhowEntity> extends ItemStackHandler {

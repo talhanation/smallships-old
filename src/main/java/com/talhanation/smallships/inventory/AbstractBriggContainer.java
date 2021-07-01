@@ -1,6 +1,6 @@
 package com.talhanation.smallships.inventory;
 
-import com.talhanation.smallships.entities.AbstractBriggEntity;
+import com.talhanation.smallships.entities.sailboats.AbstractBriggEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;

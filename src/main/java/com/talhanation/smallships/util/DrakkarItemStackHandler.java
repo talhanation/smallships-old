@@ -1,6 +1,6 @@
 package com.talhanation.smallships.util;
 
-import com.talhanation.smallships.entities.AbstractDrakkarEntity;
+import com.talhanation.smallships.entities.sailboats.AbstractDrakkarEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class DrakkarItemStackHandler<T extends AbstractDrakkarEntity> extends ItemStackHandler {

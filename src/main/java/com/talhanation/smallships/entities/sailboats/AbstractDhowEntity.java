@@ -1,6 +1,7 @@
-package com.talhanation.smallships.entities;
+package com.talhanation.smallships.entities.sailboats;
 
 import com.talhanation.smallships.config.SmallShipsConfig;
+import com.talhanation.smallships.entities.AbstractSailBoat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -11,7 +12,10 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.network.IPacket;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.*;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.EntityPredicates;
+import net.minecraft.util.IndirectEntityDamageSource;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
@@ -24,7 +28,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractBriggEntity extends AbstractSailBoat {
+public abstract class AbstractDhowEntity extends AbstractSailBoat {
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -40,7 +44,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
     public int passengerwaittime;
     public float passengerfaktor;
 
-    public AbstractBriggEntity(EntityType<? extends AbstractBriggEntity> entityType, World worldIn) {
+    public AbstractDhowEntity(EntityType<? extends AbstractDhowEntity> entityType, World worldIn) {
         super(entityType, worldIn);
     }
 
@@ -80,7 +84,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
             this.setDeltaMovement(Vector3d.ZERO);
         }
 
-        if (getSailState() && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get() ) {
+        if (getSailState() !=0 && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get() ) {
             this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_SWIM, this.getSoundSource(), 0.05F, 0.8F + 0.4F * this.random.nextFloat());
 
         }
@@ -150,7 +154,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
         double d0 = -0.04D; // down/up moment
         double d1 = isNoGravity() ? 0.0D : d0;
         double d2 = 0.0D;  //
-        double BriggTurnFactor = SmallShipsConfig.BriggTurnFactor.get();
+        double DhowTurnFactor = SmallShipsConfig.DhowTurnFactor.get();
         this.momentum = 1.0F;
 
         if (this.getPassengers().size() == 2) this.passengerfaktor = 0.0075F;
@@ -183,7 +187,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
             }
             Vector3d vec3d = getDeltaMovement();
             setDeltaMovement(vec3d.x * (this.momentum - this.passengerfaktor), vec3d.y + d1, vec3d.z * (this.momentum - this.passengerfaktor));
-            this.deltaRotation *= (this.momentum - this.passengerfaktor) * BriggTurnFactor;
+            this.deltaRotation *= (this.momentum - this.passengerfaktor) * DhowTurnFactor;
             if (d2 > 0.0D) {
                 Vector3d vec3d1 = getDeltaMovement();
                 setDeltaMovement(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
@@ -192,7 +196,8 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
     }
 
     protected void controlBoat() {
-        double BriggSpeedFactor = SmallShipsConfig.BriggSpeedFactor.get();
+        double DhowSpeedFactor = SmallShipsConfig.DhowSpeedFactor.get();
+        int sailstate = getSailState();
         if (this.isVehicle()) {
             float f = 0.0F;
             if (this.leftInputDown) {
@@ -206,14 +211,28 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
             }
             this.yRot += this.deltaRotation;
 
-            if (getSailState()) {
-                f += (0.04F * BriggSpeedFactor);
+            if (sailstate != 0) {
+                switch (sailstate){
+                    case 1:
+                        f += (0.04F * DhowSpeedFactor * 1/4);
+                        break;
+                    case 2:
+                        f += (0.04F * DhowSpeedFactor * 2/4);
+                        break;
+                    case 3:
+                        f += (0.04F * DhowSpeedFactor * 3/4);
+                        break;
+                    case 4:
+                        f += (0.04F * DhowSpeedFactor * 1);
+                        break;
+                }
+
             }
             if (this.backInputDown) {
-                f -= (0.01F * BriggSpeedFactor);
+                f -= (0.01F * DhowSpeedFactor);
             }
             if (this.forwardInputDown) {
-                f += (0.01F * BriggSpeedFactor);
+                f += (0.01F * DhowSpeedFactor);
             }
             this.setDeltaMovement(this.getDeltaMovement().add((double) (MathHelper.sin(-this.yRot * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.yRot * ((float) Math.PI / 180F)) * f)));
             setSteerState(this.rightInputDown && !this.leftInputDown, this.leftInputDown && !this.rightInputDown);
@@ -299,7 +318,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        double BriggHealth = SmallShipsConfig.BriggHealth.get();
+        double DhowHealth = SmallShipsConfig.DhowHealth.get();
         if (isInvulnerableTo(source))
             return false;
         if (!this.level.isClientSide && isAlive()) {
@@ -311,7 +330,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
             setTimeSinceHit(3);
             setDamageTaken(getDamageTaken() + amount * 10.0F);
             boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
-            if (flag || getDamageTaken() > BriggHealth) {
+            if (flag || getDamageTaken() > DhowHealth) {
                 onDestroyed(source, flag);
                 remove();
             }

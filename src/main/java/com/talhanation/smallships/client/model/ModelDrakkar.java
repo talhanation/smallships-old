@@ -507,6 +507,7 @@ public class ModelDrakkar<T extends DrakkarEntity> extends EntityModel<T> {
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+  /*
         if (entityIn.getSailState()) {
             this.Sail_0.visible = false;
             this.Sail_1.visible = true;
@@ -514,7 +515,7 @@ public class ModelDrakkar<T extends DrakkarEntity> extends EntityModel<T> {
             this.Sail_0.visible = true;
             this.Sail_1.visible = false;
         }
-
+*/
             this.Cargo0.visible = entityIn.Cargo_0;
             this.Cargo1.visible = entityIn.Cargo_1;
 

@@ -89,7 +89,7 @@ public abstract class TNBoatEntity extends Entity {
 
     }
 
-    public void onSprintPressed() {
+    public void onKeyPressed() {
 
     }
 

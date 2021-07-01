@@ -1,5 +1,6 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.entities.sailboats.AbstractCogEntity;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.CogContainer;
 import com.talhanation.smallships.items.ModItems;

@@ -30,7 +30,7 @@ public class KeyEvents {
         TNBoatEntity boat = (TNBoatEntity) riding;
         if (clientPlayerEntity.equals(boat.getDriver())) {
             if (Main.SAIL_KEY.isDown()) {
-                boat.onSprintPressed();
+                boat.onKeyPressed();
                 this.wasSailPressed = true;
             }
             else {

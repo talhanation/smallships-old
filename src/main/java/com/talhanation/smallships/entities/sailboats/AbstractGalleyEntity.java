@@ -1,7 +1,8 @@
-package com.talhanation.smallships.entities;
+package com.talhanation.smallships.entities.sailboats;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
+import com.talhanation.smallships.entities.AbstractSailBoat;
 import com.talhanation.smallships.network.MessagePaddleState;
 import net.minecraft.entity.*;
 import net.minecraft.entity.passive.WaterMobEntity;
@@ -108,7 +109,7 @@ public abstract class AbstractGalleyEntity extends AbstractSailBoat {
             }
         }
 
-        if (getSailState() && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()) {
+        if (getSailState() !=0 && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()) {
             this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_SWIM, this.getSoundSource(), 0.05F, 0.8F + 0.4F * this.random.nextFloat());
 
         }
@@ -131,12 +132,6 @@ public abstract class AbstractGalleyEntity extends AbstractSailBoat {
                 }
             }
         }
-    }
-
-    @Override
-    public void onSprintPressed() {
-        super.onSprintPressed();
-        sendSailStateToServer(!getSailState());
     }
 
     @Override
@@ -235,7 +230,7 @@ public abstract class AbstractGalleyEntity extends AbstractSailBoat {
                 f += 0.005F;
             }
             this.yRot += this.deltaRotation;
-
+/*
             if (this.getSailState()) {
                  f += (0.04F * GalleySpeedFactor);
                  if (this.forwardInputDown) {
@@ -249,7 +244,7 @@ public abstract class AbstractGalleyEntity extends AbstractSailBoat {
             if (this.forwardInputDown && !this.getSailState()) {
                 f += (0.04F* GalleySpeedFactor); // speed
             }
-
+*/
             this.setDeltaMovement(this.getDeltaMovement().add((double)(MathHelper.sin(-this.yRot * ((float)Math.PI / 180F)) * f), 0.0D, (double)(MathHelper.cos(this.yRot * ((float)Math.PI / 180F)) * f)));
             this.setPaddleState(this.rightInputDown && !this.leftInputDown || this.forwardInputDown, this.leftInputDown && !this.rightInputDown || this.forwardInputDown);
             this.setIsForward(this.forwardInputDown);

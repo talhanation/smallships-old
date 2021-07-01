@@ -1,5 +1,6 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.entities.sailboats.AbstractDrakkarEntity;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.DrakkarContainer;
 import com.talhanation.smallships.items.ModItems;

@@ -663,7 +663,7 @@ public class ModelBrigg<T extends BriggEntity> extends EntityModel<T> {
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (entityIn.getSailState()) {
+       /* if (entityIn.getSailState()) {
             this.Sail_1_0.visible = true;
             this.Sail_2_0.visible = true;
             this.Sail_1_0_o.visible = true;
@@ -683,6 +683,7 @@ public class ModelBrigg<T extends BriggEntity> extends EntityModel<T> {
             this.Sail_1_0_o.visible = false;
             this.Sail_2_0_o.visible = false;
         }
+        */
         if (entityIn.getSteerState(0)){
             this.steer.xRot = -MathHelper.cos(3.1415927F);
             //this.Brigg.rotateAngleZ = -MathHelper.cos(3.1415927F * 2 );

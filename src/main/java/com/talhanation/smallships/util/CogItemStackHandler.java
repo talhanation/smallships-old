@@ -1,6 +1,6 @@
 package com.talhanation.smallships.util;
 
-import com.talhanation.smallships.entities.AbstractCogEntity;
+import com.talhanation.smallships.entities.sailboats.AbstractCogEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class CogItemStackHandler<T extends AbstractCogEntity> extends ItemStackHandler {

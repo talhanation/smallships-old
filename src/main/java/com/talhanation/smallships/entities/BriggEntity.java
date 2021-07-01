@@ -1,5 +1,6 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.entities.sailboats.AbstractBriggEntity;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.BriggContainer;
 import com.talhanation.smallships.items.ModItems;

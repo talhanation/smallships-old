@@ -701,6 +701,7 @@ public class ModelGalley<T extends GalleyEntity> extends EntityModel<T> {
 
     @Override
     public void setupAnim(T entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+       /*
         if (entityIn.getSailState()) {
         this.Segel_0.visible = false;
         this.Segel_1_main.visible = true;
@@ -708,6 +709,7 @@ public class ModelGalley<T extends GalleyEntity> extends EntityModel<T> {
         this.Segel_0.visible = true;
         this.Segel_1_main.visible = false;
     }
+        */
 
             this.Cargo0.visible = entityIn.Cargo_0;
             this.Cargo1.visible = entityIn.Cargo_1;

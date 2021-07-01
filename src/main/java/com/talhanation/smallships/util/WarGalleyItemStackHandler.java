@@ -1,6 +1,6 @@
 package com.talhanation.smallships.util;
 
-import com.talhanation.smallships.entities.AbstractWarGalleyEntity;
+import com.talhanation.smallships.entities.sailboats.AbstractWarGalleyEntity;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class WarGalleyItemStackHandler<T extends AbstractWarGalleyEntity> extends ItemStackHandler {

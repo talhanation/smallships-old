@@ -1,5 +1,6 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.entities.sailboats.AbstractWarGalleyEntity;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.WarGalleyContainer;
 import com.talhanation.smallships.items.ModItems;
