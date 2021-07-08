@@ -19,12 +19,17 @@ public class PlayerEvents {
         if (clientPlayerEntity == null)
             return;
 
-
         if ((vehicle instanceof TNBoatEntity)) {
             if (clientPlayerEntity.isShiftKeyDown())
                 passenger.stopRiding();
             }
 
     }
-
+    /*
+    @SubscribeEvent
+    public void onInteractwithShip(PlayerInteractEvent.EntityInteract event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        ClientPlayerEntity clientPlayerEntity = minecraft.player;
+    }
+    */
 }

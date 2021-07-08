@@ -126,6 +126,35 @@ public class DhowEntity extends AbstractDhowEntity {
         return 1.0D;
     }
 
+
+
+    public int getCargo() {
+        return this.entityData.get(CARGO);
+    }
+
+    @Override
+    public void openContainer(PlayerEntity player) {
+            player.openMenu(new SimpleNamedContainerProvider((id, inv, plyr) -> new DhowContainer(id, inv, this), getDisplayName()));
+    }
+
+    @Override
+    protected void defineSynchedData() {
+        super.defineSynchedData();
+        this.entityData.define(CARGO, 0);
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT compound) {
+        super.readAdditionalSaveData(compound);
+        this.entityData.set(CARGO, compound.getInt("Cargo"));
+    }
+
+    @Override
+    protected void addAdditionalSaveData(CompoundNBT compound) {
+        super.addAdditionalSaveData(compound);
+        compound.putInt("Cargo", this.entityData.get(CARGO));
+    }
+
     @Override
     public void positionRider(Entity passenger) {
         if (hasPassenger(passenger)) {
@@ -322,43 +351,16 @@ public class DhowEntity extends AbstractDhowEntity {
                     d = -0.5F;
                 }
             }
-            f = f - 0.5;
-        if (passenger instanceof AnimalEntity)
-            d = (float)(d -0.15D);
-        Vector3d vector3d = (new Vector3d((double)f, 0.0D, 0.0D + d)).yRot(-this.yRot * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
-        passenger.setPos(this.getX() + vector3d.x, this.getY() + (double)f1, + this.getZ() + vector3d.z);
-        passenger.yRot += this.deltaRotation;
-        passenger.setYHeadRot(passenger.getYHeadRot() + this.deltaRotation);
-        clampRotation(passenger);
+            f = f - 1.75F;
+            if (passenger instanceof AnimalEntity)
+                d = (float)(d -0.15D);
+            Vector3d vector3d = (new Vector3d((double)f, 0.0D, 0.0D + d)).yRot(-this.yRot * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+            passenger.setPos(this.getX() + vector3d.x, this.getY() + (double)f1, + this.getZ() + vector3d.z);
+            passenger.yRot += this.deltaRotation;
+            passenger.setYHeadRot(passenger.getYHeadRot() + this.deltaRotation);
+            clampRotation(passenger);
         }
 
-    }
-
-    public int getCargo() {
-        return this.entityData.get(CARGO);
-    }
-
-    @Override
-    public void openContainer(PlayerEntity player) {
-            player.openMenu(new SimpleNamedContainerProvider((id, inv, plyr) -> new DhowContainer(id, inv, this), getDisplayName()));
-    }
-
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        this.entityData.define(CARGO, 0);
-    }
-
-    @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
-        super.readAdditionalSaveData(compound);
-        this.entityData.set(CARGO, compound.getInt("Cargo"));
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
-        super.addAdditionalSaveData(compound);
-        compound.putInt("Cargo", this.entityData.get(CARGO));
     }
 
     public Item getItemBoat() {
@@ -379,74 +381,74 @@ public class DhowEntity extends AbstractDhowEntity {
 
             //BOP
             case BOP_CHERRY:
-                return ModItems.BOP_CHERRY_BRIGG_ITEM.get();
+                return ModItems.BOP_CHERRY_DHOW_ITEM.get();
             case BOP_DEAD:
-                return ModItems.BOP_DEAD_BRIGG_ITEM.get();
+                return ModItems.BOP_DEAD_DHOW_ITEM.get();
             case BOP_FIR:
-                return ModItems.BOP_FIR_BRIGG_ITEM.get();
+                return ModItems.BOP_FIR_DHOW_ITEM.get();
             case BOP_HELLBARK:
-                return ModItems.BOP_HELLBARK_BRIGG_ITEM.get();
+                return ModItems.BOP_HELLBARK_DHOW_ITEM.get();
             case BOP_JACARANDA:
-                return ModItems.BOP_JACARANDA_BRIGG_ITEM.get();
+                return ModItems.BOP_JACARANDA_DHOW_ITEM.get();
             case BOP_MAGIC:
-                return ModItems.BOP_MAGIC_BRIGG_ITEM.get();
+                return ModItems.BOP_MAGIC_DHOW_ITEM.get();
             case BOP_MAHOGANY:
-                return ModItems.BOP_MAHOGANY_BRIGG_ITEM.get();
+                return ModItems.BOP_MAHOGANY_DHOW_ITEM.get();
             case BOP_PALM:
-                return ModItems.BOP_PALM_BRIGG_ITEM.get();
+                return ModItems.BOP_PALM_DHOW_ITEM.get();
             case BOP_REDWOOD:
-                return ModItems.BOP_REDWOOD_BRIGG_ITEM.get();
+                return ModItems.BOP_REDWOOD_DHOW_ITEM.get();
             case BOP_UMBRAN:
-                return ModItems.BOP_UMBRAN_BRIGG_ITEM.get();
+                return ModItems.BOP_UMBRAN_DHOW_ITEM.get();
             case BOP_WILLOW:
-                return ModItems.BOP_WILLOW_BRIGG_ITEM.get();
+                return ModItems.BOP_WILLOW_DHOW_ITEM.get();
             //LOTR
             case LOTR_APPLE:
-                return ModItems.LOTR_APPLE_BRIGG_ITEM.get();
+                return ModItems.LOTR_APPLE_DHOW_ITEM.get();
             case LOTR_ASPEN:
-                return ModItems.LOTR_ASPEN_BRIGG_ITEM.get();
+                return ModItems.LOTR_ASPEN_DHOW_ITEM.get();
             case LOTR_BEECH:
-                return ModItems.LOTR_BEECH_BRIGG_ITEM.get();
+                return ModItems.LOTR_BEECH_DHOW_ITEM.get();
             case LOTR_CEDAR:
-                return ModItems.LOTR_CEDAR_BRIGG_ITEM.get();
+                return ModItems.LOTR_CEDAR_DHOW_ITEM.get();
             case LOTR_CHERRY:
-                return ModItems.LOTR_CHERRY_BRIGG_ITEM.get();
+                return ModItems.LOTR_CHERRY_DHOW_ITEM.get();
             case LOTR_CHARRED:
-                return ModItems.LOTR_CHARRED_BRIGG_ITEM.get();
+                return ModItems.LOTR_CHARRED_DHOW_ITEM.get();
             case LOTR_CYPRESS:
-                return ModItems.LOTR_CYPRESS_BRIGG_ITEM.get();
+                return ModItems.LOTR_CYPRESS_DHOW_ITEM.get();
             case LOTR_FIR:
-                return ModItems.LOTR_FIR_BRIGG_ITEM.get();
+                return ModItems.LOTR_FIR_DHOW_ITEM.get();
             case LOTR_GREEN_OAK:
-                return ModItems.LOTR_GREEN_OAK_BRIGG_ITEM.get();
+                return ModItems.LOTR_GREEN_OAK_DHOW_ITEM.get();
             case LOTR_HOLLY:
-                return ModItems.LOTR_HOLLY_BRIGG_ITEM.get();
+                return ModItems.LOTR_HOLLY_DHOW_ITEM.get();
             case LOTR_LAIRELOSSE:
-                return ModItems.LOTR_LAIRELOSSE_BRIGG_ITEM.get();
+                return ModItems.LOTR_LAIRELOSSE_DHOW_ITEM.get();
             case LOTR_LARCH:
-                return ModItems.LOTR_LARCH_BRIGG_ITEM.get();
+                return ModItems.LOTR_LARCH_DHOW_ITEM.get();
             case LOTR_LEBETHRON:
-                return ModItems.LOTR_LEBETHRON_BRIGG_ITEM.get();
+                return ModItems.LOTR_LEBETHRON_DHOW_ITEM.get();
             case LOTR_MALLORN:
-                return ModItems.LOTR_MALLORN_BRIGG_ITEM.get();
+                return ModItems.LOTR_MALLORN_DHOW_ITEM.get();
             case LOTR_MAPLE:
-                return ModItems.LOTR_MAPLE_BRIGG_ITEM.get();
+                return ModItems.LOTR_MAPLE_DHOW_ITEM.get();
             case LOTR_MIRK_OAK:
-                return ModItems.LOTR_MIRK_OAK_BRIGG_ITEM.get();
+                return ModItems.LOTR_MIRK_OAK_DHOW_ITEM.get();
             case LOTR_PEAR:
-                return ModItems.LOTR_PEAR_BRIGG_ITEM.get();
+                return ModItems.LOTR_PEAR_DHOW_ITEM.get();
             case LOTR_PINE:
-                return ModItems.LOTR_PINE_BRIGG_ITEM.get();
+                return ModItems.LOTR_PINE_DHOW_ITEM.get();
             case LOTR_ROTTEN:
-                return ModItems.LOTR_ROTTEN_BRIGG_ITEM.get();
+                return ModItems.LOTR_ROTTEN_DHOW_ITEM.get();
 
             //ENVI//
             case ENVI_CHERRY:
-                return ModItems.ENVI_CHERRY_BRIGG_ITEM.get();
+                return ModItems.ENVI_CHERRY_DHOW_ITEM.get();
             case ENVI_WILLOW:
-                return ModItems.ENVI_WILLOW_BRIGG_ITEM.get();
+                return ModItems.ENVI_WILLOW_DHOW_ITEM.get();
             case ENVI_WISTERIA:
-                return ModItems.ENVI_WISTERIA_BRIGG_ITEM.get();
+                return ModItems.ENVI_WISTERIA_DHOW_ITEM.get();
         }
     }
 
