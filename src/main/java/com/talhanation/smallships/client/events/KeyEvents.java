@@ -23,11 +23,11 @@ public class KeyEvents {
         if (clientPlayerEntity == null)
             return;
 
-        Entity riding = clientPlayerEntity.getVehicle();
-        if (!(riding instanceof TNBoatEntity)){
+        Entity vehicle = clientPlayerEntity.getVehicle();
+        if (!(vehicle instanceof TNBoatEntity)){
             return;
         }
-        TNBoatEntity boat = (TNBoatEntity) riding;
+        TNBoatEntity boat = (TNBoatEntity) vehicle;
         if (clientPlayerEntity.equals(boat.getDriver())) {
             if (Main.SAIL_KEY.isDown()) {
                 boat.onKeyPressed();

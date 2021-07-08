@@ -2,6 +2,7 @@ package com.talhanation.smallships;
 
 import com.talhanation.smallships.client.events.ClientRegistry;
 import com.talhanation.smallships.client.events.KeyEvents;
+import com.talhanation.smallships.client.events.PlayerEvents;
 import com.talhanation.smallships.client.events.RenderEvents;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.ModEntityTypes;
@@ -83,7 +84,7 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
 
         MinecraftForge.EVENT_BUS.register(new RenderEvents());
-
+        MinecraftForge.EVENT_BUS.register(new PlayerEvents());
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
         SAIL_KEY = ClientRegistry.registerKeyBinding("key.ship_sail", "category.smallships", 82);
         INV_KEY = ClientRegistry.registerKeyBinding("key.ship_inventory", "category.smallships", 73);
