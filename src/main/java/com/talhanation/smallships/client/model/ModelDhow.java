@@ -576,8 +576,8 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.seil_1.texOffs(110, 0).addBox(0.0F, -30.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.seil_1.texOffs(115, 0).addBox(0.0F, -45.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.seil_1.texOffs(100, 0).addBox(0.0F, -60.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.seil_1.texOffs(100, 0).addBox(0.0F, -71.0F, 0.0F, 1.0F, 11.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.setRotateAngle(seil_1, -1.4433872381360888F, -0.6003932893176602F, 0.0F);
+        this.seil_1.texOffs(100, 0).addBox(0.0F, -62.0F, 0.0F, 1.0F, 2.0F, 1.0F, 0.0F, 0.0F, 0.0F);
+        this.setRotateAngle(seil_1, -1.4329152892557335F, -0.6876597519173767F, 0.0F);
         this.segel_1_254 = new ModelRenderer(this, 0, 0);
         this.segel_1_254.setPos(13.0F, 0.0F, 0.0F);
         this.segel_1_254.texOffs(96, 2).addBox(14.0F, 0.0F, -1.0F, 13.0F, 2.0F, 2.0F, 0.0F, 0.0F, 0.0F);
@@ -602,8 +602,8 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.seil_0 = new ModelRenderer(this, 0, 0);
         this.seil_0.setPos(-85.1F, -0.5F, 30.2F);
         this.seil_0.texOffs(96, 0).addBox(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 15.0F, 0.0F, 0.0F, 0.0F);
-        this.seil_0.texOffs(100, 0).addBox(0.0F, 0.0F, 15.0F, 1.0F, 1.0F, 10.3F, 0.0F, 0.0F, 0.0F);
-        this.setRotateAngle(seil_0, -0.27052603405912107F, 0.4572762773383198F, 0.0F);
+        this.seil_0.texOffs(100, 0).addBox(0.0F, 0.0F, 15.0F, 1.0F, 1.0F, 6.3F, 0.0F, 0.0F, 0.0F);
+        this.setRotateAngle(seil_0, -0.3403392041388943F, 0.823795420257129F, 0.0F);
         this.segel_1_162 = new ModelRenderer(this, 0, 0);
         this.segel_1_162.setPos(-5.0F, 0.0F, 0.0F);
         this.segel_1_162.texOffs(96, 2).addBox(0.0F, 0.0F, -19.0F, 5.0F, 1.0F, 10.0F, 0.0F, 0.0F, 0.0F);
@@ -797,6 +797,7 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.segel_1_107.setPos(68.0F, 0.0F, 0.0F);
         this.segel_1_107.texOffs(96, 2).addBox(-4.0F, 0.0F, -9.0F, 8.0F, 1.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow = new ModelRenderer(this, 0, 0);
+        this.Dhow.mirror = true;
         this.Dhow.setPos(0.0F, 23.0F, 10.0F);
         this.Dhow.addBox(10.0F, 3.0F, 5.0F, 24.0F, 10.0F, 5.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.addBox(10.0F, 0.0F, 10.0F, 28.0F, 16.0F, 3.0F, 0.0F, 0.0F, 0.0F);
@@ -806,8 +807,6 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.Dhow.texOffs(2, 3).addBox(0.0F, -3.0F, -1.0F, 24.0F, 6.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(2, 3).addBox(-24.0F, -3.0F, -1.0F, 24.0F, 6.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(2, 3).addBox(-48.0F, -3.0F, -1.0F, 24.0F, 6.0F, 6.0F, 0.0F, 0.0F, 0.0F);
-        this.Dhow.addBox(10.0F, -16.0F, 10.0F, 28.0F, 16.0F, 3.0F, 0.0F, 0.0F, 0.0F);
-        this.Dhow.addBox(-18.0F, -16.0F, 10.0F, 28.0F, 16.0F, 3.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.addBox(24.0F, -3.0F, -1.0F, 8.0F, 6.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(8, 0).addBox(-37.0F, 0.0F, 10.0F, 19.0F, 14.0F, 3.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(8, 2).addBox(-37.0F, -14.0F, 10.0F, 19.0F, 14.0F, 3.0F, 0.0F, 0.0F, 0.0F);
@@ -822,16 +821,16 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.Dhow.addBox(-14.0F, 3.0F, 5.0F, 24.0F, 10.0F, 5.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(2, 37).addBox(-18.0F, -18.0F, 13.0F, 20.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(0, 37).addBox(2.0F, -18.0F, 13.0F, 20.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
-        this.Dhow.texOffs(0, 37).addBox(22.0F, -18.0F, 13.0F, 16.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
-        this.Dhow.texOffs(0, 37).addBox(22.0F, 16.0F, 13.0F, 16.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.texOffs(2, 37).addBox(22.0F, -18.0F, 13.0F, 16.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.texOffs(2, 37).addBox(22.0F, 16.0F, 13.0F, 16.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(2, 37).addBox(-37.0F, 14.0F, 13.0F, 20.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(2, 37).addBox(-37.0F, -16.0F, 13.0F, 20.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(2, 37).addBox(-56.0F, -14.0F, 13.0F, 20.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(2, 37).addBox(-56.0F, 12.0F, 13.0F, 20.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(2, 37).addBox(-62.0F, -14.0F, 13.0F, 6.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(2, 37).addBox(-62.0F, 12.0F, 13.0F, 6.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
-        this.Dhow.addBox(-61.0F, 0.0F, 13.0F, 3.0F, 12.0F, 6.0F, 0.0F, 0.0F, 0.0F);
-        this.Dhow.addBox(-61.0F, -12.0F, 13.0F, 3.0F, 12.0F, 6.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.texOffs(15, 30).addBox(-61.0F, 0.0F, 13.0F, 3.0F, 6.0F, 6.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.texOffs(15, 30).addBox(-61.0F, -12.0F, 13.0F, 3.0F, 6.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.addBox(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.addBox(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(0, 12).addBox(36.0F, 14.0F, 13.0F, 2.0F, 2.0F, 10.0F, 0.0F, 0.0F, 0.0F);
@@ -844,6 +843,14 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.Dhow.addBox(6.0F, 14.0F, 13.0F, 2.0F, 2.0F, 10.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(0, 7).addBox(21.0F, 14.0F, 23.0F, 18.0F, 2.0F, 2.0F, 0.0F, 0.0F, 0.0F);
         this.Dhow.texOffs(0, 3).addBox(5.0F, 14.0F, 23.0F, 16.0F, 2.0F, 2.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.addBox(-18.0F, -16.0F, 10.0F, 28.0F, 6.0F, 3.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.addBox(10.0F, -16.0F, 10.0F, 28.0F, 6.0F, 3.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.texOffs(0, 1).addBox(10.0F, -10.0F, 10.0F, 28.0F, 5.0F, 3.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.addBox(10.0F, -5.0F, 10.0F, 28.0F, 5.0F, 3.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.addBox(-18.0F, -10.0F, 10.0F, 28.0F, 5.0F, 3.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.addBox(-18.0F, -5.0F, 10.0F, 28.0F, 5.0F, 3.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.addBox(-61.0F, -6.0F, 13.0F, 3.0F, 6.0F, 6.0F, 0.0F, 0.0F, 0.0F);
+        this.Dhow.addBox(-61.0F, 6.0F, 13.0F, 3.0F, 6.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.setRotateAngle(Dhow, 1.5707963267948966F, -1.5707963267948966F, 0.0F);
         this.segel_1_45 = new ModelRenderer(this, 0, 0);
         this.segel_1_45.setPos(-10.0F, 0.0F, 2.0F);
@@ -911,7 +918,7 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.segel_2_32.setPos(6.0F, 0.0F, 0.0F);
         this.segel_2_32.texOffs(96, 2).addBox(0.0F, 0.0F, -9.0F, 6.0F, 1.0F, 10.0F, 0.0F, 0.0F, 0.0F);
         this.mast_2 = new ModelRenderer(this, 0, 0);
-        this.mast_2.setPos(8.5F, -1.5F, 13.0F);
+        this.mast_2.setPos(8.5F, -1.5F, 0.0F);
         this.mast_2.texOffs(0, 19).addBox(0.0F, 0.0F, 0.0F, 3.0F, 3.0F, 27.0F, 0.0F, 0.0F, 0.0F);
         this.mast_2.texOffs(0, 19).addBox(0.0F, 0.0F, 27.0F, 3.0F, 3.0F, 27.0F, 0.0F, 0.0F, 0.0F);
         this.mast_2.texOffs(0, 19).addBox(0.0F, 0.0F, 54.0F, 3.0F, 3.0F, 27.0F, 0.0F, 0.0F, 0.0F);
@@ -984,15 +991,15 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.segel_2_82.texOffs(96, 2).addBox(0.0F, 0.0F, -9.0F, 4.0F, 1.0F, 3.0F, 0.0F, 0.0F, 0.0F);
         this.setRotateAngle(segel_2_82, -0.017453292519943295F, 0.0F, 0.0F);
         this.seil_3 = new ModelRenderer(this, 0, 0);
-        this.seil_3.setPos(10.0F, -0.5F, 107.0F);
+        this.seil_3.setPos(10.0F, -0.5F, 95.0F);
         this.seil_3.texOffs(110, 0).addBox(0.0F, -15.0F, 0.0F, 1.0F, 14.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.seil_3.texOffs(110, 0).addBox(0.0F, -30.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.seil_3.texOffs(115, 0).addBox(0.0F, -45.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.seil_3.texOffs(100, 0).addBox(0.0F, -49.0F, 0.0F, 1.0F, 4.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.setRotateAngle(seil_3, -1.5707963267948966F, -1.314232980014952F, 0.0F);
+        this.seil_3.texOffs(100, 0).addBox(0.0F, -47.0F, 0.0F, 1.0F, 2.0F, 1.0F, 0.0F, 0.0F, 0.0F);
+        this.setRotateAngle(seil_3, -1.5707963267948966F, -1.209513224895292F, 0.0F);
         this.mast_1 = new ModelRenderer(this, 0, 0);
-        this.mast_1.setPos(-39.0F, -1.5F, 13.0F);
-        this.mast_1.texOffs(0, 19).addBox(0.0F, 0.0F, 0.0F, 3.0F, 3.0F, 27.0F, 0.0F, 0.0F, 0.0F);
+        this.mast_1.setPos(-35.0F, -1.5F, 5.0F);
+        this.mast_1.texOffs(0, 19).addBox(0.0F, 0.0F, 9.0F, 3.0F, 3.0F, 18.0F, 0.0F, 0.0F, 0.0F);
         this.mast_1.texOffs(0, 19).addBox(0.0F, 0.0F, 27.0F, 3.0F, 3.0F, 27.0F, 0.0F, 0.0F, 0.0F);
         this.mast_1.texOffs(0, 19).addBox(0.0F, 0.0F, 54.0F, 3.0F, 3.0F, 27.0F, 0.0F, 0.0F, 0.0F);
         this.mast_1.texOffs(0, 19).addBox(0.0F, 0.0F, 81.0F, 3.0F, 3.0F, 27.0F, 0.0F, 0.0F, 0.0F);
@@ -1495,9 +1502,8 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.seil_6.texOffs(110, 0).addBox(0.0F, -15.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.seil_6.texOffs(110, 0).addBox(0.0F, -30.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.seil_6.texOffs(115, 0).addBox(0.0F, -45.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.seil_6.texOffs(100, 0).addBox(0.0F, -60.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.seil_6.texOffs(100, 0).addBox(0.0F, -63.0F, 0.0F, 1.0F, 3.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.setRotateAngle(seil_6, -1.5027284593355068F, -0.5480333784683167F, 0.0F);
+        this.seil_6.texOffs(100, 0).addBox(0.0F, -50.0F, 0.0F, 1.0F, 5.0F, 1.0F, 0.0F, 0.0F, 0.0F);
+        this.setRotateAngle(seil_6, -1.4800392589544131F, -0.6527531668774901F, 0.0F);
         this.segel_1_14 = new ModelRenderer(this, 0, 0);
         this.segel_1_14.setPos(-16.0F, 0.0F, 2.0F);
         this.segel_1_14.texOffs(96, 2).addBox(0.0F, 0.0F, -17.0F, 5.0F, 1.0F, 10.0F, 0.0F, 0.0F, 0.0F);
@@ -1666,9 +1672,8 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
         this.seil_2.texOffs(115, 0).addBox(0.0F, -45.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.seil_2.texOffs(100, 0).addBox(0.0F, -60.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
         this.seil_2.texOffs(100, 0).addBox(0.0F, -75.0F, 0.0F, 1.0F, 15.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.seil_2.texOffs(120, 0).addBox(0.0F, -89.0F, 0.0F, 1.0F, 14.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.seil_2.texOffs(100, 0).addBox(0.0F, -95.0F, 0.0F, 1.0F, 6.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.setRotateAngle(seil_2, -1.5707963267948966F, -0.35430182483904343F, 0.0F);
+        this.seil_2.texOffs(120, 0).addBox(0.0F, -82.0F, 0.0F, 1.0F, 7.0F, 1.0F, 0.0F, 0.0F, 0.0F);
+        this.setRotateAngle(seil_2, -1.5707963267948966F, -0.4241149949188166F, 0.0F);
         this.segel_1_21 = new ModelRenderer(this, 0, 0);
         this.segel_1_21.setPos(-3.0F, 0.0F, 3.0F);
         this.segel_1_21.texOffs(96, 2).addBox(0.0F, 0.0F, -9.0F, 2.0F, 1.0F, 2.0F, 0.0F, 0.0F, 0.0F);
@@ -2456,9 +2461,6 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
 
 
 
-
-
-
     @Override
     public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         ImmutableList.of(this.Dhow).forEach((modelRenderer) -> {
@@ -2559,15 +2561,16 @@ public class ModelDhow<T extends DhowEntity> extends EntityModel<T> {
                 this.seil_0.visible = true;
                 this.segel_z4_1.visible= true;
                 this.segel_z4_2.visible= true;
+
                 break;
         }
 
         if (entityIn.getSteerState(0)){
-            this.steer.xRot = -MathHelper.cos(3.1415927F);
+            this.steer.xRot = MathHelper.cos(3.1415927F);
             //this.Brigg.rotateAngleZ = -MathHelper.cos(3.1415927F * 2 );
         }
         else if (entityIn.getSteerState(1)) {
-            this.steer.xRot = MathHelper.cos(3.1415927F);
+            this.steer.xRot = -MathHelper.cos(3.1415927F);
             //this.Brigg.rotateAngleZ = MathHelper.cos(3.1415927F * 2 );
         }
         else {

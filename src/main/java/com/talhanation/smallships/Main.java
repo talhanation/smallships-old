@@ -31,6 +31,8 @@ public class Main {
     public static final String MOD_ID = "smallships";
     public static SimpleChannel SIMPLE_CHANNEL;
     public static KeyBinding SAIL_KEY;
+    public static KeyBinding SAIL_L_KEY;
+    public static KeyBinding SAIL_H_KEY;
     public static KeyBinding INV_KEY;
     public static KeyBinding DISMOUNT_KEY;
 
@@ -85,6 +87,8 @@ public class Main {
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
         SAIL_KEY = ClientRegistry.registerKeyBinding("key.ship_sail", "category.smallships", 82);
         INV_KEY = ClientRegistry.registerKeyBinding("key.ship_inventory", "category.smallships", 73);
+        SAIL_L_KEY = ClientRegistry.registerKeyBinding("key.lower_ship_sail", "category.smallships", 74);
+        SAIL_H_KEY = ClientRegistry.registerKeyBinding("key.higher_ship_sail", "category.smallships", 75);
         //DISMOUNT_KEY = ClientRegistry.registerKeyBinding("key.dismount_mobs", "category.smallships", 0);
     }
 

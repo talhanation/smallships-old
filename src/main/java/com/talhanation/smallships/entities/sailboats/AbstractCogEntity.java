@@ -195,6 +195,7 @@ public abstract class AbstractCogEntity extends AbstractSailBoat {
 
     protected void controlBoat() {
         double CogSpeedFactor = SmallShipsConfig.CogSpeedFactor.get();
+        int sailstate = getSailState();
         if (this.isVehicle()) {
             float f = 0.0F;
             if (this.leftInputDown) {
@@ -207,16 +208,29 @@ public abstract class AbstractCogEntity extends AbstractSailBoat {
                 f += 0.005F;
             }
             this.yRot += this.deltaRotation;
-            /*
-            if (getSailState()) {
-                f += (0.04F * CogSpeedFactor);
+
+            if (sailstate != 0) {
+                switch (sailstate){
+                    case 1:
+                        f += (0.04F * CogSpeedFactor * 1/4);
+                        break;
+                    case 2:
+                        f += (0.04F * CogSpeedFactor * 2/4);
+                        break;
+                    case 3:
+                        f += (0.04F * CogSpeedFactor * 3/4);
+                        break;
+                    case 4:
+                        f += (0.04F * CogSpeedFactor * 1);
+                        break;
+                }
+
             }
-            */
             if (this.backInputDown) {
-                f -= (0.005F * CogSpeedFactor);
+                f -= (0.01F * CogSpeedFactor);
             }
             if (this.forwardInputDown) {
-                f += (0.005F * CogSpeedFactor);
+                f += (0.01F * CogSpeedFactor);
             }
             this.setDeltaMovement(this.getDeltaMovement().add((double) (MathHelper.sin(-this.yRot * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.yRot * ((float) Math.PI / 180F)) * f)));
             setSteerState(this.rightInputDown && !this.leftInputDown, this.leftInputDown && !this.rightInputDown);

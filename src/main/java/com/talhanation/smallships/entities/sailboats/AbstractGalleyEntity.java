@@ -218,6 +218,7 @@ public abstract class AbstractGalleyEntity extends AbstractSailBoat {
 
     protected void controlBoat() {
         double GalleySpeedFactor = SmallShipsConfig.GalleySpeedFactor.get();
+        int sailstate = getSailState();
         if (this.isVehicle()) {
             float f = 0.0F;
             if (this.leftInputDown ) {
@@ -230,21 +231,44 @@ public abstract class AbstractGalleyEntity extends AbstractSailBoat {
                 f += 0.005F;
             }
             this.yRot += this.deltaRotation;
-/*
-            if (this.getSailState()) {
-                 f += (0.04F * GalleySpeedFactor);
-                 if (this.forwardInputDown) {
-                     f += (0.02F * GalleySpeedFactor); // speed
-                 }
-             }
+
+            if (sailstate != 0) {
+                switch (sailstate){
+                    case 1:
+                        f += (0.04F * GalleySpeedFactor * 1/4);
+                        if (this.forwardInputDown) {
+                            f += (0.02F * GalleySpeedFactor); // speed
+                        }
+                        break;
+                    case 2:
+                        f += (0.04F * GalleySpeedFactor * 2/4);
+                        if (this.forwardInputDown) {
+                            f += (0.02F * GalleySpeedFactor); // speed
+                        }
+                        break;
+                    case 3:
+                        f += (0.04F * GalleySpeedFactor * 3/4);
+                        if (this.forwardInputDown) {
+                            f += (0.02F * GalleySpeedFactor); // speed
+                        }
+                        break;
+                    case 4:
+                        f += (0.04F * GalleySpeedFactor * 1);
+                        if (this.forwardInputDown) {
+                            f += (0.02F * GalleySpeedFactor); // speed
+                        }
+                        break;
+                }
+
+            }
+
             if (this.backInputDown) {
                 f -= (0.005F * GalleySpeedFactor);
             }
 
-            if (this.forwardInputDown && !this.getSailState()) {
-                f += (0.04F* GalleySpeedFactor); // speed
+            if (this.forwardInputDown &&  sailstate == 0) {
+                f += (0.04F * GalleySpeedFactor); // speed
             }
-*/
             this.setDeltaMovement(this.getDeltaMovement().add((double)(MathHelper.sin(-this.yRot * ((float)Math.PI / 180F)) * f), 0.0D, (double)(MathHelper.cos(this.yRot * ((float)Math.PI / 180F)) * f)));
             this.setPaddleState(this.rightInputDown && !this.leftInputDown || this.forwardInputDown, this.leftInputDown && !this.rightInputDown || this.forwardInputDown);
             this.setIsForward(this.forwardInputDown);

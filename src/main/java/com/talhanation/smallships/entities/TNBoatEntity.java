@@ -92,10 +92,17 @@ public abstract class TNBoatEntity extends Entity {
     public void onKeyPressed() {
 
     }
+    public void onKeyLowerPressed() {
+
+    }
+    public void onKeyHigherPressed() {
+
+    }
 
     public void onInvPressed(PlayerEntity player) {
 
     }
+
 
     public void onDismountPressed() {
         this.ejectPassengers();

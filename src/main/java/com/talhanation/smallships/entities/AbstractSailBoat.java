@@ -46,7 +46,6 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         super.tick();
 
         if (getIsForward()){
-
             if (this.checkInWater())
                 Watersplash();
         }
@@ -74,7 +73,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         }
 
 
-        if (!level.isClientSide  || this.getIsForward()) {
+        if (this.getIsForward()) {
             this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
             this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
 
@@ -166,12 +165,35 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         int state = getSailState();
 
         if (state != 4){
-            state++;
+            state = 4;
 
         }else{
             state = 0;
         }
 
+        sendSailStateToServer(state);
+    }
+
+    @Override
+    public void onKeyLowerPressed() {
+        int state = getSailState();
+
+        if (state != 4){
+            state++;
+
+        }
+
+        sendSailStateToServer(state);
+    }
+
+    @Override
+    public void onKeyHigherPressed() {
+        int state = getSailState();
+
+        if (state != 0){
+            state--;
+
+        }
         sendSailStateToServer(state);
     }
 

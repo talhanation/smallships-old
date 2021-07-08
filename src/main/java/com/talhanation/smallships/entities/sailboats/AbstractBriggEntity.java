@@ -194,6 +194,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
 
     protected void controlBoat() {
         double BriggSpeedFactor = SmallShipsConfig.BriggSpeedFactor.get();
+        int sailstate = getSailState();
         if (this.isVehicle()) {
             float f = 0.0F;
             if (this.leftInputDown) {
@@ -206,11 +207,24 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
                 f += 0.005F;
             }
             this.yRot += this.deltaRotation;
-            /*
-            if (getSailState()) {
-                f += (0.04F * BriggSpeedFactor);
+
+            if (sailstate != 0) {
+                switch (sailstate){
+                    case 1:
+                        f += (0.04F * BriggSpeedFactor * 1/4);
+                        break;
+                    case 2:
+                        f += (0.04F * BriggSpeedFactor * 2/4);
+                        break;
+                    case 3:
+                        f += (0.04F * BriggSpeedFactor * 3/4);
+                        break;
+                    case 4:
+                        f += (0.04F * BriggSpeedFactor * 1);
+                        break;
+                }
+
             }
-            */
             if (this.backInputDown) {
                 f -= (0.01F * BriggSpeedFactor);
             }

@@ -46,6 +46,24 @@ public class KeyEvents {
 
             }
         }
+        if (clientPlayerEntity.equals(boat.getDriver())) {
+            if (Main.SAIL_L_KEY.isDown()) {
+                boat.onKeyLowerPressed();
+                this.wasSailPressed = true;
+            }
+            else {
+                this.wasSailPressed = false;
+            }
+        }
+        if (clientPlayerEntity.equals(boat.getDriver())) {
+            if (Main.SAIL_H_KEY.isDown()) {
+                boat.onKeyHigherPressed();
+                this.wasSailPressed = true;
+            }
+            else {
+                this.wasSailPressed = false;
+            }
+        }
         /*if (clientPlayerEntity.equals(boat.getDriver())) {
             if (Main.DISMOUNT_KEY.isDown()) {
                 boat.onDismountPressed();

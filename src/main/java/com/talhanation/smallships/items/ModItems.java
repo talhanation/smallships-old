@@ -66,6 +66,7 @@ public class ModItems {
     public static final RegistryObject<Item> ACACIA_DHOW_ITEM =      createDhow("acacia", AbstractDhowEntity.Type.ACACIA, true);
     public static final RegistryObject<Item> DARK_OAK_DHOW_ITEM =    createDhow("dark_oak", AbstractDhowEntity.Type.DARK_OAK, true);
 
+
             //BOP
     public static final RegistryObject<Item> BOP_CHERRY_COG_ITEM =      createCog("bop_cherry", AbstractCogEntity.Type.BOP_CHERRY, BiomesOPlenty.isInstalled());
     public static final RegistryObject<Item> BOP_CHERRY_GALLEY_ITEM =      createGalley("bop_cherry", AbstractGalleyEntity.Type.BOP_CHERRY, BiomesOPlenty.isInstalled());
@@ -261,6 +262,19 @@ public class ModItems {
     public static final RegistryObject<Item> BOP_UMBRAN_BRIGG_ITEM =      createBrigg("bop_umbran", AbstractBriggEntity.Type.BOP_UMBRAN, BiomesOPlenty.isInstalled());
     public static final RegistryObject<Item> BOP_WILLOW_BRIGG_ITEM =      createBrigg("bop_willow", AbstractBriggEntity.Type.BOP_WILLOW, BiomesOPlenty.isInstalled());
 
+    public static final RegistryObject<Item> BOP_CHERRY_DHOW_ITEM =      createDhow("bop_cherry", AbstractDhowEntity.Type.BOP_CHERRY, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_DEAD_DHOW_ITEM =      createDhow("bop_dead", AbstractDhowEntity.Type.BOP_DEAD, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_FIR_DHOW_ITEM =      createDhow("bop_fir", AbstractDhowEntity.Type.BOP_FIR, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_HELLBARK_DHOW_ITEM =      createDhow("bop_hellbark", AbstractDhowEntity.Type.BOP_HELLBARK, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_JACARANDA_DHOW_ITEM =      createDhow("bop_jacaranda", AbstractDhowEntity.Type.BOP_JACARANDA, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_MAGIC_DHOW_ITEM =      createDhow("bop_magic", AbstractDhowEntity.Type.BOP_MAGIC, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_MAHOGANY_DHOW_ITEM =      createDhow("bop_mahogany", AbstractDhowEntity.Type.BOP_MAHOGANY, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_PALM_DHOW_ITEM =      createDhow("bop_palm", AbstractDhowEntity.Type.BOP_PALM, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_REDWOOD_DHOW_ITEM =      createDhow("bop_redwood", AbstractDhowEntity.Type.BOP_REDWOOD, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_UMBRAN_DHOW_ITEM =      createDhow("bop_umbran", AbstractDhowEntity.Type.BOP_UMBRAN, BiomesOPlenty.isInstalled());
+    public static final RegistryObject<Item> BOP_WILLOW_DHOW_ITEM =      createDhow("bop_willow", AbstractDhowEntity.Type.BOP_WILLOW, BiomesOPlenty.isInstalled());
+
+
     public static final RegistryObject<Item> LOTR_APPLE_BRIGG_ITEM =      createBrigg("lotr_apple", AbstractBriggEntity.Type.LOTR_APPLE, LordOfTheRingsMod.isInstalled());
     public static final RegistryObject<Item> LOTR_ASPEN_BRIGG_ITEM =      createBrigg("lotr_aspen", AbstractBriggEntity.Type.LOTR_ASPEN, LordOfTheRingsMod.isInstalled());
     public static final RegistryObject<Item> LOTR_BEECH_BRIGG_ITEM =      createBrigg("lotr_beech", AbstractBriggEntity.Type.LOTR_BEECH, LordOfTheRingsMod.isInstalled());
@@ -280,6 +294,27 @@ public class ModItems {
     public static final RegistryObject<Item> LOTR_PEAR_BRIGG_ITEM =      createBrigg("lotr_pear", AbstractBriggEntity.Type.LOTR_PEAR, LordOfTheRingsMod.isInstalled());
     public static final RegistryObject<Item> LOTR_PINE_BRIGG_ITEM =      createBrigg("lotr_pine", AbstractBriggEntity.Type.LOTR_PINE, LordOfTheRingsMod.isInstalled());
     public static final RegistryObject<Item> LOTR_ROTTEN_BRIGG_ITEM =      createBrigg("lotr_rotten", AbstractBriggEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
+
+    public static final RegistryObject<Item> LOTR_APPLE_DHOW_ITEM =      createDhow("lotr_apple", AbstractDhowEntity.Type.LOTR_APPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ASPEN_DHOW_ITEM =      createDhow("lotr_aspen", AbstractDhowEntity.Type.LOTR_ASPEN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_BEECH_DHOW_ITEM =      createDhow("lotr_beech", AbstractDhowEntity.Type.LOTR_BEECH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CEDAR_DHOW_ITEM =      createDhow("lotr_cedar", AbstractDhowEntity.Type.LOTR_CEDAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHARRED_DHOW_ITEM =      createDhow("lotr_charred", AbstractDhowEntity.Type.LOTR_CHARRED, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CHERRY_DHOW_ITEM =      createDhow("lotr_cherry", AbstractDhowEntity.Type.LOTR_CHERRY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_CYPRESS_DHOW_ITEM =      createDhow("lotr_cypress", AbstractDhowEntity.Type.LOTR_CYPRESS, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_FIR_DHOW_ITEM =      createDhow("lotr_fir", AbstractDhowEntity.Type.LOTR_FIR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_GREEN_OAK_DHOW_ITEM =      createDhow("lotr_green_oak", AbstractDhowEntity.Type.LOTR_GREEN_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_HOLLY_DHOW_ITEM =      createDhow("lotr_holly", AbstractDhowEntity.Type.LOTR_HOLLY, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LAIRELOSSE_DHOW_ITEM =      createDhow("lotr_lairelosse", AbstractDhowEntity.Type.LOTR_LAIRELOSSE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LARCH_DHOW_ITEM =      createDhow("lotr_larch", AbstractDhowEntity.Type.LOTR_LARCH, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_LEBETHRON_DHOW_ITEM =      createDhow("lotr_lebethron", AbstractDhowEntity.Type.LOTR_LEBETHRON, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MALLON_DHOW_ITEM =      createDhow("lotr_mallorn", AbstractDhowEntity.Type.LOTR_MALLORN, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MAPLE_DHOW_ITEM =      createDhow("lotr_maple", AbstractDhowEntity.Type.LOTR_MAPLE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_MIRK_OAK_DHOW_ITEM =      createDhow("lotr_mirk_oak", AbstractDhowEntity.Type.LOTR_MIRK_OAK, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PEAR_DHOW_ITEM =      createDhow("lotr_pear", AbstractDhowEntity.Type.LOTR_PEAR, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_PINE_DHOW_ITEM =      createDhow("lotr_pine", AbstractDhowEntity.Type.LOTR_PINE, LordOfTheRingsMod.isInstalled());
+    public static final RegistryObject<Item> LOTR_ROTTEN_DHOW_ITEM =      createDhow("lotr_rotten", AbstractDhowEntity.Type.LOTR_ROTTEN, LordOfTheRingsMod.isInstalled());
+
 
     public static final RegistryObject<Item> ENVI_CHERRY_COG_ITEM =      createCog("envi_cherry", AbstractCogEntity.Type.ENVI_CHERRY, Environmental.isInstalled());
     public static final RegistryObject<Item> ENVI_WISTERIA_COG_ITEM =      createCog("envi_wisteria", AbstractCogEntity.Type.ENVI_WISTERIA, Environmental.isInstalled());
