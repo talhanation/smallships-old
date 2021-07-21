@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "smallships:item/hellbark_dhow_item"
+    "layer0": "smallships:item/mod/bop/bop_hellbark_dhow_item"
   }
 }
