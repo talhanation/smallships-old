@@ -115,6 +115,19 @@ public abstract class TNBoatEntity extends Entity {
             }
         }
     */
+
+    public void dismountPassenger(Entity passenger) {
+        passenger.stopRiding();
+    }
+
+    /*
+        public void removePassengersExceptPlayer() {
+            for(int i = this.passengers.size() - 1; i >= 1; --i) {
+                this.passengers.get(i).stopRiding();
+            }
+        }
+    */
+
     @Override
     protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
         return sizeIn.height;

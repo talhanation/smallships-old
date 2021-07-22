@@ -75,6 +75,10 @@ public class Main {
         SIMPLE_CHANNEL.registerMessage(4, MessageIsForward.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessageIsForward()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
+
+        SIMPLE_CHANNEL.registerMessage(5, MessageDismount.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessageDismount()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
     }
 
 
