@@ -1,34 +1,39 @@
 package com.talhanation.smallships.client.events;
 
+import com.talhanation.smallships.Main;
+import com.talhanation.smallships.entities.TNBoatEntity;
 import com.talhanation.smallships.network.MessageDismount;
-import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-
-import java.util.UUID;
 
 public class PlayerEvents {
 
     @SubscribeEvent
     public void onInteractwithPassenger(PlayerInteractEvent.EntityInteract event) {
-        Minecraft minecraft = Minecraft.getInstance();
-        PlayerEntity playerEntity =  minecraft.player;
-        UUID passenger_uuid = event.getTarget().getUUID();
-        BlockPos passenger_pos = event.getPos();
-        //passenger.stopRiding();
-        new MessageDismount(playerEntity, passenger_uuid, passenger_pos);
+        if (!(event.getTarget().getVehicle() instanceof TNBoatEntity)) {
+            return;
+        }
 
+        Entity passenger = event.getTarget();
+        PlayerEntity player = event.getPlayer();
 
+        if (player.level.isClientSide || !player.isShiftKeyDown()) {
+            return;
+        }
 
+        if (!passenger.isAlive()) {
+            return;
+        }
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageDismount(passenger.getUUID()));
+        event.setCanceled(true);
 
-    /*
-    @SubscribeEvent
-    public void onInteractwithShip(PlayerInteractEvent.EntityInteract event) {
-        Minecraft minecraft = Minecraft.getInstance();
-        ClientPlayerEntity clientPlayerEntity = minecraft.player;
     }
-    */
+
+    public static void dismountPassenger(Entity passenger, PlayerEntity player) {
+
+        passenger.stopRiding();
+
     }
 }
