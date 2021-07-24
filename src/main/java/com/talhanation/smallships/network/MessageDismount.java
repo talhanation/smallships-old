@@ -1,12 +1,9 @@
 package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.client.events.PlayerEvents;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ActionResultType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkEvent;
 
@@ -30,13 +27,13 @@ public class MessageDismount implements Message<MessageDismount> {
     public void executeServerSide(NetworkEvent.Context context) {
         ServerPlayerEntity player = context.getSender();
         player.level.getEntitiesOfClass(Entity.class, player.getBoundingBox()
-                .inflate(8.0D), v -> v
+                .inflate(16.0D), v -> v
                 .getUUID()
                 .equals(this.passenger))
                 .stream()
                 .filter(Entity::isAlive)
                 .findAny()
-                .ifPresent(passenger -> PlayerEvents.dismountPassenger(passenger, (PlayerEntity)player));
+                .ifPresent(passenger -> PlayerEvents.dismountPassenger(passenger, player));
 
     }
 
