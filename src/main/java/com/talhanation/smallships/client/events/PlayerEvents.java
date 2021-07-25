@@ -13,7 +13,7 @@ public class PlayerEvents {
 
     @SubscribeEvent
     public void onInteractwithPassenger(PlayerInteractEvent.EntityInteract event) {
-        if (!(event.getTarget().getVehicle() instanceof TNBoatEntity)) {
+        if (!(event.getTarget().getVehicle() instanceof TNBoatEntity) ) {
             return;
         }
 
@@ -24,7 +24,6 @@ public class PlayerEvents {
             return;
         }
         Main.SIMPLE_CHANNEL.sendToServer(new MessageDismount(passenger.getUUID()));
-        //dismountPassenger(passenger, player);
         event.setCancellationResult(ActionResultType.SUCCESS);
         event.setCanceled(true);
 
@@ -36,9 +35,4 @@ public class PlayerEvents {
         }
     }
 
-    public static void MountPassenger(Entity passenger, TNBoatEntity ship, PlayerEntity player) {
-        if (!(passenger instanceof PlayerEntity)){
-            passenger.startRiding(ship);
-        }
-    }
 }
