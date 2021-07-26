@@ -58,7 +58,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         }
 
 
-        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )&& (getSailState() != 0)) {
+        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )) {
             setSailState(0);
             setIsForward(false);
         }
@@ -76,7 +76,6 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         if (this.getIsForward()) {
             this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
             this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
-
         }
 
 
