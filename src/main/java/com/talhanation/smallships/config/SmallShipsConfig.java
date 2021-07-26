@@ -114,13 +114,13 @@ public class SmallShipsConfig {
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: 1.0")
                 .worldRestart()
-                .defineInRange("DrakkarSpeedFactor", 1.0, 0.0, 2.0);
+                .defineInRange("RowBoatSpeedFactor", 1.0, 0.0, 2.0);
 
         RowBoatTurnFactor = BUILDER.comment("\n" +"----Row Boat Turn Factor.----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: 0.8")
                 .worldRestart()
-                .defineInRange("DrakkarTurnFactor", 0.8, 0.0, 1.0);
+                .defineInRange("RowBoatTurnFactor", 0.8, 0.0, 1.0);
 
         BriggSpeedFactor = BUILDER.comment("\n" +"----Brigg Speed Factor.----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
