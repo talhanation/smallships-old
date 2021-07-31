@@ -5,8 +5,9 @@ import com.talhanation.smallships.entities.AbstractInventoryBoat;
 import com.talhanation.smallships.entities.AbstractSailBoat;
 import com.talhanation.smallships.entities.TNBoatEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.Entity;
+import net.minecraft.client.player.*;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
@@ -19,7 +20,7 @@ public class KeyEvents {
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
         Minecraft minecraft = Minecraft.getInstance();
-        ClientPlayerEntity clientPlayerEntity = minecraft.player;
+        Player clientPlayerEntity = minecraft.player;
         if (clientPlayerEntity == null)
             return;
 

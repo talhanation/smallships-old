@@ -1,6 +1,6 @@
 package com.talhanation.smallships.client.events;
 
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client..KeyBinding;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -12,5 +12,4 @@ public class ClientRegistry {
         net.minecraftforge.fml.client.registry.ClientRegistry.registerKeyBinding(keyBinding);
         return keyBinding;
     }
-
 }
