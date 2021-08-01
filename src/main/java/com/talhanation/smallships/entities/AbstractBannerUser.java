@@ -25,6 +25,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.common.registry.IEntityAdditionalSpawnData;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import java.util.UUID;
+
 public abstract class AbstractBannerUser extends AbstractSailBoat {
     private static final DataParameter<Boolean> HAS_BANNER = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     public static final DataParameter<ItemStack> BANNER = EntityDataManager.defineId(AbstractBannerUser.class, DataSerializers.ITEM_STACK);
@@ -112,7 +114,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     }
 
     public void sendBannerToServer(ItemStack itemStack){
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(itemStack, this));
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(itemStack, this.getUUID()));
     }
 
     @Override

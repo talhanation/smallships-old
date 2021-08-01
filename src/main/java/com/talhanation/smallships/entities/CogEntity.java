@@ -91,6 +91,7 @@ public class CogEntity extends AbstractCogEntity {
 
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
+        /*
         ItemStack itemInHand = player.getItemInHand(hand);
 
         if (!this.getHasBanner() && itemInHand.getItem() instanceof BannerItem){
@@ -98,8 +99,7 @@ public class CogEntity extends AbstractCogEntity {
                 return ActionResultType.SUCCESS;
             return ActionResultType.CONSUME;
         }
-
-        else if (player.isSecondaryUseActive()) {
+*/      if (player.isSecondaryUseActive()) {
 
             if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
                     this.ejectPassengers();
