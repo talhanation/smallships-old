@@ -70,11 +70,6 @@ public class Main {
                 buf -> (new MessageOpenInv()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(5, MessageBanner.class, (msg, buf) -> msg.toBytes(buf),
-                buf -> (new MessageBanner()).fromBytes(buf),
-                (msg, fun) -> msg.executeServerSide(fun.get()));
-
-
         SIMPLE_CHANNEL.registerMessage(6, MessageIsForward.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessageIsForward()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));

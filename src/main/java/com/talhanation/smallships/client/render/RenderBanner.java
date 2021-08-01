@@ -26,7 +26,7 @@ public class RenderBanner {
 
     public static void renderBanner(AbstractBannerUser abstractBannerUser, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, ItemStack banner, int packedLight, ModelRenderer modelRenderer) {
 
-        if (!banner.isEmpty() && abstractBannerUser.getHasBanner()) {
+        if (!banner.isEmpty()) {
             matrixStackIn.pushPose();
             EntityType<?> entityType = abstractBannerUser.getType();
 

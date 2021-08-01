@@ -25,6 +25,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.ItemStackHandler;
+import org.lwjgl.system.CallbackI;
 
 public class CogEntity extends AbstractCogEntity {
     public boolean Cargo_0;
@@ -49,16 +50,18 @@ public class CogEntity extends AbstractCogEntity {
         else Cargo_2 = false;
         if (3 < this.getCargo()) Cargo_3 = true;
         else Cargo_3 = false;
-
     }
-
     protected ItemStackHandler initInventory() {
         return new CogItemStackHandler<CogEntity>(27, this) {
             protected void onContentsChanged(int slot) {
                 int sigma, tempload = 0;
                 for (int i = 0; i < getSlots(); i++) {
-                    if (!getStackInSlot(i).isEmpty())
-                        tempload++;
+                    if (!getStackInSlot(i).isEmpty())tempload++;
+
+                    ItemStack itemInSlot = getStackInSlot(0);
+                    if (!getStackInSlot(0).isEmpty()){
+                        scanBanner(itemInSlot);
+                    }else setBannerNull();
                 }
                 if (tempload > 20) {
                     sigma = 4;
@@ -71,10 +74,12 @@ public class CogEntity extends AbstractCogEntity {
                 } else {
                     sigma = 0;
                 }
+
                 (this.cog).getEntityData().set(CogEntity.CARGO, sigma);
             }
         };
     }
+
 
     public CogEntity(World worldIn, double x, double y, double z) {
         this(ModEntityTypes.COG_ENTITY.get(), worldIn);
