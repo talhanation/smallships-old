@@ -1,24 +1,25 @@
 package com.talhanation.smallships.network;
-
 import com.talhanation.smallships.entities.AbstractBannerUser;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BannerItem;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.network.NetworkEvent;
+
+import java.util.UUID;
 
 
 public class MessageHasBanner implements Message<MessageHasBanner> {
 
     private boolean hasbanner;
-    private AbstractBannerUser abstractBannerUser;
+    private ItemStack banner;
+    private UUID abstractBannerUser;
+
     public MessageHasBanner() {
     }
 
-    public MessageHasBanner(boolean hasbanner, AbstractBannerUser abstractBannerUser) {
+    public MessageHasBanner(boolean hasbanner, UUID abstractBannerUser, ItemStack banner) {
+        this.banner = banner;
         this.hasbanner = hasbanner;
         this.abstractBannerUser = abstractBannerUser;
 
@@ -29,29 +30,28 @@ public class MessageHasBanner implements Message<MessageHasBanner> {
     }
 
     public void executeServerSide(NetworkEvent.Context context) {
-        this.abstractBannerUser.setHasBanner(true);
+        ServerPlayerEntity player = context.getSender();
+        player.level.getEntitiesOfClass(AbstractBannerUser.class, player.getBoundingBox()
+                        .inflate(16.0D), v -> v
+                        .getUUID()
+                        .equals(this.abstractBannerUser))
+                .stream()
+                .findAny()
+                .ifPresent(abstractBannerUser -> abstractBannerUser.setHasBanner(true, banner));
+
     }
 
-/*
-    private static void setHasBanner(PlayerEntity player,AbstractBannerUser bannerUser) {
-        ItemStack stack = player.getItemInHand(Hand.MAIN_HAND);
-        if (stack.getItem() instanceof BannerItem) {
-            bannerUser.setHasBanner(true);
-        } else {
-            stack = player.getItemInHand(Hand.OFF_HAND);
-            if (stack.getItem() instanceof BannerItem) {
-                bannerUser.setHasBanner(true);
-            }
-        }
-    }
-*/
     public MessageHasBanner fromBytes(PacketBuffer buf) {
+        this.banner = buf.readItem().getStack();
         this.hasbanner = buf.readBoolean();
+        this.abstractBannerUser = buf.readUUID();
         return this;
     }
 
     public void toBytes(PacketBuffer buf) {
+        buf.writeItemStack(this.banner, false);
         buf.writeBoolean(this.hasbanner);
+        buf.writeUUID(this.abstractBannerUser);
     }
 
 }

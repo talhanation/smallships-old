@@ -49,6 +49,7 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
     public ActionResultType interact(PlayerEntity player, Hand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
 
+        /*
         if (!this.getHasBanner() && itemInHand.getItem() instanceof BannerItem){
             if (onInteractionWithBanner(itemInHand, player, this))
                 return ActionResultType.SUCCESS;
@@ -56,7 +57,7 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
         }
 
 
-        else if (player.isSecondaryUseActive()) {
+        else*/ if (player.isSecondaryUseActive()) {
             if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
                 this.ejectPassengers();
                 this.passengerwaittime = 200;

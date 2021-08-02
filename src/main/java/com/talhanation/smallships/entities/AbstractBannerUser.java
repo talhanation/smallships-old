@@ -31,19 +31,20 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     private static final DataParameter<Boolean> HAS_BANNER = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     public static final DataParameter<ItemStack> BANNER = EntityDataManager.defineId(AbstractBannerUser.class, DataSerializers.ITEM_STACK);
 
-    public ItemStack banner;
+
     private float bannerWaveAngle;
     private float prevBannerWaveAngle;
 
     public AbstractBannerUser(EntityType<? extends TNBoatEntity> type, World world) {
         super(type, world);
-        this.banner = Items.WHITE_BANNER.getDefaultInstance();
+
     }
 
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(HAS_BANNER, false);
+        this.entityData.define(BANNER, Items.WHITE_BANNER.getDefaultInstance());
 
     }
 
@@ -63,15 +64,18 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     @Override
     public CompoundNBT serializeNBT() {
         CompoundNBT compoundNBT = new CompoundNBT();
-        compoundNBT.put("banner", banner.serializeNBT());
+        compoundNBT.put("banner", getBanner().serializeNBT());
         return compoundNBT;
     }
+
+
 
     @Override
     public void deserializeNBT(CompoundNBT nbt) {
         final INBT banner = nbt.get("banner");
         if (banner instanceof CompoundNBT) {
-            this.banner = ItemStack.of((CompoundNBT) banner);
+            entityData.set(BANNER, ItemStack.of((CompoundNBT)banner));
+            //this.banner = ItemStack.of((CompoundNBT) banner);
         }
     }
 
@@ -79,6 +83,10 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     public boolean getHasBanner() {
         return entityData.get(HAS_BANNER);
+    }
+
+    public ItemStack getBanner() {
+        return entityData.get(BANNER);
     }
 
     public float getBannerWaveFactor() {
@@ -95,26 +103,19 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     ////////////////////////////////////SET////////////////////////////////////
 
-    public void setHasBanner(boolean hasbanner) {
+    public void setHasBanner(boolean hasbanner, ItemStack banner) {
         if (hasbanner != getHasBanner()) {
             playBannerSound(hasbanner);
             entityData.set(HAS_BANNER, true);
+            entityData.set(BANNER, banner.copy());
         }
     }
 
-    public void setBanner(ItemStack banner) {
-            this.banner = banner.copy();
-            this.banner.setCount(1);
-    }
 
     ////////////////////////////////////SERVER////////////////////////////////////
 
-    public void sendHasBannerToServer(boolean hasbanner, AbstractBannerUser abstractBannerUser){
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageHasBanner(hasbanner, abstractBannerUser));
-    }
-
-    public void sendBannerToServer(ItemStack itemStack){
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(itemStack, this.getUUID()));
+    public void sendHasBannerToServer(boolean hasbanner, UUID abstractBannerUser, ItemStack itemStack){
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageHasBanner(hasbanner, abstractBannerUser, itemStack));
     }
 
     @Override
@@ -141,9 +142,13 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
 
-    public boolean onInteractionWithBanner(ItemStack banner, PlayerEntity playerEntity, AbstractBannerUser abstractBannerUser) {
-        setBanner(banner); //replace with sendBannerToServer(itemStack);
-        setHasBanner(true);//replace with sendHasBannerToServer(true, abstractBannerUser);
+    public boolean onInteractionWithBanner(ItemStack banner, PlayerEntity playerEntity, UUID abstractBannerUser) {
+        setHasBanner(true, banner);
+        //sendBannerToServer(banner);
+        //sendHasBannerToServer(true, abstractBannerUser, banner);
+
+        //setBanner(banner); //replace with sendBannerToServer(itemStack);
+        //setHasBanner(true);//replace with sendHasBannerToServer(true, abstractBannerUser);
 
         if (!this.level.isClientSide()) {
             if (!playerEntity.isCreative()) banner.shrink(1);
@@ -155,7 +160,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
 
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer ,int packedLight, float partialTicks) {
-        RenderBanner.renderBanner(this, partialTicks, matrixStack, buffer, banner, packedLight, BannerTileEntityRenderer.makeFlag());
+        RenderBanner.renderBanner(this, partialTicks, matrixStack, buffer, getBanner(), packedLight, BannerTileEntityRenderer.makeFlag());
     }
 
     @Override
@@ -165,6 +170,6 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     public void dropBanner() {
         if (getHasBanner())
-        this.spawnAtLocation(banner);
+        this.spawnAtLocation(getBanner());
     }
 }

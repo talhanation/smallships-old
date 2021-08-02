@@ -16,7 +16,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import java.util.UUID;
 
 public class BannerEvents {
-
+/*
     @SubscribeEvent
     public void onInteractwithShip(PlayerInteractEvent.EntityInteract event) {
         Entity target = event.getTarget();
@@ -33,7 +33,7 @@ public class BannerEvents {
             return;
         }
 
-        Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(itemInHand, target.getUUID()));
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageBanner(itemInHand));
         event.setCancellationResult(ActionResultType.SUCCESS);
         event.setCanceled(true);
 
@@ -42,6 +42,6 @@ public class BannerEvents {
     public static void onEventInteract(ItemStack itemstack, AbstractBannerUser banneruser, PlayerEntity playerEntity) {
         banneruser.onInteractionWithBanner(itemstack,playerEntity,banneruser);
     }
-
+*/
 
 }

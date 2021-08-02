@@ -11,14 +11,12 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 public class MessageBanner implements Message<MessageBanner> {
     ItemStack banner;
-    AbstractBannerUser abstractBannerUser;
 
     public MessageBanner() {
     }
 
-    public MessageBanner(ItemStack banner, AbstractBannerUser abstractBannerUser) {
+    public MessageBanner(ItemStack banner) {
         this.banner = banner;
-        this.abstractBannerUser = abstractBannerUser;
     }
 
     public Dist getExecutingSide() {
@@ -26,13 +24,13 @@ public class MessageBanner implements Message<MessageBanner> {
     }
 
     public void executeServerSide(NetworkEvent.Context context) {
-        setBanner((PlayerEntity) context.getSender(), banner);
-    }
 
+    }
+    /*
     private void setBanner(PlayerEntity player, ItemStack banner) {
         ItemStack stack = player.getItemInHand(Hand.MAIN_HAND);
         if (stack.getItem() instanceof BannerItem) {
-            abstractBannerUser.setBanner(banner);
+            abstractBannerUser.setBanner(banner.copy());
         } else {
             stack = player.getItemInHand(Hand.OFF_HAND);
             if (stack.getItem() instanceof BannerItem) {
@@ -40,12 +38,13 @@ public class MessageBanner implements Message<MessageBanner> {
             }
         }
     }
-
+*/
     public MessageBanner fromBytes(PacketBuffer buf) {
-        banner = buf.readItem();
+        banner = buf.readItem().getStack();
         return this;
     }
 
-    public void toBytes(PacketBuffer paramPacketBuffer) {
+    public void toBytes(PacketBuffer buf) {
+        buf.writeItemStack(this.banner, false);
     }
 }
