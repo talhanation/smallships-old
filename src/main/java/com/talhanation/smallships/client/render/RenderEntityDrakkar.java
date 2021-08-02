@@ -102,8 +102,9 @@ public class RenderEntityDrakkar extends EntityRenderer<DrakkarEntity>{
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.renderType(getTextureLocation(entityIn)));
         this.model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        entityIn.render(matrixStackIn,bufferIn,packedLightIn,partialTicks);
-
+        if (entityIn.getHasBanner()){
+            entityIn.render(matrixStackIn,bufferIn,packedLightIn,partialTicks);
+        }
         matrixStackIn.popPose();
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }

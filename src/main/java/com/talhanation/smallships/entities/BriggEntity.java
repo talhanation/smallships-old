@@ -97,7 +97,13 @@ public class BriggEntity extends AbstractBriggEntity {
     public ActionResultType interact(PlayerEntity player, Hand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
 
-        if (player.isSecondaryUseActive()) {
+        if (!this.getHasBanner() && itemInHand.getItem() instanceof BannerItem){
+            if (onInteractionWithBanner(itemInHand, player, this))
+                return ActionResultType.SUCCESS;
+            return ActionResultType.CONSUME;
+        }
+
+        else if (player.isSecondaryUseActive()) {
             if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
                     this.ejectPassengers();
                     this.passengerwaittime = 200;

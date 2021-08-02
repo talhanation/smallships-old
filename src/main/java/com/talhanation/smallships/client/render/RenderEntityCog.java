@@ -104,7 +104,9 @@ public class RenderEntityCog extends EntityRenderer<CogEntity>{
         this.model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
         //render Banner
-        entityIn.render(matrixStackIn,bufferIn,packedLightIn,partialTicks);
+        if (entityIn.getHasBanner()){
+            entityIn.render(matrixStackIn,bufferIn,packedLightIn,partialTicks);
+        }
 
         matrixStackIn.popPose();
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
