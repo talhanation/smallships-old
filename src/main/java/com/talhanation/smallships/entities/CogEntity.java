@@ -93,10 +93,8 @@ public class CogEntity extends AbstractCogEntity {
     public ActionResultType interact(PlayerEntity player, Hand hand) {
 
         ItemStack itemInHand = player.getItemInHand(hand);
-
-        if (!this.getHasBanner() && itemInHand.getItem() instanceof BannerItem){
-            itemInHand.setCount(1);
-            if (onInteractionWithBanner(itemInHand, player, this.getUUID()))
+        if (itemInHand.getItem() instanceof BannerItem){
+            if (onInteractionWithBanner(itemInHand, player))
                 return ActionResultType.SUCCESS;
             return ActionResultType.CONSUME;
         }

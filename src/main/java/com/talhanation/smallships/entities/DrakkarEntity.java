@@ -47,17 +47,14 @@ public class DrakkarEntity extends AbstractDrakkarEntity {
 
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
-        ItemStack itemInHand = player.getItemInHand(hand);
 
-        /*
-        if (!this.getHasBanner() && itemInHand.getItem() instanceof BannerItem){
-            if (onInteractionWithBanner(itemInHand, player, this))
+        ItemStack itemInHand = player.getItemInHand(hand);
+        if (itemInHand.getItem() instanceof BannerItem){
+            if (onInteractionWithBanner(itemInHand, player))
                 return ActionResultType.SUCCESS;
             return ActionResultType.CONSUME;
         }
-
-
-        else*/ if (player.isSecondaryUseActive()) {
+        else if (player.isSecondaryUseActive()) {
             if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
                 this.ejectPassengers();
                 this.passengerwaittime = 200;

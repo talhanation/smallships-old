@@ -46,17 +46,14 @@ public class GalleyEntity extends AbstractGalleyEntity {
 
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
+
         ItemStack itemInHand = player.getItemInHand(hand);
-        /*
-        if (!this.getHasBanner() && itemInHand.getItem() instanceof BannerItem){
-            if (onInteractionWithBanner(itemInHand, player, this))
+        if (itemInHand.getItem() instanceof BannerItem){
+            if (onInteractionWithBanner(itemInHand, player))
                 return ActionResultType.SUCCESS;
             return ActionResultType.CONSUME;
         }
-
-
-        else*/
-            if (player.isSecondaryUseActive()) {
+        else if (player.isSecondaryUseActive()) {
             if (this.isVehicle() && !(getControllingPassenger() instanceof net.minecraft.entity.player.PlayerEntity)){
                 this.ejectPassengers();
                 this.passengerwaittime = 200;

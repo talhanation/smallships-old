@@ -1,6 +1,5 @@
 package com.talhanation.smallships;
 
-import com.talhanation.smallships.client.events.BannerEvents;
 import com.talhanation.smallships.client.events.ClientRegistry;
 import com.talhanation.smallships.client.events.KeyEvents;
 import com.talhanation.smallships.client.events.RenderEvents;
@@ -70,11 +69,6 @@ public class Main {
                 buf -> (new MessageOpenInv()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(5, MessageBanner.class, (msg, buf) -> msg.toBytes(buf),
-                buf -> (new MessageBanner()).fromBytes(buf),
-                (msg, fun) -> msg.executeServerSide(fun.get()));
-
-
         SIMPLE_CHANNEL.registerMessage(6, MessageIsForward.class, (msg, buf) -> msg.toBytes(buf),
                 buf -> (new MessageIsForward()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
@@ -88,7 +82,6 @@ public class Main {
     public void clientSetup(FMLClientSetupEvent event) {
 
         MinecraftForge.EVENT_BUS.register(new RenderEvents());
-        MinecraftForge.EVENT_BUS.register(new BannerEvents());
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
         SAIL_KEY = ClientRegistry.registerKeyBinding("key.ship_sail", "category.smallships", 82);
         INV_KEY = ClientRegistry.registerKeyBinding("key.ship_inventory", "category.smallships", 73);
