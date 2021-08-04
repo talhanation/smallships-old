@@ -124,7 +124,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
 
-    public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer ,int packedLight, float partialTicks) {
+    public void renderBanner(MatrixStack matrixStack, IRenderTypeBuffer buffer ,int packedLight, float partialTicks) {
         if (getHasBanner())
         RenderBanner.renderBanner(this, partialTicks, matrixStack, buffer, getBanner(), packedLight, BannerTileEntityRenderer.makeFlag());
     }

@@ -1,6 +1,7 @@
 package com.talhanation.smallships.entities.sailboats;
 
 import com.talhanation.smallships.config.SmallShipsConfig;
+import com.talhanation.smallships.entities.AbstractBannerUser;
 import com.talhanation.smallships.entities.AbstractSailBoat;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

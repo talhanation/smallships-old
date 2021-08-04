@@ -52,6 +52,9 @@ public class RenderBanner {
             else if(entityType == ModEntityTypes.WAR_GALLEY_ENTITY.get()){
                 matrixStackIn.translate(-5.5D, 1.4D, 0.1D);
 
+            }else if(entityType == ModEntityTypes.DHOW_ENTITY.get()){
+                matrixStackIn.translate(-5.5D, 1.4D, 0.1D);
+
             }
             //scale
             matrixStackIn.scale(0.5F, 0.5F, 0.5F);

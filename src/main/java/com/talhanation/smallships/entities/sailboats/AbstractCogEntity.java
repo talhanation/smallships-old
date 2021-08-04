@@ -1,6 +1,7 @@
 package com.talhanation.smallships.entities.sailboats;
 
 import com.talhanation.smallships.config.SmallShipsConfig;
+import com.talhanation.smallships.entities.AbstractBannerUser;
 import com.talhanation.smallships.entities.AbstractSailBoat;
 import com.talhanation.smallships.entities.TNBoatEntity;
 import net.minecraft.entity.Entity;
@@ -26,7 +27,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractCogEntity extends AbstractSailBoat {
+public abstract class AbstractCogEntity extends AbstractBannerUser {
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
