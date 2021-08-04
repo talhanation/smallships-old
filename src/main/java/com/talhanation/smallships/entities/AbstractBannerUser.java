@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.tileentity.BannerTileEntityRenderer;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BannerItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -15,14 +14,10 @@ import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
-
-import java.util.UUID;
 
 public abstract class AbstractBannerUser extends AbstractSailBoat {
     private static final DataParameter<Boolean> HAS_BANNER = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
@@ -39,7 +34,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     @Override
     protected void defineSynchedData() {
         super.defineSynchedData();
-        //this.entityData.define(HAS_BANNER, false);
+        this.entityData.define(HAS_BANNER, false);
         this.entityData.define(BANNER, Items.WHITE_BANNER.getDefaultInstance());
 
     }
@@ -61,29 +56,25 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     protected void addAdditionalSaveData(CompoundNBT nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.put("banner", getBanner().serializeNBT());
-        //nbt.putBoolean("hasbanner", getHasBanner());
+        nbt.putBoolean("hasbanner", getHasBanner());
     }
 
-    /**
-     * (abstract) Protected helper method to read subclass entity data from NBT.
-     */
     @Override
     protected void readAdditionalSaveData(CompoundNBT nbt) {
         super.readAdditionalSaveData(nbt);
         final INBT banner = nbt.get("banner");
         if (banner instanceof CompoundNBT) {
+            entityData.set(HAS_BANNER,true);
             entityData.set(BANNER, ItemStack.of((CompoundNBT) banner));
-            //entityData.set(HAS_BANNER, ?????????));
         }
 
     }
 
     ////////////////////////////////////GET////////////////////////////////////
-/*
+
     public boolean getHasBanner(){
         return entityData.get(HAS_BANNER);
     }
-*/
     public ItemStack getBanner() {
         return entityData.get(BANNER);
     }
@@ -104,7 +95,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     public void setBanner(ItemStack banner) {
             playBannerSound(true);
-            //entityData.set(HAS_BANNER, true);
+            entityData.set(HAS_BANNER, true);
             entityData.set(BANNER, banner.copy());
             banner.setCount(1);
 
@@ -120,7 +111,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
 
     public boolean onInteractionWithBanner(ItemStack banner, PlayerEntity playerEntity) {
-        if (getBanner() != null) //replace with getHasBanner when ready
+        if (getHasBanner()) //replace with getHasBanner when ready
             dropBanner();
         setBanner(banner);
         if (!this.level.isClientSide()) {
@@ -134,7 +125,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
 
     public void render(MatrixStack matrixStack, IRenderTypeBuffer buffer ,int packedLight, float partialTicks) {
-        if (getBanner() != null) //replace with getHasBanner when ready
+        if (getHasBanner())
         RenderBanner.renderBanner(this, partialTicks, matrixStack, buffer, getBanner(), packedLight, BannerTileEntityRenderer.makeFlag());
     }
 
@@ -144,7 +135,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     }
 
     public void dropBanner() {
-        if (getBanner() != null) { //replace with getHasBanner when ready
+        if (getHasBanner()) {
             getBanner().setCount(1);
             this.spawnAtLocation(getBanner());
         }
