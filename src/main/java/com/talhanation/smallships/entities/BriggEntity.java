@@ -10,8 +10,11 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
+import net.minecraft.item.BannerItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -93,7 +96,14 @@ public class BriggEntity extends AbstractBriggEntity {
 
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
-        if (player.isSecondaryUseActive()) {
+
+        ItemStack itemInHand = player.getItemInHand(hand);
+        if (itemInHand.getItem() instanceof BannerItem){
+            if (onInteractionWithBanner(itemInHand, player))
+                return ActionResultType.SUCCESS;
+            return ActionResultType.CONSUME;
+        }
+        else if (player.isSecondaryUseActive()) {
             if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
                     this.ejectPassengers();
                     this.passengerwaittime = 200;
@@ -454,6 +464,5 @@ public class BriggEntity extends AbstractBriggEntity {
     protected boolean canAddPassenger(Entity passenger) {
         return (getPassengers().size() < 10);
     }
-
 
 }

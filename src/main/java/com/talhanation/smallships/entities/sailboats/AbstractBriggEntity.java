@@ -25,7 +25,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractBriggEntity extends AbstractSailBoat {
+public abstract class AbstractBriggEntity extends AbstractBannerUser {
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -342,6 +342,7 @@ public abstract class AbstractBriggEntity extends AbstractSailBoat {
             boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
             if (flag || getDamageTaken() > BriggHealth) {
                 onDestroyed(source, flag);
+                dropBanner();
                 remove();
             }
             return true;
