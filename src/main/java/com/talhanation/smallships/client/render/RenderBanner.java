@@ -33,6 +33,7 @@ public class RenderBanner {
             //banner pos for ships:
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
             matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
+
             if (entityType == ModEntityTypes.COG_ENTITY.get()) {
                 //                                  hight
                 matrixStackIn.translate(-2.9D, 0.5D, 0.05D);
@@ -53,7 +54,7 @@ public class RenderBanner {
                 matrixStackIn.translate(-5.5D, 1.4D, 0.1D);
 
             }else if(entityType == ModEntityTypes.DHOW_ENTITY.get()){
-                matrixStackIn.translate(-5.5D, 1.4D, 0.1D);
+                matrixStackIn.translate(-6.2D, -1.4D, 0.05D);
 
             }
             //scale
