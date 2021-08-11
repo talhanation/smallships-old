@@ -4,53 +4,37 @@ import com.google.common.collect.Lists;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
 import com.talhanation.smallships.compatiblity.Environmental;
-import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
-import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.network.MessagePaddleState;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LilyPadBlock;
+import net.minecraft.block.BlockLilyPad;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.*;
-import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.WaterMobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
+import net.minecraft.entity.item.EntityBoat;
+import net.minecraft.entity.passive.EntityAnimal;
+import net.minecraft.entity.passive.EntityWaterMob;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SSpawnObjectPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class TNBoatEntity extends Entity {
-    private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Integer> FORWARD_DIRECTION = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> BOAT_TYPE = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Boolean> LEFT_PADDLE = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> RIGHT_PADDLE = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> ROCKING_TICKS = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
+    private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.createKey(TNBoatEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Integer> FORWARD_DIRECTION = EntityDataManager.createKey(TNBoatEntity.class, DataSerializers.INT);
+    private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.createKey(TNBoatEntity.class, DataSerializers.FLOAT);
+    private static final DataParameter<Integer> BOAT_TYPE = EntityDataManager.createKey(TNBoatEntity.class, DataSerializers.VARINT);
+    private static final DataParameter<Boolean> LEFT_PADDLE = EntityDataManager.createKey(TNBoatEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> RIGHT_PADDLE = EntityDataManager.createKey(TNBoatEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Integer> ROCKING_TICKS = EntityDataManager.createKey(TNBoatEntity.class, DataSerializers.VARINT);
     private final float[] paddlePositions = new float[2];
     private final List<Entity> passengers = Lists.newArrayList();
     private float momentum;
@@ -79,8 +63,8 @@ public abstract class TNBoatEntity extends Entity {
     private float waveAngle;
     private float prevWaveAngle;
 
-    public TNBoatEntity(EntityType<? extends TNBoatEntity> type, World world) {
-        super(type, world);
+    public TNBoatEntity(World world) {
+        super(world);
         this.blocksBuilding = true;
     }
 
@@ -99,7 +83,7 @@ public abstract class TNBoatEntity extends Entity {
 
     }
 
-    public void onInvPressed(PlayerEntity player) {
+    public void onInvPressed(EntityPlayer player) {
 
     }
 
@@ -868,43 +852,43 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     public boolean getPaddleState(int side) {
-        return this.entityData.<Boolean>get(side == 0 ? LEFT_PADDLE : RIGHT_PADDLE) && this.getControllingPassenger() != null;
+        return this.dataManager.<Boolean>get(side == 0 ? LEFT_PADDLE : RIGHT_PADDLE) && this.getControllingPassenger() != null;
     }
 
     /**
      * Sets the damage taken from the last hit.
      */
     public void setDamageTaken(float damageTaken) {
-        this.entityData.set(DAMAGE_TAKEN, damageTaken);
+        this.dataManager.set(DAMAGE_TAKEN, damageTaken);
     }
 
     /**
      * Gets the damage taken from the last hit.
      */
     public float getDamageTaken() {
-        return this.entityData.get(DAMAGE_TAKEN);
+        return this.dataManager.get(DAMAGE_TAKEN);
     }
 
     /**
      * Sets the time to count down from since the last time entity was hit.
      */
     public void setTimeSinceHit(int timeSinceHit) {
-        this.entityData.set(TIME_SINCE_HIT, timeSinceHit);
+        this.dataManager.set(TIME_SINCE_HIT, timeSinceHit);
     }
 
     /**
      * Gets the time since the last hit.
      */
     public int getTimeSinceHit() {
-        return this.entityData.get(TIME_SINCE_HIT);
+        return this.dataManager.get(TIME_SINCE_HIT);
     }
 
     private void setRockingTicks(int ticks) {
-        this.entityData.set(ROCKING_TICKS, ticks);
+        this.dataManager.set(ROCKING_TICKS, ticks);
     }
 
     private int getRockingTicks() {
-        return this.entityData.get(ROCKING_TICKS);
+        return this.dataManager.get(ROCKING_TICKS);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -975,11 +959,17 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     @Override
-    protected void addPassenger(Entity passenger) {
+    protected void addPassenger(Entity passenger)
+    {
         super.addPassenger(passenger);
-        if (this.isControlledByLocalInstance() && this.lerpSteps > 0) {
+        if(this.canPassengerSteer() && this.lerpSteps > 0)
+        {
             this.lerpSteps = 0;
-            this.absMoveTo(this.lerpX, this.lerpY, this.lerpZ, (float) this.lerpYaw, (float) this.lerpPitch);
+            this.posX = this.lerpX;
+            this.posY = this.lerpY;
+            this.posZ = this.lerpZ;
+            this.rotationYaw = (float)this.lerpYaw;
+            this.rotationPitch = (float)this.lerpPitch;
         }
     }
 
@@ -1010,26 +1000,6 @@ public abstract class TNBoatEntity extends Entity {
         BOP_REDWOOD("bop_redwood"),
         BOP_UMBRAN("bop_umbran"),
         BOP_WILLOW("bop_willow"),
-        //LOTR
-        LOTR_APPLE("lotr_apple"),
-        LOTR_ASPEN("lotr_aspen"),
-        LOTR_BEECH("lotr_beech"),
-        LOTR_CEDAR("lotr_cedar"),
-        LOTR_CHARRED("lotr_charred"),
-        LOTR_CHERRY("lotr_cherry"),
-        LOTR_CYPRESS("lotr_cypress"),
-        LOTR_FIR("lotr_fir"),
-        LOTR_GREEN_OAK("lotr_green_oak"),
-        LOTR_HOLLY("lotr_holly"),
-        LOTR_LAIRELOSSE("lotr_lairelosse"),
-        LOTR_LARCH("lotr_larch"),
-        LOTR_LEBETHRON("lotr_lebethron"),
-        LOTR_MALLORN("lotr_mallorn"),
-        LOTR_MAPLE("lotr_maple"),
-        LOTR_MIRK_OAK("lotr_mirk_oak"),
-        LOTR_PEAR("lotr_pear"),
-        LOTR_PINE("lotr_pine"),
-        LOTR_ROTTEN("lotr_rotten"),
         //ENVI
         ENVI_CHERRY("envi_cherry"),
         ENVI_WISTERIA("envi_wisteria"),
@@ -1109,12 +1079,12 @@ public abstract class TNBoatEntity extends Entity {
         return null;
     }
 
-    public PlayerEntity getDriver() {
+    public EntityPlayer getDriver() {
         List<Entity> passengers = getPassengers();
         if (passengers.size() <= 0)
             return null;
-        if (passengers.get(0) instanceof PlayerEntity)
-            return (PlayerEntity) passengers.get(0);
+        if (passengers.get(0) instanceof EntityPlayer)
+            return (EntityPlayer) passengers.get(0);
         return null;
     }
 

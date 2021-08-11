@@ -6,6 +6,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.LilyPadBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.ItemStack;
@@ -31,9 +32,10 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
     private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
     public ItemStackHandler inventory = initInventory();
 
-    public AbstractInventoryBoat(EntityType<? extends TNBoatEntity> type, World world) {
-        super(type, world);
+    public AbstractInventoryBoat(World world) {
+        super(world);
     }
+
     ////////////////////////////////////TICK////////////////////////////////////
 
     @Override
@@ -74,7 +76,7 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
     @Override
-    public void onInvPressed(PlayerEntity player){
+    public void onInvPressed(EntityPlayer player){
         Main.SIMPLE_CHANNEL.sendToServer(new MessageOpenInv(player));
     }
 
@@ -93,7 +95,7 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
 
-    public void openContainer(PlayerEntity player){
+    public void openContainer(EntityPlayer player){
 
     }
 

@@ -1,6 +1,5 @@
 package com.talhanation.smallships.entities;
 
-import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.RowBoatContainer;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.util.RowBoatItemStackHandler;

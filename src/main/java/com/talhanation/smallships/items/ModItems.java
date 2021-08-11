@@ -3,7 +3,6 @@ package com.talhanation.smallships.items;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
 import com.talhanation.smallships.compatiblity.Environmental;
-import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
 import com.talhanation.smallships.entities.*;
 import com.talhanation.smallships.entities.sailboats.*;
 import net.minecraft.item.Item;

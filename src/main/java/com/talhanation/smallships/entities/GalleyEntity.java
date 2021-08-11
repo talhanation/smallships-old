@@ -1,7 +1,6 @@
 package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.entities.sailboats.AbstractGalleyEntity;
-import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.GalleyContainer;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.util.GalleyItemStackHandler;
@@ -13,11 +12,9 @@ import net.minecraft.item.BannerItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.*;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;

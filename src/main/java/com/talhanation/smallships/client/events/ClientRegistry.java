@@ -1,10 +1,7 @@
 package com.talhanation.smallships.client.events;
 
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
 public class ClientRegistry {
 
     public static KeyBinding registerKeyBinding(String name, String category, int keyCode) {

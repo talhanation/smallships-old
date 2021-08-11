@@ -1,7 +1,6 @@
 package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.entities.sailboats.AbstractDhowEntity;
-import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.DhowContainer;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.util.DhowItemStackHandler;

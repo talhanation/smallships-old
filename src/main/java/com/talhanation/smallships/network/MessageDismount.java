@@ -1,49 +1,43 @@
 package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.client.events.PlayerEvents;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.math.AxisAlignedBB;
+
 
 import java.util.UUID;
 
-public class MessageDismount implements Message<MessageDismount> {
+public class MessageDismount extends MessageToServer<MessageDismount> {
 
-    private UUID passenger;
-
-    public MessageDismount(){
-    }
+    private UUID uuid;
 
     public MessageDismount(UUID passenger) {
-        this.passenger = passenger;
+        this.uuid = passenger;
     }
 
-    public Dist getExecutingSide() {
-        return Dist.DEDICATED_SERVER;
-    }
 
-    public void executeServerSide(NetworkEvent.Context context) {
-        ServerPlayerEntity player = context.getSender();
-        player.level.getEntitiesOfClass(Entity.class, player.getBoundingBox()
-                .inflate(16.0D), v -> v
-                .getUUID()
-                .equals(this.passenger))
+    public void execute(EntityPlayer player, MessageDismount message) {
+        AxisAlignedBB box = player.getCollisionBoundingBox();
+        player.world.getEntitiesWithinAABB(Entity.class, box.intersect(box))
                 .stream()
-                .filter(Entity::isAlive)
+                .filter(Entity::isRiding)
                 .findAny()
                 .ifPresent(passenger -> PlayerEvents.dismountPassenger(passenger, player));
 
     }
 
-    public MessageDismount fromBytes(PacketBuffer buf) {
-        this.passenger = buf.readUUID();
-        return this;
+    public void fromBytes(ByteBuf buf) {
+        long l1 = buf.readLong();
+        long l2 = buf.readLong();
+        this.uuid = new UUID(l1, l2);
+
     }
 
-    public void toBytes(PacketBuffer buf) {
-        buf.writeUUID(this.passenger);
+    public void toBytes(ByteBuf buf) {
+        buf.writeLong(this.uuid.getMostSignificantBits());
+        buf.writeLong(this.uuid.getLeastSignificantBits());
     }
 
 }

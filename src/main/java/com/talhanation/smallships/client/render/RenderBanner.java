@@ -4,7 +4,6 @@ package com.talhanation.smallships.client.render;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.datafixers.util.Pair;
 import com.talhanation.smallships.entities.AbstractBannerUser;
-import com.talhanation.smallships.init.ModEntityTypes;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ModelBakery;
 import net.minecraft.client.renderer.model.ModelRenderer;

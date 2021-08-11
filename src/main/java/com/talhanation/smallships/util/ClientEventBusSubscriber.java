@@ -2,7 +2,6 @@ package com.talhanation.smallships.util;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.client.render.*;
-import com.talhanation.smallships.init.ModEntityTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;

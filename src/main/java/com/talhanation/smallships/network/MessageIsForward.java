@@ -1,43 +1,34 @@
 package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.entities.AbstractSailBoat;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class MessageIsForward implements Message<MessageIsForward> {
+public class MessageIsForward extends MessageToServer<MessageIsForward> {
 
     private boolean forward;
-
-    public MessageIsForward() {
-    }
 
     public MessageIsForward(boolean forward) {
         this.forward = forward;
 
     }
 
-    public Dist getExecutingSide() {
-        return Dist.DEDICATED_SERVER;
-    }
-
-    public void executeServerSide(NetworkEvent.Context context) {
-        Entity riding = context.getSender().getVehicle();
-        if (!(riding instanceof AbstractSailBoat))
+    public void execute(EntityPlayer player, MessageIsForward message) {
+        Entity vehicle = player.getRidingEntity();
+        if (!(vehicle instanceof AbstractSailBoat))
             return;
-        AbstractSailBoat sailBoat = (AbstractSailBoat) riding;
-        if (context.getSender() == (sailBoat.getDriver())) {
+        AbstractSailBoat sailBoat = (AbstractSailBoat)vehicle;
+        if (player.equals(sailBoat.getDriver()))
             sailBoat.setIsForward(forward);
-        }
     }
 
-    public MessageIsForward fromBytes(PacketBuffer buf) {
+    public void fromBytes(ByteBuf buf) {
         this.forward = buf.readBoolean();
-        return this;
+
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeBoolean(this.forward);
     }
 

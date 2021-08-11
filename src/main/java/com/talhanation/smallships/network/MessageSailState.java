@@ -1,42 +1,32 @@
 package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.entities.AbstractSailBoat;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.entity.player.EntityPlayer;
 
-public class MessageSailState implements Message<MessageSailState> {
+public class MessageSailState extends MessageToServer<MessageSailState> {
 
     private int state;
-
-    public MessageSailState() {
-    }
 
     public MessageSailState(int state) {
         this.state = state;
     }
 
-    public Dist getExecutingSide() {
-        return Dist.DEDICATED_SERVER;
-    }
-
-    public void executeServerSide(NetworkEvent.Context context) {
-        Entity riding = context.getSender().getVehicle();
-        if (!(riding instanceof AbstractSailBoat))
+    public void execute(EntityPlayer player, MessageSailState message) {
+        Entity vehicle = player.getRidingEntity();
+        if (!(vehicle instanceof AbstractSailBoat))
             return;
-        AbstractSailBoat sailboat = (AbstractSailBoat) riding;
-        if (context.getSender() == (sailboat.getDriver())) {
-            sailboat.setSailState(state);
-        }
+        AbstractSailBoat ship = (AbstractSailBoat)vehicle;
+        if (player.equals(ship.getDriver()))
+            ship.setSailState(state);
     }
 
-    public MessageSailState fromBytes(PacketBuffer buf) {
+    public void fromBytes(ByteBuf buf) {
         this.state = buf.readInt();
-        return this;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeInt(this.state);
     }
 

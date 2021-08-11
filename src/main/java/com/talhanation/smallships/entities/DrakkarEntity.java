@@ -1,7 +1,6 @@
 package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.entities.sailboats.AbstractDrakkarEntity;
-import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.DrakkarContainer;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.util.DrakkarItemStackHandler;
@@ -13,7 +12,6 @@ import net.minecraft.item.BannerItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;

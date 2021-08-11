@@ -1,45 +1,38 @@
 package com.talhanation.smallships.network;
 
+import com.talhanation.smallships.entities.AbstractSailBoat;
 import com.talhanation.smallships.entities.TNBoatEntity;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
 
-public class MessagePaddleState implements Message<MessagePaddleState> {
+public class MessagePaddleState extends MessageToServer<MessagePaddleState> {
 
     private boolean left;
     private boolean right;
-
-    public MessagePaddleState() {
-    }
 
     public MessagePaddleState(boolean left, boolean right) {
         this.left = left;
         this.right = right;
     }
 
-    public Dist getExecutingSide() {
-        return Dist.DEDICATED_SERVER;
-    }
-
-    public void executeServerSide(NetworkEvent.Context context) {
-        Entity riding = context.getSender().getVehicle();
-        if (!(riding instanceof TNBoatEntity))
+    public void execute(EntityPlayer player, MessagePaddleState paramT) {
+        Entity vehicle = player.getRidingEntity();
+        if (!(vehicle instanceof AbstractSailBoat))
             return;
-        TNBoatEntity boat = (TNBoatEntity) riding;
-        if (context.getSender() == (boat.getDriver())) {
-            boat.setPaddleState(left, right);
-        }
+        AbstractSailBoat sailBoat = (AbstractSailBoat)vehicle;
+        if (player.equals(sailBoat.getDriver()))
+            sailBoat.setPaddleState(left, right);
     }
 
-    public MessagePaddleState fromBytes(PacketBuffer buf) {
+    public void fromBytes(ByteBuf buf) {
         this.left = buf.readBoolean();
         this.right = buf.readBoolean();
-        return this;
+
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(ByteBuf buf) {
         buf.writeBoolean(this.left);
         buf.writeBoolean(this.right);
     }
