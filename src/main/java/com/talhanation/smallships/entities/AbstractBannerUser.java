@@ -123,7 +123,6 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
             dropBanner();
             entityData.set(HAS_BANNER, false);
         }
-
     }
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
@@ -142,7 +141,6 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
         if (getHasBanner()) {
             getBanner().setCount(1);
             this.spawnAtLocation(getBanner(),  3F );
-
         }
     }
 }
