@@ -13,6 +13,7 @@ import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.BannerItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ShearsItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -96,11 +97,20 @@ public class DhowEntity extends AbstractDhowEntity {
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
+
         if (itemInHand.getItem() instanceof BannerItem){
-            if (onInteractionWithBanner(itemInHand, player))
-                return ActionResultType.SUCCESS;
-            return ActionResultType.CONSUME;
+            onInteractionWithBanner(itemInHand,player);
+            return ActionResultType.SUCCESS;
         }
+
+        else if (itemInHand.getItem() instanceof ShearsItem){
+            if (this.getHasBanner()){
+                onInteractionWithShears(player);
+                return ActionResultType.SUCCESS;
+            }
+            return ActionResultType.PASS;
+        }
+
         else if (player.isSecondaryUseActive()) {
             if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
                     this.ejectPassengers();

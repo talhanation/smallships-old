@@ -93,32 +93,36 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     ////////////////////////////////////SET////////////////////////////////////
 
-    public void setBanner(ItemStack banner) {
-            playBannerSound(true);
-            entityData.set(HAS_BANNER, true);
-            entityData.set(BANNER, banner.copy());
-            banner.setCount(1);
-
-    }
-    ////////////////////////////////////SOUND////////////////////////////////////
-
-    public void playBannerSound(boolean hasbanner) {
-        if (hasbanner) {
-            this.level.playSound(null, this.getX(), this.getY() + 4 , this.getZ(),SoundEvents.WOOL_HIT, this.getSoundSource(), 15.0F, 0.8F + 0.4F * this.random.nextFloat());
+    public void setBanner(PlayerEntity player, ItemStack banner) {
+        playBannerSound();
+        entityData.set(HAS_BANNER, true);
+        entityData.set(BANNER, banner.copy());
+        if (!player.isCreative()) {
+            banner.shrink(1);
         }
     }
+
+    ////////////////////////////////////SOUND////////////////////////////////////
+
+    public void playBannerSound() {
+            this.level.playSound(null, this.getX(), this.getY() + 4 , this.getZ(),SoundEvents.WOOL_HIT, this.getSoundSource(), 15.0F, 0.8F + 0.4F * this.random.nextFloat());
+        }
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
 
-    public boolean onInteractionWithBanner(ItemStack banner, PlayerEntity playerEntity) {
-        if (getHasBanner()) //replace with getHasBanner when ready
+    public boolean onInteractionWithBanner(ItemStack banner, PlayerEntity player) {
+        if (getHasBanner())
             dropBanner();
-        setBanner(banner);
-        if (!this.level.isClientSide()) {
-            if (!playerEntity.isCreative()) banner.shrink(1);
-            return true;
+
+        setBanner(player,banner);
+        return true;
+    }
+
+    public void onInteractionWithShears(PlayerEntity playerEntity) {
+        if (getHasBanner()) {
+            dropBanner();
+            entityData.set(HAS_BANNER, false);
         }
-        return false;
 
     }
 
@@ -137,7 +141,8 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     public void dropBanner() {
         if (getHasBanner()) {
             getBanner().setCount(1);
-            this.spawnAtLocation(getBanner());
+            this.spawnAtLocation(getBanner(),  3F );
+
         }
     }
 }
