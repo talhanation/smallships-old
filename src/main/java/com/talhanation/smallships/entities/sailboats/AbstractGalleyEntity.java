@@ -2,6 +2,7 @@ package com.talhanation.smallships.entities.sailboats;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
+import com.talhanation.smallships.entities.AbstractBannerUser;
 import com.talhanation.smallships.entities.AbstractSailBoat;
 import com.talhanation.smallships.network.MessagePaddleState;
 import net.minecraft.entity.*;
@@ -24,7 +25,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractGalleyEntity extends AbstractSailBoat {
+public abstract class AbstractGalleyEntity extends AbstractBannerUser {
    private final float[] paddlePositions = new float[2];
     public float momentum;
     public float outOfControlTicks;
@@ -381,6 +382,7 @@ public abstract class AbstractGalleyEntity extends AbstractSailBoat {
             boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
             if (flag || getDamageTaken() > GalleyHealth) {
                 onDestroyed(source, flag);
+                dropBanner();
                 remove();
             }
             return true;

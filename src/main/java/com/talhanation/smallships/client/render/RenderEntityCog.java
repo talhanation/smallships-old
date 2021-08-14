@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.client.model.ModelCog;
 import com.talhanation.smallships.config.SmallShipsConfig;
+import com.talhanation.smallships.entities.AbstractBannerUser;
 import com.talhanation.smallships.entities.CogEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -14,6 +15,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Quaternion;
 import net.minecraft.util.math.vector.Vector3f;
+
+import javax.swing.text.html.parser.Entity;
 
 public class RenderEntityCog extends EntityRenderer<CogEntity>{
     private static final ResourceLocation[] COG_TEXTURES = new ResourceLocation[]{
@@ -99,6 +102,10 @@ public class RenderEntityCog extends EntityRenderer<CogEntity>{
         this.model.setupAnim(entityIn, partialTicks, 0.0F, -0.1F, 0.0F, 0.0F);
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(this.model.renderType(getTextureLocation(entityIn)));
         this.model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        //render Banner
+        entityIn.renderBanner(matrixStackIn,bufferIn,packedLightIn,partialTicks);
+
         matrixStackIn.popPose();
         super.render(entityIn, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
     }
