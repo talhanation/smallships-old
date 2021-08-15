@@ -5,38 +5,41 @@ import com.talhanation.smallships.Main;
 import com.talhanation.smallships.compatiblity.BiomesOPlenty;
 import com.talhanation.smallships.compatiblity.Environmental;
 import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
-import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.network.MessagePaddleState;
-import net.minecraft..BlockState;
-import net.minecraft.block.LilyPadBlock;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.BlockUtil;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
-import net.minecraft.entity.item.BoatEntity;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.WaterMobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.network.play.server.SSpawnObjectPacket;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.Boat;
+import net.minecraft.world.entity.vehicle.DismountHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.WaterlilyBlock;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -44,13 +47,13 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class TNBoatEntity extends Entity {
-    private static final DataParameter<Integer> TIME_SINCE_HIT = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Integer> FORWARD_DIRECTION = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Float> DAMAGE_TAKEN = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.FLOAT);
-    private static final DataParameter<Integer> BOAT_TYPE = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
-    private static final DataParameter<Boolean> LEFT_PADDLE = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> RIGHT_PADDLE = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> ROCKING_TICKS = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.INT);
+    private static final EntityDataAccessor<Integer> TIME_SINCE_HIT = SynchedEntityData.defineId(TNBoatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> FORWARD_DIRECTION = SynchedEntityData.defineId(TNBoatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Float> DAMAGE_TAKEN = SynchedEntityData.defineId(TNBoatEntity.class, EntityDataSerializers.FLOAT);
+    private static final EntityDataAccessor<Integer> BOAT_TYPE = SynchedEntityData.defineId(TNBoatEntity.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> LEFT_PADDLE = SynchedEntityData.defineId(TNBoatEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> RIGHT_PADDLE = SynchedEntityData.defineId(TNBoatEntity.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> ROCKING_TICKS = SynchedEntityData.defineId(TNBoatEntity.class, EntityDataSerializers.INT);
     private final float[] paddlePositions = new float[2];
     private final List<Entity> passengers = Lists.newArrayList();
     private float momentum;
@@ -79,7 +82,7 @@ public abstract class TNBoatEntity extends Entity {
     private float waveAngle;
     private float prevWaveAngle;
 
-    public TNBoatEntity(EntityType<? extends TNBoatEntity> type, World world) {
+    public TNBoatEntity(EntityType<? extends TNBoatEntity> type, Level world) {
         super(type, world);
         this.blocksBuilding = true;
     }
@@ -99,14 +102,14 @@ public abstract class TNBoatEntity extends Entity {
 
     }
 
-    public void onInvPressed(PlayerEntity player) {
+    public void onInvPressed(Player player) {
 
     }
 
 
 
     @Override
-    protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
+    protected float getEyeHeight(Pose poseIn, EntityDimensions sizeIn) {
         return sizeIn.height;
     }
 
@@ -149,7 +152,7 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     @Override
-    protected Vector3d getRelativePortalPosition(Direction.Axis axis, TeleportationRepositioner.Result result) {
+    protected Vec3 getRelativePortalPosition(Direction.Axis axis, BlockUtil.FoundRectangle result) {
         return LivingEntity.resetForwardDirectionOfRelativePortalPosition(super.getRelativePortalPosition(axis, result));
     }
 
@@ -191,7 +194,7 @@ public abstract class TNBoatEntity extends Entity {
      */
     @Override
     public void push(Entity entityIn) {
-        if (entityIn instanceof BoatEntity || entityIn instanceof TNBoatEntity) {
+        if (entityIn instanceof Boat || entityIn instanceof TNBoatEntity) {
             if (entityIn.getBoundingBox().minY < this.getBoundingBox().maxY) {
                 super.push(entityIn);
             }
@@ -309,7 +312,7 @@ public abstract class TNBoatEntity extends Entity {
      */
     @Override
     public boolean canBeCollidedWith() {
-        return !this.removed;
+        return !this.isRemoved();
     }
 
     /**
@@ -373,7 +376,7 @@ public abstract class TNBoatEntity extends Entity {
 
             this.move(MoverType.SELF, this.getDeltaMovement());
         } else {
-            this.setDeltaMovement(Vector3d.ZERO);
+            this.setDeltaMovement(Vec3.ZERO);
         }
 
         this.tickBubbleColumn();
@@ -383,10 +386,10 @@ public abstract class TNBoatEntity extends Entity {
                 if (!this.isSilent() && (double) (this.paddlePositions[i] % ((float) Math.PI * 2F)) <= (double) ((float) Math.PI / 4F) && ((double) this.paddlePositions[i] + (double) ((float) Math.PI / 8F)) % (double) ((float) Math.PI * 2F) >= (double) ((float) Math.PI / 4F)) {
                     SoundEvent soundevent = this.getPaddleSound();
                     if (soundevent != null) {
-                        Vector3d vector3d = this.getViewVector(1.0F);
+                        Vec3 vector3d = this.getViewVector(1.0F);
                         double d0 = i == 1 ? -vector3d.z : vector3d.z;
                         double d1 = i == 1 ? vector3d.x : -vector3d.x;
-                        this.level.playSound((PlayerEntity) null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.8F + 0.4F * this.random.nextFloat());
+                        this.level.playSound((Player) null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.8F + 0.4F * this.random.nextFloat());
                     }
                 }
 
@@ -397,7 +400,7 @@ public abstract class TNBoatEntity extends Entity {
         }
 
         this.checkInsideBlocks();
-        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate((double) 0.2F, (double) -0.01F, (double) 0.2F), EntityPredicates.pushableBy(this));
+        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate((double) 0.2F, (double) -0.01F, (double) 0.2F), EntityPredicate.isPushable(this));
         if (!list.isEmpty()) {
             boolean flag = !this.level.isClientSide && !(this.getControllingPassenger() instanceof PlayerEntity);
 
@@ -428,7 +431,7 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     public float getWaveAngle(float partialTicks) {
-        return MathHelper.lerp(partialTicks, this.prevWaveAngle, this.waveAngle);
+        return Mth.lerp(partialTicks, this.prevWaveAngle, this.waveAngle);
     }
 
     private void tickBubbleColumn() {
@@ -440,7 +443,7 @@ public abstract class TNBoatEntity extends Entity {
                 this.rockingIntensity -= 0.1F;
             }
 
-            this.rockingIntensity = MathHelper.clamp(this.rockingIntensity, 0.0F, 1.0F);
+            this.rockingIntensity = Mth.clamp(this.rockingIntensity, 0.0F, 1.0F);
             this.prevRockingAngle = this.rockingAngle;
             this.rockingAngle = 10.0F * (float) Math.sin((double) (0.5F * (float) this.level.getGameTime())) * this.rockingIntensity;
 
@@ -458,12 +461,12 @@ public abstract class TNBoatEntity extends Entity {
                 int j = 60 - k - 1;
                 if (j > 0 && k == 0) {
                     this.setRockingTicks(0);
-                    Vector3d vector3d = this.getDeltaMovement();
+                    Vec3 vector3d = this.getDeltaMovement();
                     if (this.downwards) {
                         this.setDeltaMovement(vector3d.add(0.0D, -0.7D, 0.0D));
                         this.ejectPassengers();
                     } else {
-                        this.setDeltaMovement(vector3d.x, this.hasPassenger(PlayerEntity.class) ? 2.7D : 0.6D, vector3d.z);
+                        this.setDeltaMovement(vector3d.x, this.hasPassenger(Player.class) ? 2.7D : 0.6D, vector3d.z);
                     }
                 }
 
@@ -495,15 +498,15 @@ public abstract class TNBoatEntity extends Entity {
         }
 
         if (this.lerpSteps > 0) {
-            double d0 = this.getX() + (this.lerpX - this.getX()) / (double) this.lerpSteps;
-            double d1 = this.getY() + (this.lerpY - this.getY()) / (double) this.lerpSteps;
-            double d2 = this.getZ() + (this.lerpZ - this.getZ()) / (double) this.lerpSteps;
-            double d3 = MathHelper.wrapDegrees(this.lerpYaw - (double) this.yRot);
-            this.yRot = (float) ((double) this.yRot + d3 / (double) this.lerpSteps);
-            this.xRot = (float) ((double) this.xRot + (this.lerpPitch - (double) this.xRot) / (double) this.lerpSteps);
+            double d0 = this.getX() + (this.lerpX - this.getX()) / (double)this.lerpSteps;
+            double d1 = this.getY() + (this.lerpY - this.getY()) / (double)this.lerpSteps;
+            double d2 = this.getZ() + (this.lerpZ - this.getZ()) / (double)this.lerpSteps;
+            double d3 = Mth.wrapDegrees(this.lerpYaw - (double)this.getYRot());
+            this.setYRot(this.getYRot() + (float)d3 / (float)this.lerpSteps);
+            this.setXRot(this.getXRot() + (float)(this.lerpPitch - (double)this.getXRot()) / (float)this.lerpSteps);
             --this.lerpSteps;
             this.setPos(d0, d1, d2);
-            this.setRot(this.yRot, this.xRot);
+            this.setRot(this.getYRot(), this.getXRot());
         }
     }
 
@@ -514,7 +517,7 @@ public abstract class TNBoatEntity extends Entity {
 
     @OnlyIn(Dist.CLIENT)
     public float getRowingTime(int side, float limbSwing) {
-        return this.getPaddleState(side) ? (float) MathHelper.clampedLerp((double) this.paddlePositions[side] - (double) ((float) Math.PI / 8F), (double) this.paddlePositions[side], (double) limbSwing) : 0.0F;
+        return this.getPaddleState(side) ? (float) Mth.clampedLerp((double) this.paddlePositions[side] - (double) ((float) Math.PI / 8F), (double) this.paddlePositions[side], (double) limbSwing) : 0.0F;
     }
 
     /**
@@ -539,14 +542,14 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     public float getWaterLevelAbove() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.ceil(axisalignedbb.maxX);
-        int k = MathHelper.floor(axisalignedbb.maxY);
-        int l = MathHelper.ceil(axisalignedbb.maxY - this.lastYd);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        AABB axisalignedbb = this.getBoundingBox();
+        int i = Mth.floor(axisalignedbb.minX);
+        int j = Mth.ceil(axisalignedbb.maxX);
+        int k = Mth.floor(axisalignedbb.maxY);
+        int l = Mth.ceil(axisalignedbb.maxY - this.lastYd);
+        int i1 = Mth.floor(axisalignedbb.minZ);
+        int j1 = Mth.ceil(axisalignedbb.maxZ);
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
         label39:
         for (int k1 = k; k1 < l; ++k1) {
@@ -578,18 +581,18 @@ public abstract class TNBoatEntity extends Entity {
      * Decides how much the boat should be gliding on the land (based on any slippery blocks)
      */
     public float getBoatGlide() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
-        AxisAlignedBB axisalignedbb1 = new AxisAlignedBB(axisalignedbb.minX, axisalignedbb.minY - 0.001D, axisalignedbb.minZ, axisalignedbb.maxX, axisalignedbb.minY, axisalignedbb.maxZ);
-        int i = MathHelper.floor(axisalignedbb1.minX) - 1;
-        int j = MathHelper.ceil(axisalignedbb1.maxX) + 1;
-        int k = MathHelper.floor(axisalignedbb1.minY) - 1;
-        int l = MathHelper.ceil(axisalignedbb1.maxY) + 1;
-        int i1 = MathHelper.floor(axisalignedbb1.minZ) - 1;
-        int j1 = MathHelper.ceil(axisalignedbb1.maxZ) + 1;
-        VoxelShape voxelshape = VoxelShapes.create(axisalignedbb1);
+        AABB axisalignedbb = this.getBoundingBox();
+        AABB axisalignedbb1 = new AABB(axisalignedbb.minX, axisalignedbb.minY - 0.001D, axisalignedbb.minZ, axisalignedbb.maxX, axisalignedbb.minY, axisalignedbb.maxZ);
+        int i = Mth.floor(axisalignedbb1.minX) - 1;
+        int j = Mth.ceil(axisalignedbb1.maxX) + 1;
+        int k = Mth.floor(axisalignedbb1.minY) - 1;
+        int l = Mth.ceil(axisalignedbb1.maxY) + 1;
+        int i1 = Mth.floor(axisalignedbb1.minZ) - 1;
+        int j1 = Mth.ceil(axisalignedbb1.maxZ) + 1;
+        VoxelShape voxelshape = Shapes.create(axisalignedbb1);
         float f = 0.0F;
         int k1 = 0;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
         for (int l1 = i; l1 < j; ++l1) {
             for (int i2 = i1; i2 < j1; ++i2) {
@@ -599,8 +602,8 @@ public abstract class TNBoatEntity extends Entity {
                         if (j2 <= 0 || k2 != k && k2 != l - 1) {
                             blockpos$mutable.set(l1, k2, i2);
                             BlockState blockstate = this.level.getBlockState(blockpos$mutable);
-                            if (!(blockstate.getBlock() instanceof LilyPadBlock) && VoxelShapes.joinIsNotEmpty(blockstate.getCollisionShape(this.level, blockpos$mutable).move((double) l1, (double) k2, (double) i2), voxelshape, IBooleanFunction.AND)) {
-                                f += blockstate.getSlipperiness(this.level, blockpos$mutable, this);
+                            if (!(blockstate.getBlock() instanceof WaterlilyBlock) && Shapes.joinIsNotEmpty(blockstate.getCollisionShape(this.level, blockpos$mutable).move((double) l1, (double) k2, (double) i2), voxelshape, BooleanOp.AND)) {
+                                f += blockstate.getFriction(this.level, blockpos$mutable, this);
                                 ++k1;
                             }
                         }
@@ -613,16 +616,16 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     private boolean checkInWater() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.ceil(axisalignedbb.maxX);
-        int k = MathHelper.floor(axisalignedbb.minY);
-        int l = MathHelper.ceil(axisalignedbb.minY + 0.001D);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
+        AABB axisalignedbb = this.getBoundingBox();
+        int i = Mth.floor(axisalignedbb.minX);
+        int j = Mth.ceil(axisalignedbb.maxX);
+        int k = Mth.floor(axisalignedbb.minY);
+        int l = Mth.ceil(axisalignedbb.minY + 0.001D);
+        int i1 = Mth.floor(axisalignedbb.minZ);
+        int j1 = Mth.ceil(axisalignedbb.maxZ);
         boolean flag = false;
         this.waterLevel = Double.MIN_VALUE;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
@@ -646,16 +649,16 @@ public abstract class TNBoatEntity extends Entity {
      */
     @Nullable
     private TNBoatEntity.Status getUnderwaterStatus() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
+        AABB axisalignedbb = this.getBoundingBox();
         double d0 = axisalignedbb.maxY + 0.001D;
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.ceil(axisalignedbb.maxX);
-        int k = MathHelper.floor(axisalignedbb.maxY);
-        int l = MathHelper.ceil(d0);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
+        int i = Mth.floor(axisalignedbb.minX);
+        int j = Mth.ceil(axisalignedbb.maxX);
+        int k = Mth.floor(axisalignedbb.maxY);
+        int l = Mth.ceil(d0);
+        int i1 = Mth.floor(axisalignedbb.minZ);
+        int j1 = Mth.ceil(axisalignedbb.maxZ);
         boolean flag = false;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
@@ -704,16 +707,16 @@ public abstract class TNBoatEntity extends Entity {
                 this.momentum = 0.9F;
             } else if (this.status == TNBoatEntity.Status.ON_LAND) {
                 this.momentum = this.boatGlide;
-                if (this.getControllingPassenger() instanceof PlayerEntity) {
+                if (this.getControllingPassenger() instanceof Player) {
                     this.boatGlide /= 2.0F;
                 }
             }
 
-            Vector3d vector3d = this.getDeltaMovement();
+            Vec3 vector3d = this.getDeltaMovement();
             this.setDeltaMovement(vector3d.x * (double) this.momentum, vector3d.y + d1, vector3d.z * (double) this.momentum);
             this.deltaRotation *= this.momentum;
             if (d2 > 0.0D) {
-                Vector3d vector3d1 = this.getDeltaMovement();
+                Vec3 vector3d1 = this.getDeltaMovement();
                 this.setDeltaMovement(vector3d1.x, (vector3d1.y + d2 * 0.06153846016296973D) * 0.75D, vector3d1.z);
             }
         }
@@ -735,7 +738,7 @@ public abstract class TNBoatEntity extends Entity {
                 f += 0.005F;
             }
 
-            this.yRot += this.deltaRotation;
+            this.setYRot(this.getYRot() + this.deltaRotation);
             if (this.forwardInputDown) {
                 f += 0.04F;
             }
@@ -744,38 +747,38 @@ public abstract class TNBoatEntity extends Entity {
                 f -= 0.005F;
             }
 
-            this.setDeltaMovement(this.getDeltaMovement().add((double) (MathHelper.sin(-this.yRot * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.yRot * ((float) Math.PI / 180F)) * f)));
+            this.setDeltaMovement(this.getDeltaMovement().add((double) (Mth.sin(-this.getYRot() * ((float) Math.PI / 180F)) * f), 0.0D, (double) (Mth.cos(this.getYRot() * ((float) Math.PI / 180F)) * f)));
             this.setPaddleState(this.rightInputDown && !this.leftInputDown || this.forwardInputDown, this.leftInputDown && !this.rightInputDown || this.forwardInputDown);
         }
     }
 
     @Override
-    public void positionRider(Entity passenger) {
-        if (this.hasPassenger(passenger)) {
+    public void positionRider(Entity p_38379_) {
+        if (this.hasPassenger(p_38379_)) {
             float f = 0.0F;
-            float f1 = (float) ((this.removed ? (double) 0.01F : this.getPassengersRidingOffset()) + passenger.getMyRidingOffset());
+            float f1 = (float)((this.isRemoved() ? (double)0.01F : this.getPassengersRidingOffset()) + p_38379_.getMyRidingOffset());
             if (this.getPassengers().size() > 1) {
-                int i = this.getPassengers().indexOf(passenger);
+                int i = this.getPassengers().indexOf(p_38379_);
                 if (i == 0) {
                     f = 0.2F;
                 } else {
                     f = -0.6F;
                 }
 
-                if (passenger instanceof AnimalEntity) {
-                    f = (float) ((double) f + 0.2D);
+                if (p_38379_ instanceof Animal) {
+                    f = (float)((double)f + 0.2D);
                 }
             }
 
-            Vector3d vector3d = (new Vector3d((double) f, 0.0D, 0.0D)).yRot(-this.yRot * ((float) Math.PI / 180F) - ((float) Math.PI / 2F));
-            passenger.setPos(this.getX() + vector3d.x, this.getY() + (double) f1, this.getZ() + vector3d.z);
-            passenger.yRot += this.deltaRotation;
-            passenger.setYHeadRot(passenger.getYHeadRot() + this.deltaRotation);
-            this.clampRotation(passenger);
-            if (passenger instanceof AnimalEntity && this.getPassengers().size() > 1) {
-                int j = passenger.getId() % 2 == 0 ? 90 : 270;
-                passenger.setYBodyRot(((AnimalEntity) passenger).yBodyRot + (float) j);
-                passenger.setYHeadRot(passenger.getYHeadRot() + (float) j);
+            Vec3 vec3 = (new Vec3((double)f, 0.0D, 0.0D)).yRot(-this.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+            p_38379_.setPos(this.getX() + vec3.x, this.getY() + (double)f1, this.getZ() + vec3.z);
+            p_38379_.setYRot(p_38379_.getYRot() + this.deltaRotation);
+            p_38379_.setYHeadRot(p_38379_.getYHeadRot() + this.deltaRotation);
+            this.clampRotation(p_38379_);
+            if (p_38379_ instanceof Animal && this.getPassengers().size() > 1) {
+                int j = p_38379_.getId() % 2 == 0 ? 90 : 270;
+                p_38379_.setYBodyRot(((Animal)p_38379_).yBodyRot + (float)j);
+                p_38379_.setYHeadRot(p_38379_.getYHeadRot() + (float)j);
             }
 
         }
@@ -784,34 +787,21 @@ public abstract class TNBoatEntity extends Entity {
     /**
      * Applies this boat's yaw to the given entity. Used to update the orientation of its passenger.
      */
-    protected void clampRotation(Entity entityToUpdate) {
-        entityToUpdate.setYBodyRot(this.yRot);
-        float f = MathHelper.wrapDegrees(entityToUpdate.yRot - this.yRot);
-        float f1 = MathHelper.clamp(f, -105.0F, 105.0F);
-        entityToUpdate.yRotO += f1 - f;
-        entityToUpdate.yRot += f1 - f;
-        entityToUpdate.setYHeadRot(entityToUpdate.yRot);
-    }
-
-    /**
-     * Applies this entity's orientation (pitch/yaw) to another entity. Used to update passenger orientation.
-     */
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public void onPassengerTurned(Entity entityToUpdate) {
-        this.clampRotation(entityToUpdate);
-    }
-
-    @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
-        compound.putString("Type", this.getBoatType().getName());
+    protected void clampRotation(Entity p_38322_) {
+        p_38322_.setYBodyRot(this.getYRot());
+        float f = Mth.wrapDegrees(p_38322_.getYRot() - this.getYRot());
+        float f1 = Mth.clamp(f, -105.0F, 105.0F);
+        p_38322_.yRotO += f1 - f;
+        p_38322_.setYRot(p_38322_.getYRot() + f1 - f);
+        p_38322_.setYHeadRot(p_38322_.getYRot());
     }
 
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
+
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         if (compound.contains("Type", 8)) {
             this.setBoatType(TNBoatEntity.Type.getTypeFromString(compound.getString("Type")));
         }
@@ -819,17 +809,17 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     @Override
-    public ActionResultType interact(PlayerEntity player, Hand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         if (player.isSecondaryUseActive()) {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         } else if (this.outOfControlTicks < 60.0F) {
             if (!this.level.isClientSide) {
-                return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
+                return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
             } else {
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         } else {
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
     }
 
@@ -845,8 +835,8 @@ public abstract class TNBoatEntity extends Entity {
                     }
 
                     this.causeFallDamage(this.fallDistance, 1.0F);
-                    if (!this.level.isClientSide && !this.removed) {
-                        this.remove();
+                    if (!this.level.isClientSide && !this.isRemoved()) {
+                        this.kill();
                         if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
                             for (int i = 0; i < 3; ++i) {
                                 //this.entityDropItem(this.getBoatType().asPlank());
@@ -909,7 +899,7 @@ public abstract class TNBoatEntity extends Entity {
 
     @OnlyIn(Dist.CLIENT)
     public float getRockingAngle(float partialTicks) {
-        return MathHelper.lerp(partialTicks, this.prevRockingAngle, this.rockingAngle);
+        return Mth.lerp(partialTicks, this.prevRockingAngle, this.rockingAngle);
     }
 
     /**
@@ -952,13 +942,13 @@ public abstract class TNBoatEntity extends Entity {
 
     @OnlyIn(Dist.CLIENT)
     public void updateClientControls() {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-        this.updateInputs(player.input.left, player.input.right, player.input.up, player.input.down);
+        Player player = Minecraft.getInstance().player;
+        this.setInputs(player..left, player.input.right, player.input.up, player.input.down);
 
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void updateInputs(boolean leftInputDown, boolean rightInputDown, boolean forwardInputDown, boolean backInputDown) {
+    public void setInputs(boolean leftInputDown, boolean rightInputDown, boolean forwardInputDown, boolean backInputDown) {
         this.leftInputDown = leftInputDown;
         this.rightInputDown = rightInputDown;
         this.forwardInputDown = forwardInputDown;
@@ -1077,28 +1067,28 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     @Override
-    public Vector3d getDismountLocationForPassenger(final LivingEntity rider) {
-        for (final float angle : rider.getMainArm() == HandSide.RIGHT ? new float[]{90.0F, -90.0F} : new float[]{-90.0F, 90.0F}) {
-            final Vector3d pos = this.removeVehicle(getCollisionHorizontalEscapeVector(this.getBbWidth(), rider.getBbWidth(), this.yRot + angle), rider);
+    public Vec3 getDismountLocationForPassenger(final LivingEntity rider) {
+        for (final float angle : rider.getMainArm() == InteractionHand.MAIN_HAND ? new float[]{90.0F, -90.0F} : new float[]{-90.0F, 90.0F}) {
+            final Vec3 pos = this.removeVehicle(getCollisionHorizontalEscapeVector(this.getBbWidth(), rider.getBbWidth(), this.getYRot() + angle), rider);
             if (pos != null) return pos;
         }
         return this.position();
     }
 
-    private Vector3d removeVehicle(final Vector3d dir, LivingEntity rider) {
+    private Vec3 removeVehicle(final Vec3 dir, LivingEntity rider) {
         final double x = this.getX() + dir.x;
         final double y = this.getBoundingBox().minY;
         final double z = this.getZ() + dir.z;
         final double limit = this.getBoundingBox().maxY + 0.75D;
-        final BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        final BlockPos.MutableBlockPos blockPos = new BlockPos.MutableBlockPos();
         for (final Pose pose : rider.getDismountPoses()) {
             blockPos.set(x, y, z);
             while (blockPos.getY() < limit) {
                 final double ground = this.level.getBlockFloorHeight(blockPos);
                 if (blockPos.getY() + ground > limit) break;
-                if (TransportationHelper.isBlockFloorValid(ground)) {
-                    final Vector3d pos = new Vector3d(x, blockPos.getY() + ground, z);
-                    if (TransportationHelper.canDismountTo(this.level, rider, rider.getLocalBoundsForPose(pose).move(pos))) {
+                if (DismountHelper.isBlockFloorValid(ground)) {
+                    final Vec3 pos = new Vec3(x, blockPos.getY() + ground, z);
+                    if (DismountHelper.canDismountTo(this.level, rider, rider.getLocalBoundsForPose(pose).move(pos))) {
                         rider.setPose(pose);
                         return pos;
                     }
@@ -1109,12 +1099,12 @@ public abstract class TNBoatEntity extends Entity {
         return null;
     }
 
-    public PlayerEntity getDriver() {
+    public Player getDriver() {
         List<Entity> passengers = getPassengers();
         if (passengers.size() <= 0)
             return null;
-        if (passengers.get(0) instanceof PlayerEntity)
-            return (PlayerEntity) passengers.get(0);
+        if (passengers.get(0) instanceof Player)
+            return (Player) passengers.get(0);
         return null;
     }
 

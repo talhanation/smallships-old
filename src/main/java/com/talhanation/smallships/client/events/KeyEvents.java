@@ -1,15 +1,12 @@
 package com.talhanation.smallships.client.events;
 
 import com.talhanation.smallships.Main;
-import com.talhanation.smallships.entities.AbstractInventoryBoat;
-import com.talhanation.smallships.entities.AbstractSailBoat;
 import com.talhanation.smallships.entities.TNBoatEntity;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.*;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraft.client.Minecraft;
 
 public class KeyEvents {
 
