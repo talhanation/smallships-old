@@ -11,6 +11,8 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -21,6 +23,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.DismountHelper;
@@ -364,7 +367,7 @@ public abstract class TNBoatEntity extends Entity {
         super.tick();
         this.tickLerp();
         if (this.isControlledByLocalInstance()) {
-            if (this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof PlayerEntity)) {
+            if (this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof Player)) {
                 this.setPaddleState(false, false);
             }
 
@@ -400,14 +403,14 @@ public abstract class TNBoatEntity extends Entity {
         }
 
         this.checkInsideBlocks();
-        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate((double) 0.2F, (double) -0.01F, (double) 0.2F), EntityPredicate.isPushable(this));
+        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate((double) 0.2F, (double) -0.01F, (double) 0.2F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
-            boolean flag = !this.level.isClientSide && !(this.getControllingPassenger() instanceof PlayerEntity);
+            boolean flag = !this.level.isClientSide && !(this.getControllingPassenger() instanceof Player);
 
             for (int j = 0; j < list.size(); ++j) {
                 Entity entity = list.get(j);
                 if (!entity.hasPassenger(this)) {
-                    if (flag && this.getPassengers().size() < 2 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
+                    if (flag && this.getPassengers().size() < 2 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterAnimal) && !(entity instanceof Player)) {
                         entity.startRiding(this);
                     } else {
                         this.push(entity);
@@ -466,7 +469,8 @@ public abstract class TNBoatEntity extends Entity {
                         this.setDeltaMovement(vector3d.add(0.0D, -0.7D, 0.0D));
                         this.ejectPassengers();
                     } else {
-                        this.setDeltaMovement(vector3d.x, this.hasPassenger(Player.class) ? 2.7D : 0.6D, vector3d.z);
+                        this.setDeltaMovement(vector3d.x, this.hasPassenger((p_150274_) -> {
+                            return p_150274_ instanceof Player;}) ? 2.7D : 0.6D, vector3d.z);
                     }
                 }
 
@@ -834,7 +838,7 @@ public abstract class TNBoatEntity extends Entity {
                         return;
                     }
 
-                    this.causeFallDamage(this.fallDistance, 1.0F);
+                    this.causeFallDamage(this.fallDistance, 1.0F, DamageSource.FALL);
                     if (!this.level.isClientSide && !this.isRemoved()) {
                         this.kill();
                         if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
@@ -943,7 +947,7 @@ public abstract class TNBoatEntity extends Entity {
     @OnlyIn(Dist.CLIENT)
     public void updateClientControls() {
         Player player = Minecraft.getInstance().player;
-        this.setInputs(player..left, player.input.right, player.input.up, player.input.down);
+        this.setInputs(player.input.left, player.input.right, player.input.up, player.input.down);
 
     }
 
@@ -956,8 +960,8 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
-        return new SSpawnObjectPacket(this);
+    public Packet<?> getAddEntityPacket() {
+        return new ClientboundAddEntityPacket(this);
     }
 
     public boolean canSwim() {
@@ -1068,7 +1072,8 @@ public abstract class TNBoatEntity extends Entity {
 
     @Override
     public Vec3 getDismountLocationForPassenger(final LivingEntity rider) {
-        for (final float angle : rider.getMainArm() == InteractionHand.MAIN_HAND ? new float[]{90.0F, -90.0F} : new float[]{-90.0F, 90.0F}) {
+        rider.getMainArm();
+        for (final float angle : new float[]{-90.0F, 90.0F}) {
             final Vec3 pos = this.removeVehicle(getCollisionHorizontalEscapeVector(this.getBbWidth(), rider.getBbWidth(), this.getYRot() + angle), rider);
             if (pos != null) return pos;
         }

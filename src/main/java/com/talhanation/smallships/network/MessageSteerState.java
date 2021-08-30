@@ -1,10 +1,10 @@
 package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.entities.AbstractSailBoat;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class MessageSteerState implements Message<MessageSteerState> {
 
@@ -33,13 +33,13 @@ public class MessageSteerState implements Message<MessageSteerState> {
         }
     }
 
-    public MessageSteerState fromBytes(PacketBuffer buf) {
+    public MessageSteerState fromBytes(FriendlyByteBuf buf) {
         this.left = buf.readBoolean();
         this.right = buf.readBoolean();
         return this;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeBoolean(this.left);
         buf.writeBoolean(this.right);
     }

@@ -1,11 +1,11 @@
 package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.client.events.PlayerEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.UUID;
 
@@ -25,7 +25,7 @@ public class MessageDismount implements Message<MessageDismount> {
     }
 
     public void executeServerSide(NetworkEvent.Context context) {
-        ServerPlayerEntity player = context.getSender();
+        ServerPlayer player = context.getSender();
         player.level.getEntitiesOfClass(Entity.class, player.getBoundingBox()
                 .inflate(16.0D), v -> v
                 .getUUID()
@@ -37,12 +37,12 @@ public class MessageDismount implements Message<MessageDismount> {
 
     }
 
-    public MessageDismount fromBytes(PacketBuffer buf) {
+    public MessageDismount fromBytes(FriendlyByteBuf buf) {
         this.passenger = buf.readUUID();
         return this;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeUUID(this.passenger);
     }
 

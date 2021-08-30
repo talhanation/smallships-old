@@ -9,8 +9,8 @@ import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.network.*;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,18 +24,18 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.fml.network.NetworkRegistry;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.NetworkRegistry;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 
 @Mod("smallships")
 public class Main {
     public static final String MOD_ID = "smallships";
     public static SimpleChannel SIMPLE_CHANNEL;
-    public static KeyBinding SAIL_KEY;
-    public static KeyBinding SAIL_L_KEY;
-    public static KeyBinding SAIL_H_KEY;
-    public static KeyBinding INV_KEY;
-    public static KeyBinding DISMOUNT_KEY;
+    public static KeyMapping SAIL_KEY;
+    public static KeyMapping SAIL_L_KEY;
+    public static KeyMapping SAIL_H_KEY;
+    public static KeyMapping INV_KEY;
+    public static KeyMapping DISMOUNT_KEY;
 
     public Main() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SmallShipsConfig.CONFIG);

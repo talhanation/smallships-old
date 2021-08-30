@@ -1,10 +1,10 @@
 package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.entities.AbstractSailBoat;
-import net.minecraft.entity.Entity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class MessageIsForward implements Message<MessageIsForward> {
 
@@ -32,12 +32,12 @@ public class MessageIsForward implements Message<MessageIsForward> {
         }
     }
 
-    public MessageIsForward fromBytes(PacketBuffer buf) {
+    public MessageIsForward fromBytes(FriendlyByteBuf buf) {
         this.forward = buf.readBoolean();
         return this;
     }
 
-    public void toBytes(PacketBuffer buf) {
+    public void toBytes(FriendlyByteBuf buf) {
         buf.writeBoolean(this.forward);
     }
 

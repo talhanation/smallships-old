@@ -1,11 +1,11 @@
 package com.talhanation.smallships.network;
 
 import com.talhanation.smallships.entities.AbstractInventoryBoat;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 public class MessageOpenInv implements Message<MessageOpenInv> {
 
@@ -13,7 +13,7 @@ public class MessageOpenInv implements Message<MessageOpenInv> {
 
     }
 
-    public MessageOpenInv(PlayerEntity player){
+    public MessageOpenInv(Player player){
 
     }
 
@@ -29,12 +29,12 @@ public class MessageOpenInv implements Message<MessageOpenInv> {
     }
 
 
-    public MessageOpenInv fromBytes(PacketBuffer paramPacketBuffer) {
+    public MessageOpenInv fromBytes(FriendlyByteBuf paramPacketBuffer) {
         return this;
     }
 
 
-    public void toBytes(PacketBuffer paramPacketBuffer) {
+    public void toBytes(FriendlyByteBuf paramPacketBuffer) {
 
     }
 }

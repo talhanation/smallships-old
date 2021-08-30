@@ -2,26 +2,32 @@ package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.network.MessageOpenInv;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LilyPadBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.npc.InventoryCarrier;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.WaterlilyBlock;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.util.Mth.*;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -31,7 +37,7 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
     private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
     public ItemStackHandler inventory = initInventory();
 
-    public AbstractInventoryBoat(EntityType<? extends TNBoatEntity> type, World world) {
+    public AbstractInventoryBoat(EntityType<? extends TNBoatEntity> type, Level world) {
         super(type, world);
     }
     ////////////////////////////////////TICK////////////////////////////////////
@@ -74,7 +80,7 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
     @Override
-    public void onInvPressed(PlayerEntity player){
+    public void onInvPressed(Player player){
         Main.SIMPLE_CHANNEL.sendToServer(new MessageOpenInv(player));
     }
 
@@ -93,7 +99,7 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
 
-    public void openContainer(PlayerEntity player){
+    public void openContainer(Player player){
 
     }
 
@@ -116,11 +122,11 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
     }
 
     private void breakLily() {
-        AxisAlignedBB boundingBox = getBoundingBox();
+        AABB boundingBox = getBoundingBox();
         double offset = 0.75D;
         BlockPos start = new BlockPos(boundingBox.minX - offset, boundingBox.minY - offset, boundingBox.minZ - offset);
         BlockPos end = new BlockPos(boundingBox.maxX + offset, boundingBox.maxY + offset, boundingBox.maxZ + offset);
-        BlockPos.Mutable pos = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         boolean hasBroken = false;
         if (level.hasChunksAt(start, end)) {
             for (int i = start.getX(); i <= end.getX(); ++i) {
@@ -128,7 +134,7 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
                     for (int k = start.getZ(); k <= end.getZ(); ++k) {
                         pos.set(i, j, k);
                         BlockState blockstate = level.getBlockState(pos);
-                        if (blockstate.getBlock() instanceof LilyPadBlock) {
+                        if (blockstate.getBlock() instanceof WaterlilyBlock) {
                             level.destroyBlock(pos, true);
                             hasBroken = true;
                         }
@@ -137,14 +143,14 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
             }
         }
         if (hasBroken) {
-            level.playSound(null, getX(), getY(), getZ(), SoundEvents.CROP_BREAK, SoundCategory.BLOCKS, 1F, 0.9F + 0.2F * random.nextFloat());
+            level.playSound(null, getX(), getY(), getZ(), SoundEvents.CROP_BREAK, SoundSource.BLOCKS, 1F, 0.9F + 0.2F * random.nextFloat());
         }
     }
 
     protected abstract ItemStackHandler initInventory();
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket((Entity) this);
     }
 }
