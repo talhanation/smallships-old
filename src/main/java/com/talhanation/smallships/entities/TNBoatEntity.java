@@ -117,11 +117,6 @@ public abstract class TNBoatEntity extends Entity {
     }
 
     @Override
-    protected boolean isMovementNoisy() {
-        return false;
-    }
-
-    @Override
     protected void defineSynchedData() {
         this.entityData.define(TIME_SINCE_HIT, 0);
         this.entityData.define(FORWARD_DIRECTION, 1);

@@ -1,6 +1,6 @@
 package com.talhanation.smallships.items;
 
-import net.minecraft.item.Item;
+import net.minecraft.world.item.Item;
 
 public class SailItem extends Item {
 
