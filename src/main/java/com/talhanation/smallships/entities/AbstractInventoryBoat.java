@@ -2,43 +2,32 @@ package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.network.MessageOpenInv;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.protocol.Packet;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.npc.InventoryCarrier;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.WaterlilyBlock;
-import net.minecraft.core.Direction;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.util.Mth.*;
-import net.minecraft.world.level.GameRules;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
-public abstract class AbstractInventoryBoat extends TNBoatEntity {
-    private LazyOptional<ItemStackHandler> itemHandler = LazyOptional.of(() -> this.inventory);
-    public ItemStackHandler inventory = initInventory();
+public abstract class AbstractInventoryBoat extends TNBoatEntity{
+    protected Container inventory;
+
 
     public AbstractInventoryBoat(EntityType<? extends TNBoatEntity> type, Level world) {
         super(type, world);
+        inventory = new SimpleContainer(54);
     }
     ////////////////////////////////////TICK////////////////////////////////////
 
@@ -48,34 +37,22 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
         breakLily();
     }
 
-    ////////////////////////////////////REGISTER////////////////////////////////////
-
-    @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-    }
-
     ////////////////////////////////////GET////////////////////////////////////
 
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (isAlive() && capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY && this.itemHandler != null)
-            return this.itemHandler.cast();
-        return super.getCapability(capability, facing);
+    public Container getInventory() {
+        return inventory;
     }
-
     ////////////////////////////////////ADDITIONAL////////////////////////////////////
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.inventory.deserializeNBT(compound.getCompound("Items"));
+        readInventory(compound, "Inventory", inventory);
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
-        super.addAdditionalSaveData(compound);
-        compound.put("Items", this.inventory.serializeNBT());
+    protected void addAdditionalSaveData(CompoundTag compound) {
+        saveInventory(compound, "Inventory", inventory);
     }
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
@@ -85,41 +62,18 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
     }
 
     public void onDestroyed(DamageSource source, boolean byCreativePlayer) {
-        if (this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
-            if (!byCreativePlayer)
-                this.spawnAtLocation(this.getItemBoat());
-            onDestroyedAndDoDrops(source);
-        }
-    }
-
-    public void onDestroyedAndDoDrops(DamageSource source) {
-        for (int i = 0; i < this.inventory.getSlots(); i++)
-            InventoryHelper.dropItemStack(this.level, getX(), getY(), getZ(), this.inventory.getStackInSlot(i));
+        Containers.dropContents(level, blockPosition(), inventory);
+        inventory.clearContent();
     }
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
+
+
 
     public void openContainer(Player player){
 
     }
 
-    @Override
-    public boolean setSlot(int inventorySlot, ItemStack itemStackIn) {
-        if (inventorySlot >= 0 && inventorySlot < this.inventory.getSlots()) {
-            this.inventory.setStackInSlot(inventorySlot, itemStackIn);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void remove(boolean keepData) {
-        super.remove(keepData);
-        if (!keepData && this.itemHandler != null) {
-            this.itemHandler.invalidate();
-            this.itemHandler = null;
-        }
-    }
 
     private void breakLily() {
         AABB boundingBox = getBoundingBox();
@@ -147,10 +101,37 @@ public abstract class AbstractInventoryBoat extends TNBoatEntity {
         }
     }
 
-    protected abstract ItemStackHandler initInventory();
 
-    @Override
-    public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket((Entity) this);
+    public static void saveInventory(CompoundTag compound, String name, Container inv) {
+        ListTag tagList = new ListTag();
+
+        for (int i = 0; i < inv.getContainerSize(); i++) {
+            if (!inv.getItem(i).isEmpty()) {
+                CompoundTag slot = new CompoundTag();
+                slot.putInt("Slot", i);
+                inv.getItem(i).save(slot);
+                tagList.add(slot);
+            }
+        }
+
+        compound.put(name, tagList);
     }
+
+    public static void readInventory(CompoundTag compound, String name, Container inv) {
+        if (!compound.contains(name)) {
+            return;
+        }
+
+        ListTag tagList = compound.getList(name, 10);
+
+        for (int i = 0; i < tagList.size(); i++) {
+            CompoundTag slot = tagList.getCompound(i);
+            int j = slot.getInt("Slot");
+
+            if (j >= 0 && j < inv.getContainerSize()) {
+                inv.setItem(j, ItemStack.of(slot));
+            }
+        }
+    }
+
 }

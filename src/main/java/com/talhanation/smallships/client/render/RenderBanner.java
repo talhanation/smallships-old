@@ -1,30 +1,31 @@
 package com.talhanation.smallships.client.render;
-
-
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Vector3f;
 import com.talhanation.smallships.entities.AbstractBannerUser;
 import com.talhanation.smallships.init.ModEntityTypes;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.tileentity.BannerTileEntityRenderer;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.BannerItem;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.BannerPattern;
-import net.minecraft.tileentity.BannerTileEntity;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.BannerItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.BannerBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BannerBlockEntity;
+import net.minecraft.world.level.block.entity.BannerPattern;
 
 import java.util.List;
 
 public class RenderBanner {
-    private static final BannerTileEntity BANNER_TE = new BannerTileEntity();
+    private static final BannerBlockEntity BANNER_TE = new BannerBlockEntity(BlockPos.ZERO, Blocks.WHITE_BANNER.defaultBlockState());
 
-    public static void renderBanner(AbstractBannerUser abstractBannerUser, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, ItemStack banner, int packedLight, ModelRenderer modelRenderer) {
+    public static void renderBanner(AbstractBannerUser abstractBannerUser, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, ItemStack banner, int packedLight, ModelPart modelRenderer) {
 
         if (!banner.isEmpty()) {
             matrixStackIn.pushPose();
@@ -65,12 +66,12 @@ public class RenderBanner {
 
             //banner waveing here
             float bannerWaveAngle = abstractBannerUser.getBannerWaveAngle(partialTicks);
-            if (!MathHelper.equal(bannerWaveAngle, 0F))
+            if (!Mth.equal(bannerWaveAngle, 0F))
                 matrixStackIn.mulPose(Vector3f.XP.rotationDegrees(bannerWaveAngle));
 
             // getting banner pattern here
             List<Pair<BannerPattern, DyeColor>> list = BANNER_TE.getPatterns();
-            BannerTileEntityRenderer.renderPatterns(matrixStackIn, bufferIn, packedLight, OverlayTexture.NO_OVERLAY, modelRenderer, ModelBakery.BANNER_BASE, true, list);
+            BannerRenderer.renderPatterns(matrixStackIn, bufferIn, packedLight, OverlayTexture.NO_OVERLAY, modelRenderer, ModelBakery.BANNER_BASE, true, list);
             matrixStackIn.popPose();
         }
     }

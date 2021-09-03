@@ -1,32 +1,35 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.container.AbstractShipContainer;
 import com.talhanation.smallships.entities.sailboats.AbstractBriggEntity;
 import com.talhanation.smallships.init.ModEntityTypes;
-import com.talhanation.smallships.inventory.BriggContainer;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.util.BriggItemStackHandler;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.BannerItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShearsItem;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.BannerItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.FMLPlayMessages;
+import net.minecraftforge.fmllegacy.network.FMLPlayMessages;
 import net.minecraftforge.items.ItemStackHandler;
+
+import javax.annotation.Nullable;
+import javax.xml.crypto.Data;
 
 public class BriggEntity extends AbstractBriggEntity {
 
@@ -35,9 +38,9 @@ public class BriggEntity extends AbstractBriggEntity {
     public boolean Cargo_2;
     public boolean Cargo_3;
 
-   private static final DataParameter<Integer> CARGO = EntityDataManager.defineId(AbstractBriggEntity.class, DataSerializers.INT);
+   private static final EntityDataAccessor<Integer> CARGO = SynchedEntityData.defineId(AbstractBriggEntity.class, EntityDataSerializers.INT);
 
-    public BriggEntity(EntityType<? extends AbstractBriggEntity> entityType, World worldIn) {
+    public BriggEntity(EntityType<? extends AbstractBriggEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
@@ -82,58 +85,58 @@ public class BriggEntity extends AbstractBriggEntity {
         };
     }
 
-    public BriggEntity(World worldIn, double x, double y, double z) {
+    public BriggEntity(Level worldIn, double x, double y, double z) {
         this(ModEntityTypes.BRIGG_ENTITY.get(), worldIn);
         setPos(x, y, z);
-        setDeltaMovement(Vector3d.ZERO);
+        setDeltaMovement(Vec3.ZERO);
         this.xo = x;
         this.yo = y;
         this.zo = z;
     }
 
-    public BriggEntity(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {
+    public BriggEntity(FMLPlayMessages.SpawnEntity spawnEntity, Level worldIn) {
         this(ModEntityTypes.BRIGG_ENTITY.get(), worldIn);
     }
 
     @Override
-    public ActionResultType interact(PlayerEntity player, Hand hand) {
+    public InteractionResult interact(Player player, InteractionHand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
 
         if (itemInHand.getItem() instanceof BannerItem){
            onInteractionWithBanner(itemInHand,player);
-           return ActionResultType.SUCCESS;
+           return InteractionResult.SUCCESS;
         }
 
         else if (itemInHand.getItem() instanceof ShearsItem){
             if (this.getHasBanner()){
                 onInteractionWithShears(player);
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
         }
 
         else if (player.isSecondaryUseActive()) {
-            if (this.isVehicle() && !(getControllingPassenger() instanceof PlayerEntity)){
+            if (this.isVehicle() && !(getControllingPassenger() instanceof Player)){
                     this.ejectPassengers();
                     this.passengerwaittime = 200;
             }
             else {
-                if (!(getControllingPassenger() instanceof PlayerEntity) ) {
+                if (!(getControllingPassenger() instanceof Player) ) {
                     openContainer(player);
-                } return ActionResultType.sidedSuccess(this.level.isClientSide);
-            } return ActionResultType.PASS;
+                } return InteractionResult.sidedSuccess(this.level.isClientSide);
+            } return InteractionResult.PASS;
         }
 
         else if (this.outOfControlTicks < 60.0F) {
             if (!this.level.isClientSide) {
-                return player.startRiding(this) ? ActionResultType.CONSUME : ActionResultType.PASS;
+                return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
 
             } else {
-                return ActionResultType.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
         else
-            return ActionResultType.PASS;
+            return InteractionResult.PASS;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -344,11 +347,11 @@ public class BriggEntity extends AbstractBriggEntity {
                 }
             }
             f = f - 0.5;
-        if (passenger instanceof AnimalEntity)
+        if (passenger instanceof Animal)
             d = (float)(d -0.15D);
-        Vector3d vector3d = (new Vector3d((double)f, 0.0D, 0.0D + d)).yRot(-this.yRot * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
+        Vec3 vector3d = (new Vec3((double)f, 0.0D, 0.0D + d)).yRot(-this.getYRot() * ((float)Math.PI / 180F) - ((float)Math.PI / 2F));
         passenger.setPos(this.getX() + vector3d.x, this.getY() + (double)f1, + this.getZ() + vector3d.z);
-        passenger.yRot += this.deltaRotation;
+        passenger.setYRot(passenger.getYRot() + this.deltaRotation);
         passenger.setYHeadRot(passenger.getYHeadRot() + this.deltaRotation);
         clampRotation(passenger);
         }
@@ -360,8 +363,19 @@ public class BriggEntity extends AbstractBriggEntity {
     }
 
     @Override
-    public void openContainer(PlayerEntity player) {
-            player.openMenu(new SimpleNamedContainerProvider((id, inv, plyr) -> new BriggContainer(id, inv, this), getDisplayName()));
+    public void openContainer(Player player) {
+            player.openMenu(new MenuProvider(){
+                @Override
+                public Component getDisplayName() {
+                    return this.getDisplayName();
+                }
+
+                @Nullable
+                @Override
+                public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player player) {
+                    return new AbstractShipContainer(i,BriggEntity.this, playerInventory);
+                }
+            });
     }
 
     @Override
@@ -371,13 +385,13 @@ public class BriggEntity extends AbstractBriggEntity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundNBT compound) {
+    protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
         this.entityData.set(CARGO, compound.getInt("Cargo"));
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundNBT compound) {
+    protected void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         compound.putInt("Cargo", this.entityData.get(CARGO));
     }

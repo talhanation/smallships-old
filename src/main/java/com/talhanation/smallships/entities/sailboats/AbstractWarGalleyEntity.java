@@ -4,25 +4,25 @@ import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.entities.AbstractBannerUser;
 import com.talhanation.smallships.network.MessagePaddleState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.passive.WaterMobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
@@ -46,7 +46,7 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
     public int passengerwaittime;
     public float passengerfaktor;
 
-    public AbstractWarGalleyEntity(EntityType<? extends AbstractWarGalleyEntity> entityType, World worldIn) {
+    public AbstractWarGalleyEntity(EntityType<? extends AbstractWarGalleyEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
@@ -78,7 +78,7 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
         super.tick();
         this.tickLerp();
         if (this.isControlledByLocalInstance()) {
-            if (this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof PlayerEntity)) {
+            if (this.getPassengers().isEmpty() || !(this.getPassengers().get(0) instanceof Player)) {
                 this.setPaddleState(false, false);
             }
             this.updateMotion();
@@ -89,7 +89,7 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
 
             this.move(MoverType.SELF, this.getDeltaMovement());
         } else {
-            this.setDeltaMovement(Vector3d.ZERO);
+            this.setDeltaMovement(Vec3.ZERO);
         }
 
 
@@ -98,15 +98,15 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
                 if (!this.isSilent() && (double)(this.paddlePositions[i] % ((float)Math.PI * 2F)) <= (double)((float)Math.PI / 4F) && ((double)this.paddlePositions[i] + (double)((float)Math.PI / 8F)) % (double)((float)Math.PI * 2F) >= (double)((float)Math.PI / 4F)) {
                     SoundEvent soundevent = this.getPaddleSound();
                     if (soundevent != null) {
-                        Vector3d vector3d = this.getViewVector(1.0F);
+                        Vec3 vector3d = this.getViewVector(1.0F);
                         double d0 = i == 1 ? -vector3d.z : vector3d.z;
                         double d1 = i == 1 ? vector3d.x : -vector3d.x;
-                        this.level.playSound((PlayerEntity)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.8F + 0.4F * this.random.nextFloat());
-                        this.level.playSound((PlayerEntity)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.2F + 0.4F * this.random.nextFloat());
-                        this.level.playSound((PlayerEntity)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.3F + 0.4F * this.random.nextFloat());
-                        this.level.playSound((PlayerEntity)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.6F + 0.4F * this.random.nextFloat());
-                        this.level.playSound((PlayerEntity)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.8F + 0.4F * this.random.nextFloat());
-                        this.level.playSound((PlayerEntity)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.2F + 0.4F * this.random.nextFloat());
+                        this.level.playSound((Player)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.8F + 0.4F * this.random.nextFloat());
+                        this.level.playSound((Player)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.2F + 0.4F * this.random.nextFloat());
+                        this.level.playSound((Player)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.3F + 0.4F * this.random.nextFloat());
+                        this.level.playSound((Player)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.6F + 0.4F * this.random.nextFloat());
+                        this.level.playSound((Player)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.8F + 0.4F * this.random.nextFloat());
+                        this.level.playSound((Player)null, this.getX() + d0, this.getY(), this.getZ() + d1, soundevent, this.getSoundSource(), 1.0F, 0.2F + 0.4F * this.random.nextFloat());
                     }
                 }
 
@@ -116,19 +116,19 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
             }
         }
 
-        if (getSailState() != 0 && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get()) {
+        if (getSailState() != 0 && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof Player && SmallShipsConfig.PlaySwimmSound.get()) {
             this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_SWIM, this.getSoundSource(), 0.05F, 0.8F + 0.4F * this.random.nextFloat());
 
         }
         this.checkInsideBlocks();
-        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate((double) 0.2F, (double) -0.01F, (double) 0.2F), EntityPredicates.pushableBy(this));
+        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate((double) 0.2F, (double) -0.01F, (double) 0.2F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
-            boolean flag = !this.level.isClientSide && !(this.getControllingPassenger() instanceof PlayerEntity);
+            boolean flag = !this.level.isClientSide && !(this.getControllingPassenger() instanceof Player);
 
             for (int j = 0; j < list.size(); ++j) {
                 Entity entity = list.get(j);
                 if (!entity.hasPassenger(this)) {
-                    if (flag && this.getPassengers().size() < 16 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
+                    if (flag && this.getPassengers().size() < 16 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterAnimal) && !(entity instanceof Player)) {
                         if (passengerwaittime < 0) {
                             entity.startRiding(this);
                         }
@@ -144,11 +144,11 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
     @Override
     public void Watersplash(){
         super.Watersplash();
-        Vector3d vector3d = this.getViewVector(0.0F);
-        float f0 = MathHelper.cos(this.yRot * ((float)Math.PI / 180F)) * 1.2F;
-        float f1 = MathHelper.sin(this.yRot * ((float)Math.PI / 180F)) * 1.2F;
-        float f1_1 = MathHelper.sin(this.yRot * ((float)Math.PI / 180F)) * 1.8F;
-        float f0_1 = MathHelper.cos(this.yRot * ((float)Math.PI / 180F)) * 1.8F;
+        Vec3 vector3d = this.getViewVector(0.0F);
+        float f0 = Mth.cos(this.getYRot() * ((float)Math.PI / 180F)) * 1.2F;
+        float f1 = Mth.sin(this.getYRot() * ((float)Math.PI / 180F)) * 1.2F;
+        float f1_1 = Mth.sin(this.getYRot() * ((float)Math.PI / 180F)) * 1.8F;
+        float f0_1 = Mth.cos(this.getYRot() * ((float)Math.PI / 180F)) * 1.8F;
 
         float f2 =  4.0F - this.random.nextFloat() * 0.7F;
         float f2_ =  -3.3F - this.random.nextFloat() * 0.7F;
@@ -227,15 +227,15 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
                 this.momentum = 0.9F;
             } else if (this.status == Status.ON_LAND) {
                 this.momentum = this.boatGlide * 0.001F;
-                if (getControllingPassenger() instanceof PlayerEntity)
+                if (getControllingPassenger() instanceof Player)
                     this.boatGlide /= 1.0F;
             }
-            Vector3d vec3d = getDeltaMovement();
+            Vec3 vec3d = getDeltaMovement();
             setDeltaMovement(vec3d.x * (this.momentum - this.passengerfaktor), vec3d.y + d1, vec3d.z * (this.momentum - this.passengerfaktor));
             this.deltaRotation *= (this.momentum - this.passengerfaktor) * WarGalleyTurnFactor;
 
             if (d2 > 0.0D) {
-                Vector3d vec3d1 = getDeltaMovement();
+                Vec3 vec3d1 = getDeltaMovement();
                 setDeltaMovement(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
             }
         }
@@ -255,7 +255,7 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
             if (this.rightInputDown != this.leftInputDown && !this.forwardInputDown && !this.backInputDown) {
                 f += 0.005F;
             }
-            this.yRot += this.deltaRotation;
+            this.setYRot(this.getYRot() + this.deltaRotation);
 
             if (sailstate != 0) {
                 switch (sailstate){
@@ -295,29 +295,29 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
                 f += (0.04F * WarGalleySpeedFactor); // speed
             }
 
-            this.setDeltaMovement(this.getDeltaMovement().add((double)(MathHelper.sin(-this.yRot * ((float)Math.PI / 180F)) * f), 0.0D, (double)(MathHelper.cos(this.yRot * ((float)Math.PI / 180F)) * f)));
+            this.setDeltaMovement(this.getDeltaMovement().add((double)(Mth.sin(-this.getYRot() * ((float)Math.PI / 180F)) * f), 0.0D, (double)(Mth.cos(this.getYRot() * ((float)Math.PI / 180F)) * f)));
             this.setPaddleState(this.rightInputDown && !this.leftInputDown || this.forwardInputDown, this.leftInputDown && !this.rightInputDown || this.forwardInputDown);
             this.setIsForward(this.forwardInputDown);
         }
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket((Entity) this);
     }
 
     @Nullable
     private Status getUnderwaterStatus() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
+        AABB axisalignedbb = this.getBoundingBox();
         double d0 = axisalignedbb.maxY + 0.001D;
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.ceil(axisalignedbb.maxX);
-        int k = MathHelper.floor(axisalignedbb.maxY);
-        int l = MathHelper.ceil(d0);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
+        int i = Mth.floor(axisalignedbb.minX);
+        int j = Mth.ceil(axisalignedbb.maxX);
+        int k = Mth.floor(axisalignedbb.maxY);
+        int l = Mth.ceil(d0);
+        int i1 = Mth.floor(axisalignedbb.minZ);
+        int j1 = Mth.ceil(axisalignedbb.maxZ);
         boolean flag = false;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
@@ -339,16 +339,16 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
     }
 
     private boolean checkInWater() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.ceil(axisalignedbb.maxX);
-        int k = MathHelper.floor(axisalignedbb.minY);
-        int l = MathHelper.ceil(axisalignedbb.minY + 0.001D);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
+        AABB axisalignedbb = this.getBoundingBox();
+        int i = Mth.floor(axisalignedbb.minX);
+        int j = Mth.ceil(axisalignedbb.maxX);
+        int k = Mth.floor(axisalignedbb.minY);
+        int l = Mth.ceil(axisalignedbb.minY + 0.001D);
+        int i1 = Mth.floor(axisalignedbb.minZ);
+        int j1 = Mth.ceil(axisalignedbb.maxZ);
         boolean flag = false;
         this.waterLevel = Double.MIN_VALUE;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
@@ -390,11 +390,11 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
             setForwardDirection(-getForwardDirection());
             setTimeSinceHit(3);
             setDamageTaken(getDamageTaken() + amount * 10.0F);
-            boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
+            boolean flag = (source.getEntity() instanceof Player && ((Player) source.getEntity()).getAbilities().instabuild);
             if (flag || getDamageTaken() > WarGalleyHealth) {
                 onDestroyed(source, flag);
                 dropBanner();
-                remove();
+                remove(false);
             }
             return true;
         }
@@ -408,7 +408,7 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
 
     @OnlyIn(Dist.CLIENT)
     public float getRowingTime(int side, float limbSwing) {
-        return this.getPaddleState(side) ? (float)MathHelper.clampedLerp((double)this.paddlePositions[side] - (double)((float)Math.PI / 8F), (double)this.paddlePositions[side], (double)limbSwing) : 0.0F;
+        return this.getPaddleState(side) ? (float)Mth.clampedLerp((double)this.paddlePositions[side] - (double)((float)Math.PI / 8F), (double)this.paddlePositions[side], (double)limbSwing) : 0.0F;
     }
 
     public void setPaddleState(boolean left, boolean right) {
@@ -432,17 +432,16 @@ public abstract class AbstractWarGalleyEntity extends AbstractBannerUser {
     }
 
     @Override
-    public Vector3d getDismountLocationForPassenger(final LivingEntity rider) {
+    public Vec3 getDismountLocationForPassenger(final LivingEntity rider) {
        return super.getDismountLocationForPassenger(rider);
     }
 
     @Override
-    public PlayerEntity getDriver() {
+    public Player getDriver() {
         return super.getDriver();
     }
 
     @OnlyIn(Dist.CLIENT)
-    @Override
     public void updateInputs(boolean leftInputDown, boolean rightInputDown, boolean forwardInputDown, boolean backInputDown) {
         this.leftInputDown = leftInputDown;
         this.rightInputDown = rightInputDown;

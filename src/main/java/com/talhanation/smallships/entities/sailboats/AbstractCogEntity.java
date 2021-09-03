@@ -2,27 +2,25 @@ package com.talhanation.smallships.entities.sailboats;
 
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.entities.AbstractBannerUser;
-import com.talhanation.smallships.entities.AbstractSailBoat;
 import com.talhanation.smallships.entities.TNBoatEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.passive.WaterMobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -43,7 +41,7 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
     public int passengerwaittime;
     public float passengerfaktor;
 
-    public AbstractCogEntity(EntityType<? extends AbstractCogEntity> entityType, World worldIn) {
+    public AbstractCogEntity(EntityType<? extends AbstractCogEntity> entityType, Level worldIn) {
         super(entityType, worldIn);
     }
 
@@ -80,23 +78,23 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
             }
             this.move(MoverType.SELF, this.getDeltaMovement());
         } else {
-            this.setDeltaMovement(Vector3d.ZERO);
+            this.setDeltaMovement(Vec3.ZERO);
         }
 
-        if (getSailState() != 0 && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof PlayerEntity && SmallShipsConfig.PlaySwimmSound.get() ) {
+        if (getSailState() != 0 && this.getBoatStatus().equals(Status.IN_WATER) && this.getControllingPassenger() instanceof Player && SmallShipsConfig.PlaySwimmSound.get() ) {
             this.level.playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_SWIM, this.getSoundSource(), 0.05F, 0.8F + 0.4F * this.random.nextFloat());
 
         }
 
         this.checkInsideBlocks();
-        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate((double) 0.2F, (double) -0.01F, (double) 0.2F), EntityPredicates.pushableBy(this));
+        List<Entity> list = this.level.getEntities(this, this.getBoundingBox().inflate((double) 0.2F, (double) -0.01F, (double) 0.2F), EntitySelector.pushableBy(this));
         if (!list.isEmpty()) {
-            boolean flag = !this.level.isClientSide && !(this.getControllingPassenger() instanceof PlayerEntity);
+            boolean flag = !this.level.isClientSide && !(this.getControllingPassenger() instanceof Player);
 
             for (int j = 0; j < list.size(); ++j) {
                 Entity entity = list.get(j);
                 if (!entity.hasPassenger(this)) {
-                    if (flag && this.getPassengers().size() < 5 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterMobEntity) && !(entity instanceof PlayerEntity)) {
+                    if (flag && this.getPassengers().size() < 5 && !entity.isPassenger() && entity.getBbWidth() < this.getBbWidth() && entity instanceof LivingEntity && !(entity instanceof WaterAnimal) && !(entity instanceof Player)) {
                         if (passengerwaittime < 0) {
                             entity.startRiding(this);
                         }
@@ -115,11 +113,11 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
     @Override
     public void Watersplash(){
         super.Watersplash();
-        Vector3d vector3d = this.getViewVector(0.0F);
-        float f0 = MathHelper.cos(this.yRot * ((float)Math.PI / 180F)) * 0.8F;
-        float f1 = MathHelper.sin(this.yRot * ((float)Math.PI / 180F)) * 0.8F;
-        float f0_1 = MathHelper.cos(this.yRot * ((float)Math.PI / 180F)) * 1.6F;
-        float f1_1 = MathHelper.sin(this.yRot * ((float)Math.PI / 180F)) * 1.6F;
+        Vec3 vector3d = this.getViewVector(0.0F);
+        float f0 = Mth.cos(this.getYRot() * ((float)Math.PI / 180F)) * 0.8F;
+        float f1 = Mth.sin(this.getYRot() * ((float)Math.PI / 180F)) * 0.8F;
+        float f0_1 = Mth.cos(this.getYRot() * ((float)Math.PI / 180F)) * 1.6F;
+        float f1_1 = Mth.sin(this.getYRot() * ((float)Math.PI / 180F)) * 1.6F;
         float f2 =  2.5F - this.random.nextFloat() * 0.7F;
         float f2_ =  -1.3F - this.random.nextFloat() * 0.7F;
         float x = 0;
@@ -195,14 +193,14 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
                 this.momentum = 0.9F;
             } else if (this.status == Status.ON_LAND) {
                 this.momentum = this.boatGlide * 0.001F;
-                if (getControllingPassenger() instanceof PlayerEntity)
+                if (getControllingPassenger() instanceof Player)
                     this.boatGlide /= 1.0F;
             }
-            Vector3d vec3d = getDeltaMovement();
+            Vec3 vec3d = getDeltaMovement();
             setDeltaMovement(vec3d.x * (this.momentum - this.passengerfaktor), vec3d.y + d1, vec3d.z * (this.momentum - this.passengerfaktor));
             this.deltaRotation *= (this.momentum - this.passengerfaktor) * CogTurnFactor;
             if (d2 > 0.0D) {
-                Vector3d vec3d1 = getDeltaMovement();
+                Vec3 vec3d1 = getDeltaMovement();
                 setDeltaMovement(vec3d1.x, (vec3d1.y + d2 * 0.06D) * 0.75D, vec3d1.z);
             }
         }
@@ -222,7 +220,7 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
             if (this.rightInputDown != this.leftInputDown && !this.forwardInputDown && !this.backInputDown) {
                 f += 0.005F;
             }
-            this.yRot += this.deltaRotation;
+            this.setYRot(this.getYRot() + this.deltaRotation);
 
             if (sailstate != 0) {
                 switch (sailstate){
@@ -247,29 +245,29 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
             if (this.forwardInputDown) {
                 f += (0.01F * CogSpeedFactor);
             }
-            this.setDeltaMovement(this.getDeltaMovement().add((double) (MathHelper.sin(-this.yRot * ((float) Math.PI / 180F)) * f), 0.0D, (double) (MathHelper.cos(this.yRot * ((float) Math.PI / 180F)) * f)));
+            this.setDeltaMovement(this.getDeltaMovement().add((double) (Mth.sin(-this.getYRot() * ((float) Math.PI / 180F)) * f), 0.0D, (double) (Mth.cos(this.getYRot() * ((float) Math.PI / 180F)) * f)));
             setSteerState(this.rightInputDown && !this.leftInputDown, this.leftInputDown && !this.rightInputDown);
             setIsForward(this.forwardInputDown);
         }
     }
 
     @Override
-    public IPacket<?> getAddEntityPacket() {
+    public Packet<?> getAddEntityPacket() {
         return NetworkHooks.getEntitySpawningPacket((Entity) this);
     }
 
     @Nullable
     private Status getUnderwaterStatus() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
+        AABB axisalignedbb = this.getBoundingBox();
         double d0 = axisalignedbb.maxY + 0.001D;
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.ceil(axisalignedbb.maxX);
-        int k = MathHelper.floor(axisalignedbb.maxY);
-        int l = MathHelper.ceil(d0);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
+        int i = Mth.floor(axisalignedbb.minX);
+        int j = Mth.ceil(axisalignedbb.maxX);
+        int k = Mth.floor(axisalignedbb.maxY);
+        int l = Mth.ceil(d0);
+        int i1 = Mth.floor(axisalignedbb.minZ);
+        int j1 = Mth.ceil(axisalignedbb.maxZ);
         boolean flag = false;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
@@ -291,16 +289,16 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
     }
 
     private boolean checkInWater() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.ceil(axisalignedbb.maxX);
-        int k = MathHelper.floor(axisalignedbb.minY);
-        int l = MathHelper.ceil(axisalignedbb.minY + 0.001D);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
+        AABB axisalignedbb = this.getBoundingBox();
+        int i = Mth.floor(axisalignedbb.minX);
+        int j = Mth.ceil(axisalignedbb.maxX);
+        int k = Mth.floor(axisalignedbb.minY);
+        int l = Mth.ceil(axisalignedbb.minY + 0.001D);
+        int i1 = Mth.floor(axisalignedbb.minZ);
+        int j1 = Mth.ceil(axisalignedbb.maxZ);
         boolean flag = false;
         this.waterLevel = Double.MIN_VALUE;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        BlockPos.MutableBlockPos blockpos$mutable = new BlockPos.MutableBlockPos();
 
         for (int k1 = i; k1 < j; ++k1) {
             for (int l1 = k; l1 < l; ++l1) {
@@ -342,10 +340,10 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
             setForwardDirection(-getForwardDirection());
             setTimeSinceHit(3);
             setDamageTaken(getDamageTaken() + amount * 10.0F);
-            boolean flag = (source.getEntity() instanceof PlayerEntity && ((PlayerEntity) source.getEntity()).abilities.instabuild);
+            boolean flag = (source.getEntity() instanceof Player && ((Player) source.getEntity()).getAbilities().instabuild);
             if (flag || getDamageTaken() > CogHealth) {
                 onDestroyed(source, flag);
-                remove();
+                remove(false);
             }
             return true;
         }
@@ -358,11 +356,11 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
     }
 
     @Override
-    public Vector3d getDismountLocationForPassenger(final LivingEntity rider) {
+    public Vec3 getDismountLocationForPassenger(final LivingEntity rider) {
         return super.getDismountLocationForPassenger(rider);
     }
 
-    public PlayerEntity getDriver() {
+    public Player getDriver() {
         return super.getDriver();
 
     }

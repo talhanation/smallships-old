@@ -6,36 +6,31 @@ import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessageIsForward;
 import com.talhanation.smallships.network.MessageSailState;
 import com.talhanation.smallships.network.MessageSteerState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.passive.WaterMobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.EntityPredicates;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.*;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.entity.animal.WaterAnimal;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import java.util.List;
 
 public abstract class AbstractSailBoat extends AbstractInventoryBoat {
-    private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
-    private static final DataParameter<Integer> SAIL_STATE = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.INT);
-    private static final DataParameter<Boolean> IS_FORWARD = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_LEFT = SynchedEntityData.defineId(AbstractSailBoat.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Boolean> IS_RIGHT = SynchedEntityData.defineId(AbstractSailBoat.class, EntityDataSerializers.BOOLEAN);
+    private static final EntityDataAccessor<Integer> SAIL_STATE = SynchedEntityData.defineId(AbstractSailBoat.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Boolean> IS_FORWARD = SynchedEntityData.defineId(AbstractSailBoat.class, EntityDataSerializers.BOOLEAN);
 
-    public AbstractSailBoat(EntityType<? extends TNBoatEntity> type, World world) {
+    public AbstractSailBoat(EntityType<? extends TNBoatEntity> type, Level world) {
         super(type, world);
     }
     private double waterLevel;
@@ -59,7 +54,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         }
 
 
-        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof PlayerEntity) )) {
+        if ((this.getControllingPassenger() == null ||!(this.getControllingPassenger() instanceof Player) )) {
             setSailState(0);
             setIsForward(false);
         }
@@ -68,15 +63,15 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
         if (SmallShipsConfig.WaterMobFlee.get()) {
             double radius = 15.0D;
-            List<WaterMobEntity> list1 = this.level.getEntitiesOfClass(WaterMobEntity.class, new AxisAlignedBB(getX() - radius, getY() - radius, getZ() - radius, getX() + radius, getY() + radius, getZ() + radius));
-            for (WaterMobEntity ent : list1)
+            List<WaterAnimal> list1 = this.level.getEntitiesOfClass(WaterAnimal.class, new AABB(getX() - radius, getY() - radius, getZ() - radius, getX() + radius, getY() + radius, getZ() + radius));
+            for (WaterAnimal ent : list1)
                 fleeEntity(ent);
         }
 
 
         if (this.getIsForward()) {
-            this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
-            this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
+            this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
+            this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntitySelector.NO_CREATIVE_OR_SPECTATOR));
         }
 
 
@@ -199,13 +194,13 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
 
-    public void fleeEntity(MobEntity entity) {
+    public void fleeEntity(Mob entity) {
         double fleeDistance = 10.0D;
-        Vector3d vecBoat = new Vector3d(getX(), getY(), getZ());
-        Vector3d vecEntity = new Vector3d(entity.getX(), entity.getY(), entity.getZ());
-        Vector3d fleeDir = vecEntity.subtract(vecBoat);
+        Vec3 vecBoat = new Vec3(getX(), getY(), getZ());
+        Vec3 vecEntity = new Vec3(entity.getX(), entity.getY(), entity.getZ());
+        Vec3 fleeDir = vecEntity.subtract(vecBoat);
         fleeDir = fleeDir.normalize();
-        Vector3d fleePos = new Vector3d(vecEntity.x + fleeDir.x * fleeDistance, vecEntity.y + fleeDir.y * fleeDistance, vecEntity.z + fleeDir.z * fleeDistance);
+        Vec3 fleePos = new Vec3(vecEntity.x + fleeDir.x * fleeDistance, vecEntity.y + fleeDir.y * fleeDistance, vecEntity.z + fleeDir.z * fleeDistance);
         entity.getNavigation().moveTo(fleePos.x, fleePos.y, fleePos.z, 10.0D);
     }
 
@@ -225,26 +220,26 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     }
 
     private boolean checkInWater() {
-        AxisAlignedBB axisalignedbb = this.getBoundingBox();
-        int i = MathHelper.floor(axisalignedbb.minX);
-        int j = MathHelper.ceil(axisalignedbb.maxX);
-        int k = MathHelper.floor(axisalignedbb.minY);
-        int l = MathHelper.ceil(axisalignedbb.minY + 0.001D);
-        int i1 = MathHelper.floor(axisalignedbb.minZ);
-        int j1 = MathHelper.ceil(axisalignedbb.maxZ);
+        AABB aabb = this.getBoundingBox();
+        int i = Mth.floor(aabb.minX);
+        int j = Mth.ceil(aabb.maxX);
+        int k = Mth.floor(aabb.minY);
+        int l = Mth.ceil(aabb.minY + 0.001D);
+        int i1 = Mth.floor(aabb.minZ);
+        int j1 = Mth.ceil(aabb.maxZ);
         boolean flag = false;
-        this.waterLevel = Double.MIN_VALUE;
-        BlockPos.Mutable blockpos$mutable = new BlockPos.Mutable();
+        this.waterLevel = -Double.MAX_VALUE;
+        BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
 
-        for (int k1 = i; k1 < j; ++k1) {
-            for (int l1 = k; l1 < l; ++l1) {
-                for (int i2 = i1; i2 < j1; ++i2) {
-                    blockpos$mutable.set(k1, l1, i2);
-                    FluidState fluidstate = this.level.getFluidState(blockpos$mutable);
+        for(int k1 = i; k1 < j; ++k1) {
+            for(int l1 = k; l1 < l; ++l1) {
+                for(int i2 = i1; i2 < j1; ++i2) {
+                    blockpos$mutableblockpos.set(k1, l1, i2);
+                    FluidState fluidstate = this.level.getFluidState(blockpos$mutableblockpos);
                     if (fluidstate.is(FluidTags.WATER)) {
-                        float f = (float) l1 + fluidstate.getHeight(this.level, blockpos$mutable);
-                        this.waterLevel = Math.max((double) f, this.waterLevel);
-                        flag |= axisalignedbb.minY < (double) f;
+                        float f = (float)l1 + fluidstate.getHeight(this.level, blockpos$mutableblockpos);
+                        this.waterLevel = Math.max((double)f, this.waterLevel);
+                        flag |= aabb.minY < (double)f;
                     }
                 }
             }
@@ -255,7 +250,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     @Override
     public Packet<?> getAddEntityPacket() {
-        return NetworkHooks.getEntitySpawningPacket((Entity) this);
+        return NetworkHooks.getEntitySpawningPacket(this);
     }
 
 }

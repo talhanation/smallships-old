@@ -6,16 +6,16 @@ import com.talhanation.smallships.compatiblity.Environmental;
 import com.talhanation.smallships.compatiblity.LordOfTheRingsMod;
 import com.talhanation.smallships.entities.*;
 import com.talhanation.smallships.entities.sailboats.*;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 public class ModItems {
         public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Main.MOD_ID);
 
-    public static final RegistryObject<Item> SAIL_ITEM = ITEMS.register("sail_item", () -> new Item((new Item.Properties().stacksTo(1).tab(ItemGroup.TAB_TRANSPORTATION))));
+    public static final RegistryObject<Item> SAIL_ITEM = ITEMS.register("sail_item", () -> new Item((new Item.Properties().stacksTo(1).tab(CreativeModeTab.TAB_TRANSPORTATION))));
 
     public static final RegistryObject<Item> OAK_ROWBOAT_ITEM =         createRowBoat("oak", AbstractRowBoatEntity.Type.OAK, true);
     public static final RegistryObject<Item> SPRUCE_ROWBOAT_ITEM =      createRowBoat("spruce", AbstractRowBoatEntity.Type.SPRUCE, true);
@@ -336,31 +336,31 @@ public class ModItems {
     public static final RegistryObject<Item> ENVI_WILLOW_DHOW_ITEM =      createDhow("envi_willow", AbstractDhowEntity.Type.ENVI_WILLOW, Environmental.isInstalled());
 
     private static RegistryObject<Item> createCog(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_cog", () -> new CogItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
+        return ITEMS.register(name + "_cog", () -> new CogItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? CreativeModeTab.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createGalley(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_galley", () -> new GalleyItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
+        return ITEMS.register(name + "_galley", () -> new GalleyItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? CreativeModeTab.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createWarGalley(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_war_galley", () -> new WarGalleyItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
+        return ITEMS.register(name + "_war_galley", () -> new WarGalleyItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? CreativeModeTab.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createDrakkar(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_drakkar", () -> new DrakkarItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
+        return ITEMS.register(name + "_drakkar", () -> new DrakkarItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? CreativeModeTab.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createRowBoat(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_rowboat", () -> new RowBoatItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
+        return ITEMS.register(name + "_rowboat", () -> new RowBoatItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? CreativeModeTab.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createBrigg(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_brigg", () -> new BriggItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
+        return ITEMS.register(name + "_brigg", () -> new BriggItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? CreativeModeTab.TAB_TRANSPORTATION : null)));
     }
 
     private static RegistryObject<Item> createDhow(String name, TNBoatEntity.Type type, boolean compatiblity ){
-        return ITEMS.register(name + "_dhow", () -> new DhowItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? ItemGroup.TAB_TRANSPORTATION : null)));
+        return ITEMS.register(name + "_dhow", () -> new DhowItem(type, (new Item.Properties()).stacksTo(1).tab(compatiblity ? CreativeModeTab.TAB_TRANSPORTATION : null)));
     }
 }
 

@@ -1,13 +1,12 @@
 package com.talhanation.smallships.client.model;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.talhanation.smallships.entities.RowBoatEntity;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -17,23 +16,23 @@ import net.minecraftforge.api.distmarker.OnlyIn;
  */
 @OnlyIn(Dist.CLIENT)
 public class ModelRowBoat<T extends RowBoatEntity> extends EntityModel<T> {
-    public ModelRenderer RowBoat;
-    public ModelRenderer Cargo_1;
-    public ModelRenderer Cargo_0;
-    public ModelRenderer ruder0_1;
-    public ModelRenderer ruder_l;
-    public ModelRenderer ruder_r;
-    public ModelRenderer ruder0_2;
+    public ModelPart RowBoat;
+    public ModelPart Cargo_1;
+    public ModelPart Cargo_0;
+    public ModelPart ruder0_1;
+    public ModelPart ruder_l;
+    public ModelPart ruder_r;
+    public ModelPart ruder0_2;
 
     public ModelRowBoat() {
         this.texWidth = 128;
         this.texHeight = 64;
-        this.ruder_r = new ModelRenderer(this, 62, 20);
+        this.ruder_r = new ModelPart(this, 62, 20);
         this.ruder_r.setPos(10.0F, -9.0F, -9.0F);
         this.ruder_r.addBox(-1.0F, 0.0F, -5.0F, 2.0F, 2.0F, 18.0F, 0.0F, 0.0F, 0.0F);
         this.ruder_r.addBox(-0.2F, -3.0F, 12.0F, 1.0F, 6.0F, 7.0F, 0.0F, 0.0F, 0.0F);
         this.setRotateAngle(ruder_r, -0.6544984694978736F, 2.4813345656024053F, 0.19634954084936207F);
-        this.RowBoat = new ModelRenderer(this, 0, 0);
+        this.RowBoat = new ModelPart(this, 0, 0);
         this.RowBoat.setPos(0.0F, 16.0F, 14.0F);
         this.RowBoat.texOffs(0, 8).addBox(0.0F, 0.0F, -9.0F, 19.0F, 3.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.RowBoat.texOffs(0, 43).addBox(0.0F, -6.0F, -11.0F, 14.0F, 6.0F, 2.0F, 0.0F, 0.0F, 0.0F);
@@ -61,32 +60,32 @@ public class ModelRowBoat<T extends RowBoatEntity> extends EntityModel<T> {
         this.RowBoat.texOffs(0, 8).addBox(-12.0F, 0.0F, -9.0F, 12.0F, 3.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.RowBoat.addBox(3.0F, 3.0F, 0.0F, 22.0F, 4.0F, 7.0F, 0.0F, 0.0F, 0.0F);
         this.setRotateAngle(RowBoat, -0.0F, 1.5707963267948966F, 0.0F);
-        this.Cargo_1 = new ModelRenderer(this, 0, 0);
+        this.Cargo_1 = new ModelPart(this, 0, 0);
         this.Cargo_1.setPos(31.2F, -8.0F, -6.0F);
         this.Cargo_1.texOffs(96, 38).addBox(0.0F, 0.0F, 0.0F, 8.0F, 8.0F, 8.0F, 0.0F, 0.0F, 0.0F);
         this.Cargo_1.texOffs(30, 55).addBox(-3.2F, 3.0F, 0.0F, 3.0F, 5.0F, 4.0F, 0.0F, 0.0F, 0.0F);
         this.Cargo_1.texOffs(31, 56).addBox(4.4F, 3.0F, 8.0F, 3.0F, 5.0F, 3.0F, 0.0F, 0.0F, 0.0F);
         this.Cargo_1.addBox(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F, 0.0F, 0.0F, 0.0F);
-        this.ruder0_2 = new ModelRenderer(this, 0, 0);
+        this.ruder0_2 = new ModelPart(this, 0, 0);
         this.ruder0_2.setPos(0.0F, 7.0F, -7.0F);
         this.ruder0_2.texOffs(62, 0).addBox(-1.0F, 0.0F, -8.0F, 2.0F, 2.0F, 18.0F, 0.0F, 0.0F, 0.0F);
         this.ruder0_2.texOffs(62, 0).addBox(-0.8F, -3.0F, 15.0F, 1.0F, 6.0F, 7.0F, 0.0F, 0.0F, 0.0F);
         this.ruder0_2.texOffs(74, 32).addBox(-1.0F, 0.0F, 10.0F, 2.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.setRotateAngle(ruder0_2, 0.05235987755982988F, 0.12217304763960307F, -0.45378560551852565F);
-        this.Cargo_0 = new ModelRenderer(this, 0, 0);
+        this.Cargo_0 = new ModelPart(this, 0, 0);
         this.Cargo_0.mirror = true;
         this.Cargo_0.setPos(-11.2F, -16.8F, 2.0F);
         this.Cargo_0.texOffs(96, 38).addBox(0.0F, 9.0F, 0.0F, 8.0F, 8.0F, 8.0F, 0.0F, 0.0F, 0.0F);
         this.Cargo_0.texOffs(31, 56).addBox(-3.0F, 13.0F, 1.0F, 3.0F, 5.0F, 3.0F, 0.0F, -1.0F, 0.0F);
         this.Cargo_0.texOffs(31, 56).addBox(1.0F, 12.0F, 8.3F, 3.0F, 5.0F, 3.0F, 0.0F, 0.0F, 0.0F);
         this.setRotateAngle(Cargo_0, 0.0F, 1.5707963267948966F, 0.0F);
-        this.ruder0_1 = new ModelRenderer(this, 0, 0);
+        this.ruder0_1 = new ModelPart(this, 0, 0);
         this.ruder0_1.setPos(12.0F, -7.0F, -9.0F);
         this.ruder0_1.texOffs(62, 0).addBox(-1.0F, 0.0F, -8.0F, 2.0F, 2.0F, 18.0F, 0.0F, 0.0F, 0.0F);
         this.ruder0_1.texOffs(62, 20).addBox(-0.2F, -3.0F, 15.0F, 1.0F, 6.0F, 7.0F, 0.0F, 0.0F, 0.0F);
         this.ruder0_1.texOffs(74, 32).addBox(-1.0F, 0.0F, 10.0F, 2.0F, 2.0F, 6.0F, 0.0F, 0.0F, 0.0F);
         this.setRotateAngle(ruder0_1, 0.7127924691776453F, 0.26459191193917925F, 1.602910321115726F);
-        this.ruder_l = new ModelRenderer(this, 62, 0);
+        this.ruder_l = new ModelPart(this, 62, 0);
         this.ruder_l.setPos(10.0F, -9.0F, 9.0F);
         this.ruder_l.addBox(-1.0F, 0.0F, -5.0F, 2.0F, 2.0F, 18.0F, 0.0F, 0.0F, 0.0F);
         this.ruder_l.addBox(-0.8F, -3.0F, 12.0F, 1.0F, 6.0F, 7.0F, 0.0F, 0.0F, 0.0F);
@@ -101,9 +100,9 @@ public class ModelRowBoat<T extends RowBoatEntity> extends EntityModel<T> {
 
 
     @Override
-    public void renderToBuffer(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
-        ImmutableList.of(this.RowBoat).forEach((modelRenderer) -> { 
-            modelRenderer.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
+        ImmutableList.of(this.RowBoat).forEach((ModelPart) -> {
+            ModelPart.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         });
     }
 
@@ -134,20 +133,20 @@ public class ModelRowBoat<T extends RowBoatEntity> extends EntityModel<T> {
     /**
      * This is a helper function from Tabula to set the rotation of model parts
      */
-    public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z) {
-        modelRenderer.xRot = x;
-        modelRenderer.yRot = y;
-        modelRenderer.zRot = z;
+    public void setRotateAngle(ModelPart modelPart, float x, float y, float z) {
+        modelPart.xRot = x;
+        modelPart.yRot = y;
+        modelPart.zRot = z;
     }
 
     protected void paddels(RowBoatEntity galleyEntity, int side, float limbSwing) {
         float f = galleyEntity.getRowingTime(side, limbSwing);
 
-        this.ruder_r.xRot = (float)MathHelper.clampedLerp((double)(-(float)Math.PI / 3F), (double)-0.2617994F, (double)((MathHelper.sin(-f) + 1.0F) / 2.0F));
-        this.ruder_r.yRot = (float)Math.PI - (float)MathHelper.clampedLerp((double)(-(float)Math.PI / 4F), (double)((float)Math.PI / 4F), (double)((MathHelper.sin(-f + 1.0F) + 1.0F) / 2.0F));
+        this.ruder_r.xRot = (float) Mth.clampedLerp((double)(-(float)Math.PI / 3F), (double)-0.2617994F, (double)((Mth.sin(-f) + 1.0F) / 2.0F));
+        this.ruder_r.yRot = (float)Math.PI - (float)Mth.clampedLerp((double)(-(float)Math.PI / 4F), (double)((float)Math.PI / 4F), (double)((Mth.sin(-f + 1.0F) + 1.0F) / 2.0F));
         if (side == 0) {
-            this.ruder_l.xRot = (float) MathHelper.clampedLerp((double)(-(float)Math.PI / 3F), (double)-0.2617994F, (double)((MathHelper.sin(-f) + 1.0F) / 2.0F));
-            this.ruder_l.yRot = (float)MathHelper.clampedLerp((double)(-(float)Math.PI / 4F), (double)((float)Math.PI / 4F), (double)((MathHelper.sin(-f + 1.0F) + 1.0F) / 2.0F));
+            this.ruder_l.xRot = (float) Mth.clampedLerp((double)(-(float)Math.PI / 3F), (double)-0.2617994F, (double)((Mth.sin(-f) + 1.0F) / 2.0F));
+            this.ruder_l.yRot = (float)Mth.clampedLerp((double)(-(float)Math.PI / 4F), (double)((float)Math.PI / 4F), (double)((Mth.sin(-f + 1.0F) + 1.0F) / 2.0F));
             }
     }
 }

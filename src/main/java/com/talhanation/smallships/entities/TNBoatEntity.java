@@ -415,7 +415,7 @@ public abstract class TNBoatEntity extends Entity {
         }
 
         if (level.isClientSide) {
-            updateClientControls();
+            //updateClientControls();
         }
 
     }
@@ -938,13 +938,14 @@ public abstract class TNBoatEntity extends Entity {
         List<Entity> list = this.getPassengers();
         return list.isEmpty() ? null : list.get(0);
     }
-
+    /*
     @OnlyIn(Dist.CLIENT)
     public void updateClientControls() {
         Player player = Minecraft.getInstance().player;
         this.setInputs(player.input.left, player.input.right, player.input.up, player.input.down);
 
     }
+    */
 
     @OnlyIn(Dist.CLIENT)
     public void setInputs(boolean leftInputDown, boolean rightInputDown, boolean forwardInputDown, boolean backInputDown) {

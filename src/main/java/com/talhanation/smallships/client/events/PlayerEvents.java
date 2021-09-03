@@ -2,7 +2,7 @@ package com.talhanation.smallships.client.events;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.TNBoatEntity;
-import com.talhanation.smallships.network.MessageDismount;e;
+import com.talhanation.smallships.network.MessageDismount;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;

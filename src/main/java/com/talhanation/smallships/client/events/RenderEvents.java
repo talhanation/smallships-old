@@ -2,9 +2,9 @@ package com.talhanation.smallships.client.events;
 
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.entities.AbstractSailBoat;
+import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.settings.PointOfView;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -64,9 +64,9 @@ public class RenderEvents {
         }
 
         if (third) {
-            mc.options.setCameraType(PointOfView.THIRD_PERSON_BACK);
+            mc.options.setCameraType(CameraType.THIRD_PERSON_BACK);
         } else {
-            mc.options.setCameraType(PointOfView.FIRST_PERSON);
+            mc.options.setCameraType(CameraType.FIRST_PERSON);
         }
 
     }
