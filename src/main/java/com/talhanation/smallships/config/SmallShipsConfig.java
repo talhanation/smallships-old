@@ -138,13 +138,13 @@ public class SmallShipsConfig {
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: 1.35" )
                 .worldRestart()
-                .defineInRange("BriggSpeedFactor", 1.35, 0.0, 2.0);
+                .defineInRange("DhowSpeedFactor", 1.35, 0.0, 2.0);
 
         DhowTurnFactor = BUILDER.comment("\n" +"----Dhow Turn Factor.----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +
                 "\t" + "default: 0.3")
                 .worldRestart()
-                .defineInRange("BriggTurnFactor", 0.3, 0.0, 1.0);
+                .defineInRange("DhowTurnFactor", 0.3, 0.0, 1.0);
 
         PlaySwimmSound = BUILDER.comment("\n" + "----Should Ships Make Swimming sounds?----" + "\n" +
                 "\t" + "(takes effect after restart)" + "\n" +

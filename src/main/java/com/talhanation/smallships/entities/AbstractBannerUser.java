@@ -62,9 +62,9 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     @Override
     protected void readAdditionalSaveData(CompoundNBT nbt) {
         super.readAdditionalSaveData(nbt);
+        if (nbt.contains("hasbanner")) this.setHasBanner(nbt.getBoolean("hasbanner"));
         final INBT banner = nbt.get("banner");
         if (banner instanceof CompoundNBT) {
-            entityData.set(HAS_BANNER,true);
             entityData.set(BANNER, ItemStack.of((CompoundNBT) banner));
         }
 
@@ -95,12 +95,17 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
 
     public void setBanner(PlayerEntity player, ItemStack banner) {
         playBannerSound();
-        entityData.set(HAS_BANNER, true);
+        setHasBanner(true);
         entityData.set(BANNER, banner.copy());
         if (!player.isCreative()) {
             banner.shrink(1);
         }
     }
+
+    public void setHasBanner(boolean bool){
+        entityData.set(HAS_BANNER, bool);
+    }
+
 
     ////////////////////////////////////SOUND////////////////////////////////////
 
