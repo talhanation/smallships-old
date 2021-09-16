@@ -47,6 +47,9 @@ public class SmallShipsConfig {
     public static ForgeConfigSpec.DoubleValue WarGalleyHealth;
     public static ForgeConfigSpec.DoubleValue DhowHealth;
 
+    public static ForgeConfigSpec.BooleanValue ShowShipInfo;
+    public static ForgeConfigSpec.DoubleValue  ShipInfoScale;
+
     public static ForgeConfigSpec.ConfigValue<ArrayList<String>> PassengerBlackList;
 
     static {
