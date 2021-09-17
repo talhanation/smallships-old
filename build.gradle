@@ -123,7 +123,7 @@ shadowJar {
     project.configurations.shadow.setTransitive(true);
     configurations = [project.configurations.shadow]
     classifier = ""
-    relocate 'de.maxhenkel.corelib', "de.maxhenkel.recruits.corelib"
+    relocate 'de.maxhenkel.corelib', "de.maxhenkel.smallships.corelib"
 }
 
 reobf {
