@@ -38,6 +38,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         super(type, world);
     }
     private double waterLevel;
+    private float steerRotation;
 
     ////////////////////////////////////TICK////////////////////////////////////
 
@@ -78,7 +79,9 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
             this.knockBack(this.level.getEntities(this, this.getBoundingBox().inflate(4.0D, 2.0D, 4.0D).move(0.0D, -2.0D, 0.0D), EntityPredicates.NO_CREATIVE_OR_SPECTATOR));
         }
 
-
+        if (this.getSteerState(0)) steerRotation += getSteerRotationAmount();
+        else if (this.getSteerState(1)) steerRotation -= getSteerRotationAmount();
+        else steerRotation = getSteerRotationAmount();
     }
 
     public void tickLerp(){}
@@ -95,6 +98,14 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     }
 
     ////////////////////////////////////GET////////////////////////////////////
+
+    public float getSteerRotation(float partialTicks) {
+        return steerRotation + getSteerRotationAmount() * partialTicks;
+    }
+
+    public float getSteerRotationAmount() {
+        return 180F;
+    }
 
     public boolean getSteerState(int side) {
         return this.entityData.<Boolean>get(side == 0 ? IS_LEFT : IS_RIGHT) && this.getControllingPassenger() != null;

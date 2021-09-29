@@ -14,7 +14,7 @@ public class ClientEventBusSubscriber {
 
     @SubscribeEvent
     public static void clientsetup(FMLClientSetupEvent event){
-        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.COG_ENTITY.get(), RenderEntityCog::new);
+        //RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.COG_ENTITY.get(), RenderEntityCog::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.GALLEY_ENTITY.get(), RenderEntityGalley::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.WAR_GALLEY_ENTITY.get(), RenderEntityWarGalley::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.DRAKKAR_ENTITY.get(), RenderEntityDrakkar::new);

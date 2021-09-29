@@ -1,5 +1,6 @@
 package com.talhanation.smallships.entities;
 
+import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.sailboats.AbstractCogEntity;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.CogContainer;
@@ -79,7 +80,7 @@ public class CogEntity extends AbstractCogEntity {
     }
 
     public CogEntity(World worldIn, double x, double y, double z) {
-        this(ModEntityTypes.COG_ENTITY.get(), worldIn);
+        this(Main.COG_ENTITY, worldIn);
         setPos(x, y, z);
         setDeltaMovement(Vector3d.ZERO);
         this.xo = x;
@@ -88,7 +89,7 @@ public class CogEntity extends AbstractCogEntity {
     }
 
     public CogEntity(FMLPlayMessages.SpawnEntity spawnEntity, World worldIn) {
-        this(ModEntityTypes.COG_ENTITY.get(), worldIn);
+        this(Main.COG_ENTITY, worldIn);
     }
 
     @Override

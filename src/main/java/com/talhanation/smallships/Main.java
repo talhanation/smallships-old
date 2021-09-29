@@ -4,20 +4,27 @@ import com.talhanation.smallships.client.events.ClientRegistry;
 import com.talhanation.smallships.client.events.KeyEvents;
 import com.talhanation.smallships.client.events.PlayerEvents;
 import com.talhanation.smallships.client.events.RenderEvents;
+import com.talhanation.smallships.client.render.obj.ModelCog;
 import com.talhanation.smallships.config.SmallShipsConfig;
+import com.talhanation.smallships.entities.CogEntity;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.network.*;
+import de.maxhenkel.corelib.CommonRegistry;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.EntityClassification;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -36,6 +43,7 @@ public class Main {
     public static KeyBinding SAIL_H_KEY;
     public static KeyBinding INV_KEY;
     public static KeyBinding DISMOUNT_KEY;
+    public static EntityType<CogEntity> COG_ENTITY;
 
     public Main() {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, SmallShipsConfig.CONFIG);
@@ -43,7 +51,7 @@ public class Main {
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::setup);
-
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::registerEntities);
         SoundInit.SOUNDS.register(modEventBus);
         ModItems.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
         ModEntityTypes.ENTITY_TYPES.register(modEventBus);
@@ -87,6 +95,9 @@ public class Main {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public void clientSetup(FMLClientSetupEvent event) {
+
+        RenderingRegistry.registerEntityRenderingHandler(COG_ENTITY, ModelCog::new);
+
         MinecraftForge.EVENT_BUS.register(new RenderEvents());
         MinecraftForge.EVENT_BUS.register(new PlayerEvents());
         MinecraftForge.EVENT_BUS.register(new KeyEvents());
@@ -97,4 +108,18 @@ public class Main {
         //DISMOUNT_KEY = ClientRegistry.registerKeyBinding("key.dismount_mobs", "category.smallships", 0);
     }
 
+
+
+    @SubscribeEvent
+    public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
+        COG_ENTITY = CommonRegistry.registerEntity(Main.MOD_ID, "plane", EntityClassification.MISC, CogEntity.class, builder -> {
+            builder
+                    .setTrackingRange(256)
+                    .setUpdateInterval(1)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .sized(3.5F, 1.25F)
+                    .setCustomClientFactory(CogEntity::new);
+        });
+        event.getRegistry().register(COG_ENTITY);
+    }
 }

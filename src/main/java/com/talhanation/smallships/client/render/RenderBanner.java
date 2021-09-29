@@ -3,6 +3,7 @@ package com.talhanation.smallships.client.render;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.datafixers.util.Pair;
+import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.AbstractBannerUser;
 import com.talhanation.smallships.init.ModEntityTypes;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -34,7 +35,7 @@ public class RenderBanner {
             matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
             matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(90.0F));
 
-            if (entityType == ModEntityTypes.COG_ENTITY.get()) {
+            if (entityType == Main.COG_ENTITY) {
                 //                                  hight
                 matrixStackIn.translate(-2.9D, 0.5D, 0.05D);
 

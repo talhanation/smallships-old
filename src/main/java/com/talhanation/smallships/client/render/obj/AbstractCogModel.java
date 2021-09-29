@@ -1,4 +1,4 @@
-package com.talhanation.smallships.client.render;
+package com.talhanation.smallships.client.render.obj;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -15,13 +15,18 @@ public abstract class AbstractCogModel<T extends AbstractCogEntity> extends OBJE
     }
 
     @Override
-    public void render(T plane, float yRot, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light) {
-        super.render(plane, yRot, partialTicks, matrixStack, buffer, light);
-        if (plane.hasCustomName()) {
-            String name = trimName(plane.getCustomName().getString(), 0.02F, 1F);
-            drawName(plane, name, matrixStack, buffer, partialTicks, yRot, light, true);
-            drawName(plane, name, matrixStack, buffer, partialTicks, yRot, light, false);
+    public void render(T cog, float yRot, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light) {
+        super.render(cog, yRot, partialTicks, matrixStack, buffer, light);
+        /*
+
+
+        if (cog.hasCustomName()) {
+            String name = trimName(cog.getCustomName().getString(), 0.02F, 1F);
+            drawName(cog, name, matrixStack, buffer, partialTicks, yRot, light, true);
+            drawName(cog, name, matrixStack, buffer, partialTicks, yRot, light, false);
         }
+
+         */
     }
 
     protected String trimName(String name, float textScale, float maxLength) {
@@ -31,15 +36,15 @@ public abstract class AbstractCogModel<T extends AbstractCogEntity> extends OBJE
         return name;
     }
 
-    protected void drawName(T plane, String txt, MatrixStack matrixStack, IRenderTypeBuffer buffer, float partialTicks, float yRot, int light, boolean left) {
+    protected void drawName(T cog, String txt, MatrixStack matrixStack, IRenderTypeBuffer buffer, float partialTicks, float yRot, int light, boolean left) {
         matrixStack.pushPose();
         matrixStack.mulPose(Vector3f.YP.rotationDegrees(-yRot));
-        float xRot = plane.xRotO + (plane.xRot - plane.xRotO) * partialTicks;
+        float xRot = cog.xRotO + (cog.xRot - cog.xRotO) * partialTicks;
         matrixStack.mulPose(Vector3f.XP.rotationDegrees(xRot));
         RenderSystem.color4f(1F, 1F, 1F, 1F);
         matrixStack.scale(1F, -1F, 1F);
 
-        translateName(plane, matrixStack, left);
+        translateName(cog, matrixStack, left);
 
         int textWidth = getFont().width(txt);
         float textScale = 0.02F;
@@ -53,5 +58,5 @@ public abstract class AbstractCogModel<T extends AbstractCogEntity> extends OBJE
         matrixStack.popPose();
     }
 
-    protected abstract void translateName(T plane, MatrixStack matrixStack, boolean left);
+    protected abstract void translateName(T cog, MatrixStack matrixStack, boolean left);
 }
