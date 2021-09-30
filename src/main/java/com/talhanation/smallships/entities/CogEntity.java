@@ -30,10 +30,10 @@ import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class CogEntity extends AbstractCogEntity {
-    public boolean Cargo_0;
     public boolean Cargo_1;
     public boolean Cargo_2;
     public boolean Cargo_3;
+    public boolean Cargo_4;
 
     private static final DataParameter<Integer> CARGO = EntityDataManager.defineId(AbstractCogEntity.class, DataSerializers.INT);
 
@@ -44,14 +44,14 @@ public class CogEntity extends AbstractCogEntity {
     public void tick(){
         super.tick();
         this.getCargo();
-        if (0 < this.getCargo()) Cargo_0 = true;
-        else Cargo_0 = false;
-        if (1 < this.getCargo()) Cargo_1 = true;
+        if (0 < this.getCargo()) Cargo_1 = true;
         else Cargo_1 = false;
-        if (2 < this.getCargo()) Cargo_2 = true;
+        if (1 < this.getCargo()) Cargo_2 = true;
         else Cargo_2 = false;
-        if (3 < this.getCargo()) Cargo_3 = true;
+        if (2 < this.getCargo()) Cargo_3 = true;
         else Cargo_3 = false;
+        if (3 < this.getCargo()) Cargo_4 = true;
+        else Cargo_4 = false;
 
     }
 

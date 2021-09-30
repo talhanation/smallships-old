@@ -714,12 +714,12 @@ public class ModelCog<T extends CogEntity> extends EntityModel<T> {
                 this.Sail_z4.visible= true;
                 break;
         }
-
+        /*
         this.Cargo0.visible = (entityIn).Cargo_0;
         this.Cargo1.visible = (entityIn).Cargo_1;
         this.Cargo2.visible = (entityIn).Cargo_2;
         this.Cargo3.visible = (entityIn).Cargo_3;
-
+*/
         if (entityIn.getSteerState(0)){
             this.steer.yRot = MathHelper.cos(3.1415927F);
             //this.Brigg.rotateAngleZ = -MathHelper.cos(3.1415927F * 2 );

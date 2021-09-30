@@ -104,7 +104,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     }
 
     public float getSteerRotationAmount() {
-        return 180F;
+        return 180F ;
     }
 
     public boolean getSteerState(int side) {
