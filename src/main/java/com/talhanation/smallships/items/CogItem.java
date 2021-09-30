@@ -27,6 +27,8 @@ public class CogItem extends Item {
         this.type = typeIn;
     }
 
+
+
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);
