@@ -9,7 +9,6 @@ import de.maxhenkel.corelib.client.obj.OBJModelOptions;
 import de.maxhenkel.corelib.math.Rotation;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 
@@ -46,81 +45,6 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
             ),
             new OBJModelInstance<>(
                     new OBJModel(
-                            new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_4.obj")
-                    ),
-                    new OBJModelOptions<>(
-                            new ResourceLocation(Main.MOD_ID, "textures/entity/cog/oak_sail.png"),
-                            new Vector3d(0D,1D,0D),
-                            new Rotation(90F, Vector3f.YP),
-                            (cog, matrixStack, partialTicks) -> {
-                                if(cog.getSailState() == 4) matrixStack.scale(1.3F, 1.3F, 1.3F);
-                                else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
-
-                            }
-                    )
-            ),
-            new OBJModelInstance<>(
-                    new OBJModel(
-                            new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_3.obj")
-                    ),
-                    new OBJModelOptions<>(
-                            new ResourceLocation(Main.MOD_ID, "textures/entity/cog/oak_sail.png"),
-                            new Vector3d(0D,1D,0D),
-                            new Rotation(90F, Vector3f.YP),
-                            (cog, matrixStack, partialTicks) -> {
-                                if(cog.getSailState() == 3) matrixStack.scale(1.3F, 1.3F, 1.3F);
-                                else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
-
-                            }
-                    )
-            ),
-            new OBJModelInstance<>(
-                    new OBJModel(
-                            new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_2.obj")
-                    ),
-                    new OBJModelOptions<>(
-                            new ResourceLocation(Main.MOD_ID, "textures/entity/cog/oak_sail.png"),
-                            new Vector3d(0D,1D,0D),
-                            new Rotation(90F, Vector3f.YP),
-                            (cog, matrixStack, partialTicks) -> {
-                                if(cog.getSailState() == 2) matrixStack.scale(1.3F, 1.3F, 1.3F);
-                                else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
-
-                            }
-                    )
-            ),
-            new OBJModelInstance<>(
-                    new OBJModel(
-                            new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_1.obj")
-                    ),
-                    new OBJModelOptions<>(
-                            new ResourceLocation(Main.MOD_ID, "textures/entity/cog/oak_sail.png"),
-                            new Vector3d(0D,1D,0D),
-                            new Rotation(90F, Vector3f.YP),
-                            (cog, matrixStack, partialTicks) -> {
-                                if(cog.getSailState() == 1) matrixStack.scale(1.3F, 1.3F, 1.3F);
-                                else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
-
-                            }
-                    )
-            ),
-            new OBJModelInstance<>(
-                    new OBJModel(
-                            new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_0.obj")
-                    ),
-                    new OBJModelOptions<>(
-                            new ResourceLocation(Main.MOD_ID, "textures/entity/cog/oak_sail.png"),
-                            new Vector3d(0D,1D,0D),
-                            new Rotation(90F, Vector3f.YP),
-                            (cog, matrixStack, partialTicks) -> {
-                                if(cog.getSailState() == 0) matrixStack.scale(1.3F, 1.3F, 1.3F);
-                                else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
-
-                            }
-                    )
-            ),
-            new OBJModelInstance<>(
-                    new OBJModel(
                             new ResourceLocation(Main.MOD_ID, "models/entity/cog_chest_1.obj")
                     ),
                     new OBJModelOptions<>(
@@ -145,7 +69,6 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
                             (cog, matrixStack, partialTicks) -> {
                                 if(cog.Cargo_2) matrixStack.scale(1.3F, 1.3F, 1.3F);
                                 else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
-
                             }
                     )
             ),
@@ -182,12 +105,42 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
     );
 
 
-    private static final List<OBJModelInstance<CogEntity>> OAK_MODEL = getPlaneModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"));
-    private static final List<OBJModelInstance<CogEntity>> DARK_OAK_MODEL = getPlaneModel(new ResourceLocation("textures/block/dark_oak_planks.png"));
-    private static final List<OBJModelInstance<CogEntity>> BIRCH_MODEL = getPlaneModel(new ResourceLocation("textures/block/birch_planks.png"));
-    private static final List<OBJModelInstance<CogEntity>> JUNGLE_MODEL = getPlaneModel(new ResourceLocation("textures/block/jungle_planks.png"));
-    private static final List<OBJModelInstance<CogEntity>> ACACIA_MODEL = getPlaneModel(new ResourceLocation("textures/block/acacia_planks.png"));
-    private static final List<OBJModelInstance<CogEntity>> SPRUCE_MODEL = getPlaneModel(new ResourceLocation("textures/block/spruce_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> WHITE_OAK_MODEL =      getShipModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/sail/white_oak_sail.png")
+            );
+
+    private static final List<OBJModelInstance<CogEntity>> ORANGE_OAK_MODEL =      getShipModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"),
+            new ResourceLocation(Main.MOD_ID,"textures/entity/sail/orange_oak_sail.png")
+    );
+
+
+
+
+
+    /*
+    private static final List<OBJModelInstance<CogEntity>> DARK_OAK_MODEL = getShipModel(new ResourceLocation("textures/block/dark_oak_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> BIRCH_MODEL =    getShipModel(new ResourceLocation("textures/block/birch_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> JUNGLE_MODEL =   getShipModel(new ResourceLocation("textures/block/jungle_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> ACACIA_MODEL =   getShipModel(new ResourceLocation("textures/block/acacia_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> SPRUCE_MODEL =   getShipModel(new ResourceLocation("textures/block/spruce_planks.png"));
+
+
+    private static final List<OBJModelInstance<CogEntity>> WHITE =      getSailModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"));
+    private static final List<OBJModelInstance<CogEntity>> ORANGE =     getSailModel(new ResourceLocation("textures/block/dark_oak_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> MAGENTA =    getSailModel(new ResourceLocation("textures/block/birch_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> LIGHT_BLUE = getSailModel(new ResourceLocation("textures/block/jungle_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> YELLOW =     getSailModel(new ResourceLocation("textures/block/acacia_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> LIME =       getSailModel(new ResourceLocation("textures/block/spruce_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> PINK =       getSailModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"));
+    private static final List<OBJModelInstance<CogEntity>> GRAY =       getSailModel(new ResourceLocation("textures/block/dark_oak_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> LIGHT_GRAY = getSailModel(new ResourceLocation("textures/block/birch_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> CYAN =       getSailModel(new ResourceLocation("textures/block/jungle_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> PURPLE =     getSailModel(new ResourceLocation("textures/block/acacia_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> BLUE =       getSailModel(new ResourceLocation("textures/block/spruce_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> BROWN =      getSailModel(new ResourceLocation("textures/block/birch_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> GREEN =      getSailModel(new ResourceLocation("textures/block/jungle_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> RED =        getSailModel(new ResourceLocation("textures/block/acacia_planks.png"));
+    private static final List<OBJModelInstance<CogEntity>> BLACK =      getSailModel(new ResourceLocation("textures/block/spruce_planks.png"));
 
     /*
         new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"));
@@ -212,39 +165,24 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
         }
     }
 
-    protected String getSailColorTexture(CogEntity cog, MatrixStack matrixStack) {
-        return null;
-    }
-
-    public static String getWoodTypeTexture(CogEntity cog) {
-        switch (cog.getBoatType()) {
-            default:
-            case OAK:
-                return "OAK_MODEL";
-            case DARK_OAK:
-                return "DARK_OAK_MODEL";
-            case SPRUCE:
-                return "SPRUCE_MODEL";
-            case JUNGLE:
-                return "JUNGLE_MODEL";
-            case BIRCH:
-                return "BIRCH_MODEL";
-            case ACACIA:
-                return "ACACIA_MODEL";
-        }
-    }
-
     @Override
     public List<OBJModelInstance<CogEntity>> getModels(CogEntity entity) {
         return getModelFromType(entity);
     }
 
-
     private static List<OBJModelInstance<CogEntity>> getModelFromType(CogEntity cog) {
         switch (cog.getBoatType()) {
             default:
             case OAK:
-                return OAK_MODEL;
+                switch (cog.getSailColor()) {
+                    default:
+                    case "white":
+                        return WHITE_OAK_MODEL;
+                    case  "orange":
+                        return ORANGE_OAK_MODEL;
+                }
+
+                /*
             case DARK_OAK:
                 return DARK_OAK_MODEL;
             case SPRUCE:
@@ -255,11 +193,12 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
                 return BIRCH_MODEL;
             case ACACIA:
                 return ACACIA_MODEL;
+                 */
+
         }
     }
 
-    private static List<OBJModelInstance<CogEntity>> getPlaneModel(ResourceLocation texture) {
-
+    private static List<OBJModelInstance<CogEntity>> getShipModel(ResourceLocation texture, ResourceLocation color) {
         List<OBJModelInstance<CogEntity>> models = new ArrayList<>(MODELS);
         models.add(new OBJModelInstance<>(
                 new OBJModel(
@@ -271,11 +210,90 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
                         new Rotation(90F, Vector3f.YP),
 
                         (cog, matrixStack, partialTicks) ->
-                                matrixStack.scale(1.3F, 1.3F, 1.3F)
+                            matrixStack.scale(1.3F, 1.3F, 1.3F)
+                )
+        ));
+
+        models.add(new OBJModelInstance<>(
+                new OBJModel(
+                        new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_0.obj")
+                ),
+                new OBJModelOptions<>(
+                        color,
+                        new Vector3d(0D, 1.0D, 0D),
+                        new Rotation(90F, Vector3f.YP),
+
+                        (cog, matrixStack, partialTicks) ->{
+                            if(cog.getSailState() == 0) matrixStack.scale(1.3F, 1.3F, 1.3F);
+                            else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
+                        }
+                )
+        ));
+
+        models.add(new OBJModelInstance<>(
+                new OBJModel(
+                        new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_1.obj")
+                ),
+                new OBJModelOptions<>(
+                        color,
+                        new Vector3d(0D, 1.0D, 0D),
+                        new Rotation(90F, Vector3f.YP),
+
+                        (cog, matrixStack, partialTicks) ->{
+                            if(cog.getSailState() == 1) matrixStack.scale(1.3F, 1.3F, 1.3F);
+                            else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
+                        }
+                )
+        ));
+
+        models.add(new OBJModelInstance<>(
+                new OBJModel(
+                        new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_2.obj")
+                ),
+                new OBJModelOptions<>(
+                        color,
+                        new Vector3d(0D, 1.0D, 0D),
+                        new Rotation(90F, Vector3f.YP),
+
+                        (cog, matrixStack, partialTicks) ->{
+                            if(cog.getSailState() == 2) matrixStack.scale(1.3F, 1.3F, 1.3F);
+                            else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
+                        }
+                )
+        ));
+
+        models.add(new OBJModelInstance<>(
+                new OBJModel(
+                        new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_3.obj")
+                ),
+                new OBJModelOptions<>(
+                        color,
+                        new Vector3d(0D, 1.0D, 0D),
+                        new Rotation(90F, Vector3f.YP),
+
+                        (cog, matrixStack, partialTicks) ->{
+                            if(cog.getSailState() == 3) matrixStack.scale(1.3F, 1.3F, 1.3F);
+                            else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
+                        }
+                )
+        ));
+
+        models.add(new OBJModelInstance<>(
+                new OBJModel(
+                        new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_4.obj")
+                ),
+                new OBJModelOptions<>(
+                        color,
+                        new Vector3d(0D, 1.0D, 0D),
+                        new Rotation(90F, Vector3f.YP),
+
+                        (cog, matrixStack, partialTicks) ->{
+                            if(cog.getSailState() == 4) matrixStack.scale(1.3F, 1.3F, 1.3F);
+                            else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
+                        }
                 )
         ));
 
         return models;
     }
-
 }

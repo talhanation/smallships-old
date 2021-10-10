@@ -64,32 +64,35 @@ public class Main {
         MinecraftForge.EVENT_BUS.register(this);
         SIMPLE_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation("smallships", "default"), () -> "1.0.0", s -> true, s -> true);
 
-        SIMPLE_CHANNEL.registerMessage(0, MessagePaddleState.class, (msg, buf) -> msg.toBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(0, MessagePaddleState.class, MessagePaddleState::toBytes,
                 buf -> (new MessagePaddleState()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(1, MessageSailState.class, (msg, buf) -> msg.toBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(1, MessageSailState.class, MessageSailState::toBytes,
                 buf -> (new MessageSailState()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(2, MessageSteerState.class, (msg, buf) -> msg.toBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(2, MessageSteerState.class, MessageSteerState::toBytes,
                 buf -> (new MessageSteerState()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(3, MessageOpenInv.class, (msg, buf) -> msg.toBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(3, MessageOpenInv.class, MessageOpenInv::toBytes,
                 buf -> (new MessageOpenInv()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(4, MessageIsForward.class, (msg, buf) -> msg.toBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(4, MessageIsForward.class, MessageIsForward::toBytes,
                 buf -> (new MessageIsForward()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
 
-        SIMPLE_CHANNEL.registerMessage(5, MessageDismount.class, (msg, buf) -> msg.toBytes(buf),
+        SIMPLE_CHANNEL.registerMessage(5, MessageDismount.class, MessageDismount::toBytes,
                 buf -> (new MessageDismount()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
-
+/*
+        SIMPLE_CHANNEL.registerMessage(6, MessageSailColor.class, (msg, buf) -> msg.toBytes(buf),
+                buf -> (new MessageSailColor()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
+ */
     }
-
 
 
     @SubscribeEvent

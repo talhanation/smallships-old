@@ -75,6 +75,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     public boolean getHasBanner(){
         return entityData.get(HAS_BANNER);
     }
+
     public ItemStack getBanner() {
         return entityData.get(BANNER);
     }

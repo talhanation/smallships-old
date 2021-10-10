@@ -13,6 +13,8 @@ import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.item.DyeColor;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
@@ -32,6 +34,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> SAIL_STATE = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.INT);
+    private static final DataParameter<String>  SAIL_COLOR = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> IS_FORWARD = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
 
     public AbstractSailBoat(EntityType<? extends TNBoatEntity> type, World world) {
@@ -65,7 +68,6 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         }
 
 
-
         if (SmallShipsConfig.WaterMobFlee.get()) {
             double radius = 15.0D;
             List<WaterMobEntity> list1 = this.level.getEntitiesOfClass(WaterMobEntity.class, new AxisAlignedBB(getX() - radius, getY() - radius, getZ() - radius, getX() + radius, getY() + radius, getZ() + radius));
@@ -95,9 +97,27 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         this.entityData.define(IS_RIGHT, false);
         this.entityData.define(IS_FORWARD, false);
         this.entityData.define(SAIL_STATE, 0);
+        this.entityData.define(SAIL_COLOR, "white");
+    }
+    ////////////////////////////////////SAVE DATA////////////////////////////////////
+
+    @Override
+    protected void addAdditionalSaveData(CompoundNBT nbt) {
+        super.addAdditionalSaveData(nbt);
+        nbt.putString("SailColor", getSailColor());
+    }
+
+    @Override
+    protected void readAdditionalSaveData(CompoundNBT nbt) {
+        super.readAdditionalSaveData(nbt);
+       this.setSailColor(nbt.getString("SailColor"));
     }
 
     ////////////////////////////////////GET////////////////////////////////////
+
+    public String getSailColor() {
+        return this.entityData.get(SAIL_COLOR);
+    }
 
     public float getSteerRotation(float partialTicks) {
         return steerRotation + getSteerRotationAmount() * partialTicks;
@@ -122,6 +142,10 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     ////////////////////////////////////SET////////////////////////////////////
 
 
+    public void setSailColor(String color) {
+        entityData.set(SAIL_COLOR, color);
+    }
+
     public void setSailState(int state) {
         if (state != getSailState()) {
             playSailSound(state);
@@ -143,6 +167,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     }
 
     ////////////////////////////////////SERVER////////////////////////////////////
+
 
     public void sendSailStateToServer(int state) {
         if (level.isClientSide) {
@@ -205,6 +230,11 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
         }
         sendSailStateToServer(state);
+    }
+
+    public void onInteractionWithDye(DyeColor dyeColor) {
+        String color = dyeColor.getName();
+        setSailColor(color);
     }
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////

@@ -11,10 +11,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
-import net.minecraft.item.BannerItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShearsItem;
+import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
@@ -95,6 +92,11 @@ public class CogEntity extends AbstractCogEntity {
     @Override
     public ActionResultType interact(PlayerEntity player, Hand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
+
+        if (itemInHand.getItem() instanceof DyeItem){
+            onInteractionWithDye(((DyeItem) itemInHand.getItem()).getDyeColor());
+            return ActionResultType.SUCCESS;
+        }
 
         if (itemInHand.getItem() instanceof BannerItem){
             onInteractionWithBanner(itemInHand,player);
