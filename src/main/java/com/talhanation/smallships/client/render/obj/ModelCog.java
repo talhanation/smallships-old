@@ -101,9 +101,39 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
 
                             }
                     )
+            ),
+            new OBJModelInstance<>(
+                    new OBJModel(
+                            new ResourceLocation(Main.MOD_ID, "models/entity/ship_lantern.obj")
+                    ),
+                    new OBJModelOptions<>(
+                            new ResourceLocation(Main.MOD_ID,"textures/entity/lantern_texture.png"),
+                            new Vector3d(0D,5D,-2.4D),
+                            new Rotation(90F, Vector3f.YP),
+                            (cog, matrixStack, partialTicks) -> {
+                                //if(cog.lantern_1)
+                                    matrixStack.scale(0.7F, 0.7F, 0.7F);
+                                //else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
+
+                            }
+                    )
+            ),
+            new OBJModelInstance<>(
+                    new OBJModel(
+                            new ResourceLocation(Main.MOD_ID, "models/entity/ship_lantern.obj")
+                    ),
+                    new OBJModelOptions<>(
+                            new ResourceLocation(Main.MOD_ID,"textures/entity/lantern_texture.png"),
+                            new Vector3d(0D,5D,2.4D),
+                            new Rotation(90F, Vector3f.YP),
+                            (cog, matrixStack, partialTicks) -> {
+                                //if(cog.lantern_2)
+                                    matrixStack.scale(1.0F, 1.0F, 1.0F);
+                                //else matrixStack.scale(0.0001F, 0.0001F, 0.0001F);
+                            }
+                    )
             )
     );
-
 
     private static final List<OBJModelInstance<CogEntity>> WHITE_OAK_MODEL =      getShipModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"),
             new ResourceLocation(Main.MOD_ID,"textures/entity/sail/white_oak_sail.png")

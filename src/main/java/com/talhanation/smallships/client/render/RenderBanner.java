@@ -37,7 +37,7 @@ public class RenderBanner {
 
             if (entityType == Main.COG_ENTITY) {
                 //                                  hight
-                matrixStackIn.translate(-2.9D, 0.5D, 0.05D);
+                matrixStackIn.translate(2.9D, 0.5D, 0.05D);
 
             } else if(entityType == ModEntityTypes.BRIGG_ENTITY.get()){
 
