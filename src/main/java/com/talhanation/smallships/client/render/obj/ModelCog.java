@@ -7,14 +7,13 @@ import de.maxhenkel.corelib.client.obj.OBJModel;
 import de.maxhenkel.corelib.client.obj.OBJModelInstance;
 import de.maxhenkel.corelib.client.obj.OBJModelOptions;
 import de.maxhenkel.corelib.math.Rotation;
+import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3f;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class ModelCog extends AbstractShipModel<CogEntity> {
 
@@ -135,26 +134,20 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
             )
     );
 
-    private static final List<OBJModelInstance<CogEntity>> WHITE_OAK_MODEL =      getShipModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/sail/white_oak_sail.png")
-            );
-
-    private static final List<OBJModelInstance<CogEntity>> ORANGE_OAK_MODEL =      getShipModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"),
-            new ResourceLocation(Main.MOD_ID,"textures/entity/sail/orange_oak_sail.png")
-    );
 
 
 
+    private static final List<OBJModelInstance<CogEntity>> WHITE =      getSailModel(new ResourceLocation(Main.MOD_ID,"textures/entity/sail/white_oak_sail.png"));
+    private static final List<OBJModelInstance<CogEntity>> ORANGE =      getSailModel(new ResourceLocation(Main.MOD_ID,"textures/entity/sail/orange_oak_sail.png"));
 
-
-    /*
+    private static final List<OBJModelInstance<CogEntity>> OAK_MODEL =      getShipModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"));
     private static final List<OBJModelInstance<CogEntity>> DARK_OAK_MODEL = getShipModel(new ResourceLocation("textures/block/dark_oak_planks.png"));
     private static final List<OBJModelInstance<CogEntity>> BIRCH_MODEL =    getShipModel(new ResourceLocation("textures/block/birch_planks.png"));
     private static final List<OBJModelInstance<CogEntity>> JUNGLE_MODEL =   getShipModel(new ResourceLocation("textures/block/jungle_planks.png"));
     private static final List<OBJModelInstance<CogEntity>> ACACIA_MODEL =   getShipModel(new ResourceLocation("textures/block/acacia_planks.png"));
     private static final List<OBJModelInstance<CogEntity>> SPRUCE_MODEL =   getShipModel(new ResourceLocation("textures/block/spruce_planks.png"));
 
-
+    /*
     private static final List<OBJModelInstance<CogEntity>> WHITE =      getSailModel(new ResourceLocation(Main.MOD_ID,"textures/entity/cog/oak_cog.png"));
     private static final List<OBJModelInstance<CogEntity>> ORANGE =     getSailModel(new ResourceLocation("textures/block/dark_oak_planks.png"));
     private static final List<OBJModelInstance<CogEntity>> MAGENTA =    getSailModel(new ResourceLocation("textures/block/birch_planks.png"));
@@ -197,22 +190,16 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
 
     @Override
     public List<OBJModelInstance<CogEntity>> getModels(CogEntity entity) {
+        // return getModelFromType und getSailModelFromColor
         return getModelFromType(entity);
     }
+
 
     private static List<OBJModelInstance<CogEntity>> getModelFromType(CogEntity cog) {
         switch (cog.getBoatType()) {
             default:
             case OAK:
-                switch (cog.getSailColor()) {
-                    default:
-                    case "white":
-                        return WHITE_OAK_MODEL;
-                    case  "orange":
-                        return ORANGE_OAK_MODEL;
-                }
-
-                /*
+                return OAK_MODEL;
             case DARK_OAK:
                 return DARK_OAK_MODEL;
             case SPRUCE:
@@ -223,12 +210,21 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
                 return BIRCH_MODEL;
             case ACACIA:
                 return ACACIA_MODEL;
-                 */
-
         }
     }
 
-    private static List<OBJModelInstance<CogEntity>> getShipModel(ResourceLocation texture, ResourceLocation color) {
+    private static List<OBJModelInstance<CogEntity>> getSailModelFromColor(CogEntity cog) {
+            switch (cog.getSailColor()) {
+                default:
+                case "white":
+                    return WHITE;
+                case "orange":
+                    return ORANGE;
+                    //...
+            }
+    }
+
+    private static List<OBJModelInstance<CogEntity>> getShipModel(ResourceLocation texture) {
         List<OBJModelInstance<CogEntity>> models = new ArrayList<>(MODELS);
         models.add(new OBJModelInstance<>(
                 new OBJModel(
@@ -243,7 +239,11 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
                             matrixStack.scale(1.3F, 1.3F, 1.3F)
                 )
         ));
+        return models;
+    }
 
+    private static List<OBJModelInstance<CogEntity>> getSailModel(ResourceLocation color) {
+        List<OBJModelInstance<CogEntity>> models = new ArrayList<>(MODELS);
         models.add(new OBJModelInstance<>(
                 new OBJModel(
                         new ResourceLocation(Main.MOD_ID, "models/entity/cog_segel_1_0.obj")
