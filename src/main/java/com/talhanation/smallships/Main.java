@@ -42,7 +42,7 @@ public class Main {
     public static KeyBinding SAIL_L_KEY;
     public static KeyBinding SAIL_H_KEY;
     public static KeyBinding INV_KEY;
-    public static KeyBinding DISMOUNT_KEY;
+    public static KeyBinding LANTERN_KEY;
     public static EntityType<CogEntity> COG_ENTITY;
 
     public Main() {
@@ -87,11 +87,10 @@ public class Main {
         SIMPLE_CHANNEL.registerMessage(5, MessageDismount.class, MessageDismount::toBytes,
                 buf -> (new MessageDismount()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
-/*
-        SIMPLE_CHANNEL.registerMessage(6, MessageSailColor.class, (msg, buf) -> msg.toBytes(buf),
-                buf -> (new MessageSailColor()).fromBytes(buf),
+
+        SIMPLE_CHANNEL.registerMessage(6, MessageLantern.class, MessageLantern::toBytes,
+                buf -> (new MessageLantern()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
- */
     }
 
 
@@ -108,7 +107,7 @@ public class Main {
         INV_KEY = ClientRegistry.registerKeyBinding("key.ship_inventory", "category.smallships", 73);
         SAIL_L_KEY = ClientRegistry.registerKeyBinding("key.lower_ship_sail", "category.smallships", 74);
         SAIL_H_KEY = ClientRegistry.registerKeyBinding("key.higher_ship_sail", "category.smallships", 75);
-        //DISMOUNT_KEY = ClientRegistry.registerKeyBinding("key.dismount_mobs", "category.smallships", 0);
+        LANTERN_KEY = ClientRegistry.registerKeyBinding("key.lantern_on/off", "category.smallships", 79);
     }
 
 

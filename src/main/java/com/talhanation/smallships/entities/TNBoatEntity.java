@@ -99,6 +99,10 @@ public abstract class TNBoatEntity extends Entity {
 
     }
 
+    public void onLanternPressed() {
+
+    }
+
     public void onInvPressed(PlayerEntity player) {
 
     }

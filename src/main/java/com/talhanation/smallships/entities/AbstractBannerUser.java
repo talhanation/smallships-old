@@ -127,7 +127,7 @@ public abstract class AbstractBannerUser extends AbstractSailBoat {
     public void onInteractionWithShears(PlayerEntity playerEntity) {
         if (getHasBanner()) {
             dropBanner();
-            entityData.set(HAS_BANNER, false);
+            setHasBanner(false);
         }
     }
 

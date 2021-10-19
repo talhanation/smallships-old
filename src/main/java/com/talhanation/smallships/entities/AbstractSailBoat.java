@@ -4,6 +4,7 @@ import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessageIsForward;
+import com.talhanation.smallships.network.MessageLantern;
 import com.talhanation.smallships.network.MessageSailState;
 import com.talhanation.smallships.network.MessageSteerState;
 import net.minecraft.entity.Entity;
@@ -14,6 +15,7 @@ import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.DyeColor;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.IPacket;
 import net.minecraft.network.datasync.DataParameter;
@@ -34,6 +36,8 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Boolean> IS_RIGHT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     private static final DataParameter<Integer> SAIL_STATE = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.INT);
+    private static final DataParameter<Integer> LANTERN_COUNT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.INT);
+    private static final DataParameter<Boolean> LANTERN_LIT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String>  SAIL_COLOR = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> IS_FORWARD = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
 
@@ -97,6 +101,8 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         this.entityData.define(IS_RIGHT, false);
         this.entityData.define(IS_FORWARD, false);
         this.entityData.define(SAIL_STATE, 0);
+        this.entityData.define(LANTERN_LIT, false);
+        this.entityData.define(LANTERN_COUNT, 0);
         this.entityData.define(SAIL_COLOR, "white");
     }
     ////////////////////////////////////SAVE DATA////////////////////////////////////
@@ -105,15 +111,31 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     protected void addAdditionalSaveData(CompoundNBT nbt) {
         super.addAdditionalSaveData(nbt);
         nbt.putString("SailColor", getSailColor());
+        nbt.putBoolean("LanternLit", getLanternState());
+        nbt.putInt("LanternCount", getLanternCount());
     }
 
     @Override
     protected void readAdditionalSaveData(CompoundNBT nbt) {
         super.readAdditionalSaveData(nbt);
-       this.setSailColor(nbt.getString("SailColor"));
+        this.setSailColor(nbt.getString("SailColor"));
+        this.setLanternState(nbt.getBoolean("LanternLit"));
+        this.setLanternCount(nbt.getInt("LanternCount"));
     }
 
     ////////////////////////////////////GET////////////////////////////////////
+
+    public int getMaxLanternCount(){
+        return 2;
+    }
+
+    public int getLanternCount() {
+        return this.entityData.get(LANTERN_COUNT);
+    }
+
+    public Boolean getLanternState() {
+        return this.entityData.get(LANTERN_LIT);
+    }
 
     public String getSailColor() {
         return this.entityData.get(SAIL_COLOR);
@@ -141,6 +163,13 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
 
     ////////////////////////////////////SET////////////////////////////////////
 
+    public void setLanternCount(int count) {
+        entityData.set(LANTERN_COUNT, count);
+    }
+
+    public void setLanternState(boolean bool) {
+        entityData.set(LANTERN_LIT, !bool);
+    }
 
     public void setSailColor(String color) {
         entityData.set(SAIL_COLOR, color);
@@ -151,7 +180,6 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
             playSailSound(state);
             entityData.set(SAIL_STATE, state);
         }
-
     }
 
     public void setSteerState(boolean left, boolean right){
@@ -163,7 +191,6 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         this.entityData.set(IS_FORWARD, forward);
         if(getSailState() != 0)
             this.entityData.set(IS_FORWARD,true);
-
     }
 
     ////////////////////////////////////SERVER////////////////////////////////////
@@ -183,6 +210,9 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         Main.SIMPLE_CHANNEL.sendToServer(new MessageIsForward(this.getIsForward()));
     }
 
+    public void sendLanternToServer(boolean isLit){
+        Main.SIMPLE_CHANNEL.sendToServer(new MessageLantern(isLit));
+    }
 
     ////////////////////////////////////SOUND////////////////////////////////////
 
@@ -195,6 +225,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     }
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
+
     @Override
     public void onKeyPressed() {
         int state = getSailState();
@@ -232,9 +263,27 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         sendSailStateToServer(state);
     }
 
-    public void onInteractionWithDye(DyeColor dyeColor) {
+    @Override
+    public void onLanternPressed() {
+        boolean isLit = getLanternState();
+        sendLanternToServer(isLit);
+    }
+
+    public void onInteractionWithDye(PlayerEntity player, DyeColor dyeColor, ItemStack itemStack) {
         String color = dyeColor.getName();
         setSailColor(color);
+        if (!player.isCreative()) {
+            itemStack.shrink(1);
+        }
+    }
+
+    public void onInteractionWithLantern(PlayerEntity player,ItemStack itemStack) {
+        int count = this.getLanternCount();
+        count++;
+        setLanternCount(count);
+        if (!player.isCreative()) {
+            itemStack.shrink(1);
+        }
     }
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
@@ -291,6 +340,10 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         }
 
         return flag;
+    }
+
+    public boolean hasLantern(){
+        return getLanternCount() != 0;
     }
 
     @Override

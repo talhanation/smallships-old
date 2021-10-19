@@ -2,7 +2,6 @@ package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.sailboats.AbstractCogEntity;
-import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.CogContainer;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.util.CogItemStackHandler;
@@ -13,7 +12,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -93,8 +91,13 @@ public class CogEntity extends AbstractCogEntity {
     public ActionResultType interact(PlayerEntity player, Hand hand) {
         ItemStack itemInHand = player.getItemInHand(hand);
 
+        if (itemInHand.getItem().equals(Items.LANTERN) && getMaxLanternCount() != getLanternCount()){
+            onInteractionWithLantern(player, itemInHand);
+            return ActionResultType.SUCCESS;
+        }
+
         if (itemInHand.getItem() instanceof DyeItem){
-            onInteractionWithDye(((DyeItem) itemInHand.getItem()).getDyeColor());
+            onInteractionWithDye(player, ((DyeItem) itemInHand.getItem()).getDyeColor(), itemInHand);
             return ActionResultType.SUCCESS;
         }
 
