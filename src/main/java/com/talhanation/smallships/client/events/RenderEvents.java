@@ -1,12 +1,18 @@
 package com.talhanation.smallships.client.events;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.entities.AbstractSailBoat;
+import com.talhanation.smallships.entities.AbstractShipDamage;
+import de.maxhenkel.corelib.math.MathUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.settings.PointOfView;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -19,7 +25,7 @@ import java.util.function.Function;
 @OnlyIn(Dist.CLIENT)
 public class RenderEvents {
 
-    private static final ResourceLocation PLANE_INFO_TEXTURE = new ResourceLocation(Main.MOD_ID, "textures/gui/plane_info.png");
+    private static final ResourceLocation SHIP_INFO_TEXTURE = new ResourceLocation(Main.MOD_ID, "textures/gui/ship_info.png");
     private Minecraft mc;
     private AbstractSailBoat lastVehicle;
 
@@ -65,6 +71,27 @@ public class RenderEvents {
         lastVehicle = vehicle;
     }
 
+    @SubscribeEvent
+    public void onRender(RenderGameOverlayEvent evt) {
+        if (!evt.getType().equals(RenderGameOverlayEvent.ElementType.EXPERIENCE)) {
+            return;
+        }
+
+        PlayerEntity player = mc.player;
+
+        Entity e = player.getVehicle();
+
+        if (!(e instanceof AbstractShipDamage)) {
+            return;
+        }
+
+        AbstractShipDamage ship = (AbstractShipDamage) e;
+
+        //renderShipInfo(evt.getMatrixStack(), ship);
+
+    }
+
+
     private void setThirdPerson(boolean third) {
         if (!SmallShipsConfig.EnterThirdPerson.get()) {
             return;
@@ -85,12 +112,12 @@ public class RenderEvents {
         }
         return null;
     }
-    /*
+
     //THIRDPERSON SCREEN
-    public void renderPlaneInfo(MatrixStack matrixStack, AbstractShipDamage plane) {
+    public void renderShipInfo(MatrixStack matrixStack, AbstractShipDamage ship) {
         matrixStack.pushPose();
 
-        mc.getTextureManager().bind(PLANE_INFO_TEXTURE);
+        mc.getTextureManager().bind(SHIP_INFO_TEXTURE);
 
         int texWidth = 110;
         int texHeight = 90;
@@ -98,7 +125,7 @@ public class RenderEvents {
         int height = mc.getWindow().getGuiScaledHeight();
         int width = mc.getWindow().getGuiScaledWidth();
 
-        float scale =1; // SmallShipsConfig.CONFIG.ShipInfoScale.get().floatValue();
+        float scale = 1; // SmallShipsConfig.CONFIG.ShipInfoScale.get().floatValue();
         matrixStack.scale(scale, scale, 1F);
         matrixStack.translate(-width, -height, 0D);
         matrixStack.translate(((double) width) * (1D / scale), ((double) height * (1D / scale)), 0D);
@@ -113,13 +140,12 @@ public class RenderEvents {
 
         Function<Integer, Integer> heightFunc = integer -> yStart + 8 + (font.lineHeight + 2) * integer;
 
-        font.draw(matrixStack, new TranslationTextComponent("tooltip.plane.speed", SmallShipsConfig.planeInfoSpeedType.get().getTextComponent(plane.getDeltaMovement().length())).getVisualOrderText(), xStart + 7, heightFunc.apply(0), 0);
-        font.draw(matrixStack, new TranslationTextComponent("tooltip.plane.sailstate", String.valueOf(Math.round(plane.getSailState() * 100F))).getVisualOrderText(), xStart + 7, heightFunc.apply(2), 0);
-        //font.draw(matrixStack, new TranslationTextComponent("tooltip.plane.waterbiome", String.valueOf(Math.round(plane.getY()))).getVisualOrderText(), xStart + 7, heightFunc.apply(3), 0);
-        //font.draw(matrixStack, new TranslationTextComponent("tooltip.plane.fuel", String.valueOf(plane.getFuel())).getVisualOrderText(), xStart + 7, heightFunc.apply(5), 0);
-        font.draw(matrixStack, new TranslationTextComponent("tooltip.plane.damage", String.valueOf(MathUtils.round(plane.getShipDamage(), 2))).getVisualOrderText(), xStart + 7, heightFunc.apply(4), 0);
+        //font.draw(matrixStack, new TranslationTextComponent("tooltip.ship.speed", SmallShipsConfig.shipInfoSpeedType.get().getTextComponent(ship.getDeltaMovement().length())).getVisualOrderText(), xStart + 7, heightFunc.apply(0), 0);
+        font.draw(matrixStack, new TranslationTextComponent("tooltip.ship.sailstate", String.valueOf(Math.round(ship.getSailState() * 100F))).getVisualOrderText(), xStart + 7, heightFunc.apply(2), 0);
+        //font.draw(matrixStack, new TranslationTextComponent("tooltip.ship.waterbiome", String.valueOf(Math.round(ship.getY()))).getVisualOrderText(), xStart + 7, heightFunc.apply(3), 0);
+        //font.draw(matrixStack, new TranslationTextComponent("tooltip.ship.fuel", String.valueOf(ship.getFuel())).getVisualOrderText(), xStart + 7, heightFunc.apply(5), 0);
+        font.draw(matrixStack, new TranslationTextComponent("tooltip.ship.damage", String.valueOf(MathUtils.round(ship.getShipDamage(), 2))).getVisualOrderText(), xStart + 7, heightFunc.apply(4), 0);
 
         matrixStack.popPose();
     }
-    */
 }

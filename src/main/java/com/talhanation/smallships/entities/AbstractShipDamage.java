@@ -13,8 +13,8 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-public abstract class AbstractShipDamage extends AbstractSailBoat {
-    private static final DataParameter<Float> DAMAGE = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.FLOAT);
+public abstract class AbstractShipDamage extends AbstractBannerUser {
+    private static final DataParameter<Float> DAMAGE = EntityDataManager.defineId(AbstractShipDamage.class, DataSerializers.FLOAT);
 
     public AbstractShipDamage(EntityType<? extends TNBoatEntity> type, World world) {
         super(type, world);
@@ -25,7 +25,6 @@ public abstract class AbstractShipDamage extends AbstractSailBoat {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(DAMAGE, 0F);
-
     }
 
     ////////////////////////////////////TICK////////////////////////////////////
@@ -36,6 +35,7 @@ public abstract class AbstractShipDamage extends AbstractSailBoat {
         if (isInLava()) {
             setShipDamage(getShipDamage() + 1.5F);
         }
+        //if (isBurning)
     }
 
     ////////////////////////////////////SAVE////////////////////////////////////
@@ -57,6 +57,9 @@ public abstract class AbstractShipDamage extends AbstractSailBoat {
     public float getShipDamage() {
         return entityData.get(DAMAGE);
     }
+
+    //public double getShipHealth(){
+
 
     ////////////////////////////////////SET////////////////////////////////////
 
@@ -95,8 +98,11 @@ public abstract class AbstractShipDamage extends AbstractSailBoat {
                 return true;
             }
         }
-        destroyShip(source, player);
-
+        setForwardDirection(-getForwardDirection());
+        setTimeSinceHit(3);
+        //if (getShipHealth == getShipDamage())
+        //destroyShip(source, player);
+        damageShip(amount);
         return false;
     }
 
@@ -118,10 +124,9 @@ public abstract class AbstractShipDamage extends AbstractSailBoat {
         kill();
     }
 
-
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
 
-    public void damageShip(double damage, boolean horizontal) {
+    public void damageShip(double damage) {
         setShipDamage((float) (getShipDamage() + damage));
     }
 

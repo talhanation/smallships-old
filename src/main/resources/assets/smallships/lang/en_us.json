@@ -325,5 +325,9 @@
   "item.smallships.bop_palm_dhow": "Palm Dhow",
   "item.smallships.bop_redwood_dhow": "Redwood Dhow",
   "item.smallships.bop_umbran_dhow": "Umbran Dhow",
-  "item.smallships.bop_willow_dhow": "Willow Dhow"
+  "item.smallships.bop_willow_dhow": "Willow Dhow",
+
+  "tooltip.plane.damage": "Damage: %s %%",
+  "tooltip.plane.throttle": "Throttle: %s %%",
+  "tooltip.plane.speed": "Speed: %s"
 }

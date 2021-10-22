@@ -265,13 +265,13 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
                                 matrixStack.scale(1.3F, 1.3F, 1.3F);
 
                                 if (cog.getSteerState(0)){
-                                    matrixStack.mulPose(Vector3f.YN.rotationDegrees(3));
+                                    matrixStack.mulPose(Vector3f.YP.rotationDegrees(3));
                                 }
                                 else if (cog.getSteerState(1)) {
-                                    matrixStack.mulPose(Vector3f.YN.rotationDegrees(-3));
+                                    matrixStack.mulPose(Vector3f.YP.rotationDegrees(-3));
                                 }
                                 else {
-                                    matrixStack.mulPose(Vector3f.YN.rotationDegrees(0));
+                                    matrixStack.mulPose(Vector3f.YP.rotationDegrees(0));
                                 }
 
                             }
@@ -290,7 +290,7 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
                     ),
                     new OBJModelOptions<>(
                             texture,
-                            new Vector3d(0D,4D,2.2D),
+                            new Vector3d(0D,4D,2.25D),
                             new Rotation(90F, Vector3f.YP),
                             (cog, matrixStack, partialTicks) -> {
                                 if(cog.getLanternCount() >= 1) matrixStack.scale(0.7F, 0.7F, 0.7F);
@@ -305,7 +305,7 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
                 ),
                 new OBJModelOptions<>(
                         texture,
-                        new Vector3d(0D,4D,-0.8D),
+                        new Vector3d(0D,4D,-1.7D),
                         new Rotation(90F, Vector3f.YP),
                         (cog, matrixStack, partialTicks) -> {
                             if(cog.getLanternCount() >= 2) matrixStack.scale(0.7F, 0.7F, 0.7F);

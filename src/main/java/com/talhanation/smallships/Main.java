@@ -1,5 +1,6 @@
 package com.talhanation.smallships;
 
+import com.talhanation.smallships.blocks.ModBlocks;
 import com.talhanation.smallships.client.events.ClientRegistry;
 import com.talhanation.smallships.client.events.KeyEvents;
 import com.talhanation.smallships.client.events.PlayerEvents;
@@ -53,7 +54,8 @@ public class Main {
         modEventBus.addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(EntityType.class, this::registerEntities);
         SoundInit.SOUNDS.register(modEventBus);
-        ModItems.ITEMS.register(FMLJavaModLoadingContext.get().getModEventBus());
+        ModBlocks.BLOCKS.register(modEventBus);
+        ModItems.ITEMS.register(modEventBus);
         ModEntityTypes.ENTITY_TYPES.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
 

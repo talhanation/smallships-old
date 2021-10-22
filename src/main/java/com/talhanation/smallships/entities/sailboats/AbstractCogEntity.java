@@ -3,6 +3,7 @@ package com.talhanation.smallships.entities.sailboats;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.entities.AbstractBannerUser;
 import com.talhanation.smallships.entities.AbstractSailBoat;
+import com.talhanation.smallships.entities.AbstractShipDamage;
 import com.talhanation.smallships.entities.TNBoatEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -27,7 +28,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class AbstractCogEntity extends AbstractBannerUser {
+public abstract class AbstractCogEntity extends AbstractShipDamage {
     public float momentum;
     public float outOfControlTicks;
     public float deltaRotation;
@@ -329,6 +330,8 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
         super.push(entityIn);
     }
 
+
+    /*
     @Override
     public boolean hurt(DamageSource source, float amount) {
         double CogHealth = SmallShipsConfig.CogHealth.get();
@@ -351,7 +354,7 @@ public abstract class AbstractCogEntity extends AbstractBannerUser {
         }
         return false;
     }
-
+     */
     @Override
     protected void addPassenger(Entity passenger) {
         super.addPassenger(passenger);

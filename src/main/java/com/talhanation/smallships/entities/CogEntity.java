@@ -17,6 +17,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
@@ -246,6 +247,11 @@ public class CogEntity extends AbstractCogEntity {
     protected void readAdditionalSaveData(CompoundNBT compound) {
         super.readAdditionalSaveData(compound);
         this.entityData.set(CARGO, compound.getInt("Cargo"));
+    }
+
+    @Override
+    public ResourceLocation getLootTable() {
+        return null;
     }
 
     @Override
