@@ -1,12 +1,17 @@
 package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
+import com.talhanation.smallships.blocks.ModBlocks;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.network.MessageIsForward;
 import com.talhanation.smallships.network.MessageLantern;
 import com.talhanation.smallships.network.MessageSailState;
 import com.talhanation.smallships.network.MessageSteerState;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.IceBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -46,13 +51,15 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     }
     private double waterLevel;
     private float steerRotation;
+    private BlockPos newlightBlock;
+    private BlockPos oldlightBlock;
 
     ////////////////////////////////////TICK////////////////////////////////////
 
     @Override
     public void tick() {
         super.tick();
-
+        lanternLight();
         if (getIsForward()){
             if (this.checkInWater())
                 Watersplash();
@@ -345,6 +352,51 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     public boolean hasLantern(){
         return getLanternCount() != 0;
     }
+
+    private void lanternLight(){
+        if(hasLantern()){
+
+            BlockPos onPos = this.getOnPos();
+            this.newlightBlock = new BlockPos(onPos.getX(), onPos.getY() + 2, onPos.getZ());
+            BlockState newLightPosBlockState = this.level.getBlockState(newlightBlock);
+            Block newLightPosBlock = newLightPosBlockState.getBlock();
+
+            if (getLanternState()) {
+
+                if (newLightPosBlock == Blocks.AIR && newLightPosBlock != ModBlocks.LANTERN_LIGHT.get()) {
+                        this.level.setBlock(this.newlightBlock, ModBlocks.LANTERN_LIGHT.get().defaultBlockState(), 3);
+                        removeOldLanternLight(oldlightBlock, newlightBlock);
+                        oldlightBlock = newlightBlock;
+                }
+
+            }
+
+            if (!getLanternState()) {
+                if (oldlightBlock != null) {
+                    BlockState oldLightPosBlockState = this.level.getBlockState(oldlightBlock);
+                    Block oldLightPosBlock = oldLightPosBlockState.getBlock();
+
+                    if (oldLightPosBlock == ModBlocks.LANTERN_LIGHT.get()) {
+                        this.level.removeBlock(oldlightBlock, false);
+                    }
+                }
+
+                if (newLightPosBlock == ModBlocks.LANTERN_LIGHT.get()) {
+                    this.level.removeBlock(newlightBlock, false);
+                }
+
+            }
+        }
+
+    }
+
+
+    private void removeOldLanternLight(BlockPos oldPos, BlockPos newPos){
+        if (oldPos != newPos && oldPos != null){
+            this.level.removeBlock(oldPos, false);
+        }
+    }
+
 
     @Override
     public IPacket<?> getAddEntityPacket() {

@@ -44,6 +44,7 @@ public class Main {
     public static KeyBinding SAIL_H_KEY;
     public static KeyBinding INV_KEY;
     public static KeyBinding LANTERN_KEY;
+    public static KeyBinding CANNON_KEY;
     public static EntityType<CogEntity> COG_ENTITY;
 
     public Main() {
@@ -93,6 +94,10 @@ public class Main {
         SIMPLE_CHANNEL.registerMessage(6, MessageLantern.class, MessageLantern::toBytes,
                 buf -> (new MessageLantern()).fromBytes(buf),
                 (msg, fun) -> msg.executeServerSide(fun.get()));
+
+        SIMPLE_CHANNEL.registerMessage(7, MessageShootCannon.class, MessageShootCannon::toBytes,
+                buf -> (new MessageShootCannon()).fromBytes(buf),
+                (msg, fun) -> msg.executeServerSide(fun.get()));
     }
 
 
@@ -110,6 +115,7 @@ public class Main {
         SAIL_L_KEY = ClientRegistry.registerKeyBinding("key.lower_ship_sail", "category.smallships", 74);
         SAIL_H_KEY = ClientRegistry.registerKeyBinding("key.higher_ship_sail", "category.smallships", 75);
         LANTERN_KEY = ClientRegistry.registerKeyBinding("key.lantern_on/off", "category.smallships", 79);
+        CANNON_KEY = ClientRegistry.registerKeyBinding("key.cannon_shoot", "category.smallships", 32);
     }
 
 

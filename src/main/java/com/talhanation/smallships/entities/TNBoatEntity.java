@@ -107,7 +107,9 @@ public abstract class TNBoatEntity extends Entity {
 
     }
 
+    public void onCannonKeyPressed(){
 
+    }
 
     @Override
     protected float getEyeHeight(Pose poseIn, EntitySize sizeIn) {
@@ -986,6 +988,7 @@ public abstract class TNBoatEntity extends Entity {
             this.absMoveTo(this.lerpX, this.lerpY, this.lerpZ, (float) this.lerpYaw, (float) this.lerpPitch);
         }
     }
+
 
     public enum Status {
         IN_WATER,

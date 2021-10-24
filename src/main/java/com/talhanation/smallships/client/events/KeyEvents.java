@@ -15,6 +15,7 @@ public class KeyEvents {
     private boolean wasSailPressed;
     private boolean wasInvPressed;
     private boolean wasLanternPressed;
+    private boolean wasCannonPressed;
 
     @SubscribeEvent
     public void onKeyInput(InputEvent.KeyInputEvent event) {
@@ -71,6 +72,16 @@ public class KeyEvents {
             }
             else {
                 this.wasLanternPressed = false;
+            }
+        }
+
+        if (clientPlayerEntity.equals(boat.getDriver())) {
+            if (Main.CANNON_KEY.isDown()) {
+                boat.onCannonKeyPressed();
+                this.wasCannonPressed = true;
+            }
+            else {
+                this.wasCannonPressed = false;
             }
         }
 
