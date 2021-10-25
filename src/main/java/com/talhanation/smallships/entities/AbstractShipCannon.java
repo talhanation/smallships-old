@@ -3,9 +3,7 @@ package com.talhanation.smallships.entities;
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.network.MessageShootCannon;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.FireballEntity;
-import net.minecraft.entity.projectile.SmallFireballEntity;
-import net.minecraft.entity.projectile.TridentEntity;
+import net.minecraft.entity.projectile.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
@@ -14,6 +12,7 @@ import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
 
 
@@ -77,19 +76,40 @@ public abstract class AbstractShipCannon extends AbstractShipDamage {
         Main.SIMPLE_CHANNEL.sendToServer(new MessageShootCannon(true));
     }
 
+
+    public Vector3d getShootVector(String x){
+        switch (x){
+            case "east":
+                return new Vector3d(1,0,0);
+
+            case "west":
+                return new Vector3d(-1,0,0);
+
+            case "north":
+                return new Vector3d(0,0,-1);
+
+            case "south":
+                return new Vector3d(0,0,1);
+        }
+        return null;
+    }
+
     public void shootCannon(boolean s) {
-        Vector3d vector3d = this.getDriver().getViewVector(1F);
+        Vector3d vector3d = this.getForward().yRot(3.14F/2);
+        float speed = 5F;
         double par1 = 4.0D;
-        double par2 = 1D;
+        double fall = 0D;
+        /*
+        double d1 = this.getDriver().getX() - this.getX();
+        double d2 = this.getDriver().getY(0.75) - this.getY();
+        double d3 = this.getDriver().getZ() - this.getZ();
+         */
+        double d1 = this.getX();
+        double d2 = this.getY() + 2.5;
+        double d3 = this.getZ();
 
-        double d2 = this.getX() + vector3d.x * par1;
-        double d3 = par2 + this.getY(par2);
-        double d4 = this.getZ() + vector3d.z * par1;
-
-
-        SmallFireballEntity fireballentity = new SmallFireballEntity(this.level, this.getDriver(), d2, d3, d4);
-        //fireballentity.explosionPower = 2;
-        fireballentity.setPos(this.getX() + vector3d.x * par1, this.getY(par2) + par2, fireballentity.getZ() + vector3d.z * par1);
+        LlamaSpitEntity fireballentity = new LlamaSpitEntity(this.level, d1, d2, d3,  d1, d2, d3);
+        fireballentity.shoot(vector3d.x(), vector3d.y(), vector3d.z(), speed, 10);
         this.level.addFreshEntity(fireballentity);
 
     }
