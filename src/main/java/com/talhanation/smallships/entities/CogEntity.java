@@ -152,7 +152,7 @@ public class CogEntity extends AbstractCogEntity {
 
     @Override
     public double getPassengersRidingOffset() {
-        return 0.75D;
+        return 1.25D;
     }
 
     @Override

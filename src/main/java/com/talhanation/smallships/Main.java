@@ -122,7 +122,7 @@ public class Main {
 
     @SubscribeEvent
     public void registerEntities(RegistryEvent.Register<EntityType<?>> event) {
-        COG_ENTITY = CommonRegistry.registerEntity(Main.MOD_ID, "plane", EntityClassification.MISC, CogEntity.class, builder -> {
+        COG_ENTITY = CommonRegistry.registerEntity(Main.MOD_ID, "cog", EntityClassification.MISC, CogEntity.class, builder -> {
             builder
                     .setTrackingRange(256)
                     .setUpdateInterval(1)
