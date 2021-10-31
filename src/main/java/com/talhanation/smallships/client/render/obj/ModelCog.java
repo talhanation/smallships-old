@@ -19,6 +19,19 @@ public class ModelCog extends AbstractShipModel<CogEntity> {
     private static final List<OBJModelInstance<CogEntity>> MODELS = Arrays.asList(
             new OBJModelInstance<>(
                     new OBJModel(
+                            new ResourceLocation(Main.MOD_ID, "models/entity/ship_anchor.obj")
+                    ),
+                    new OBJModelOptions<>(
+                            new ResourceLocation(Main.MOD_ID,"textures/entity/ship_anchor.png"),
+                            new Vector3d(-1D,1.5D,-2.7D),
+                            new Rotation(90F, Vector3f.YP),
+                            (cog, matrixStack, partialTicks) -> {
+                                matrixStack.scale(1.5F, 1.5F, 1.5F);
+                            }
+                    )
+            ),
+            new OBJModelInstance<>(
+                    new OBJModel(
                             new ResourceLocation(Main.MOD_ID, "models/entity/ship_cannon.obj")
                     ),
                     new OBJModelOptions<>(

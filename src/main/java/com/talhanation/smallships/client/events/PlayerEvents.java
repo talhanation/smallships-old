@@ -23,6 +23,7 @@ public class PlayerEvents {
         if (!player.isShiftKeyDown()) {
             return;
         }
+
         Main.SIMPLE_CHANNEL.sendToServer(new MessageDismount(passenger.getUUID()));
         event.setCancellationResult(ActionResultType.SUCCESS);
         event.setCanceled(true);

@@ -1,25 +1,28 @@
 package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
+import com.talhanation.smallships.entities.projectile.CannonBall;
 import com.talhanation.smallships.network.MessageShootCannon;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Direction;
 import net.minecraft.util.SoundEvents;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 
 public abstract class AbstractShipCannon extends AbstractShipDamage {
     private static final DataParameter<Integer> CANNON_COUNT = EntityDataManager.defineId(AbstractShipCannon.class, DataSerializers.INT);
-    private static final DataParameter<Integer> SIDE = EntityDataManager.defineId(AbstractShipCannon.class, DataSerializers.INT);
-
+    private static final DataParameter<Boolean> LEFT_CANNON = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Boolean> RIGHT_CANNON = EntityDataManager.defineId(TNBoatEntity.class, DataSerializers.BOOLEAN);
     public float shootCounter;
 
     public AbstractShipCannon(EntityType<? extends TNBoatEntity> type, World world) {
@@ -63,11 +66,24 @@ public abstract class AbstractShipCannon extends AbstractShipDamage {
         return entityData.get(CANNON_COUNT);
     }
 
+    public boolean getRightCannon() {
+        return entityData.get(RIGHT_CANNON);
+    }
+
+    public boolean getLeftCannon() {
+        return entityData.get(LEFT_CANNON);
+    }
+
 
     ////////////////////////////////////SET////////////////////////////////////
 
     public void setCannonCount(int count){
         entityData.set(CANNON_COUNT, count);
+    }
+
+    public void setCannonSide(boolean left, boolean right){
+        this.entityData.set(LEFT_CANNON, left);
+        this.entityData.set(RIGHT_CANNON, right);
     }
 
     ////////////////////////////////////ON FUNCTIONS////////////////////////////////////
@@ -79,8 +95,8 @@ public abstract class AbstractShipCannon extends AbstractShipDamage {
 
     public Vector3d getShootVector(){
         Vector3d forward = this.getForward();
-        Vector3d right = forward.yRot(-3.14F/2);
-        Vector3d left  = forward.yRot(3.14F/2);
+        Vector3d VecRight = forward.yRot(-3.14F/2);
+        Vector3d VecLeft  = forward.yRot(3.14F/2);
 
         Direction shipDirection = this.getDirection();
         Direction playerDirection = this.getDriver().getDirection();
@@ -88,70 +104,84 @@ public abstract class AbstractShipCannon extends AbstractShipDamage {
         switch (shipDirection){
             case NORTH:
                 if (playerDirection == Direction.EAST) {
-                    return right;
+                    setCannonSide(false, true);
+                    return VecRight;
                 }
                 if (playerDirection == Direction.WEST){
-                    return left;
+                    setCannonSide(true, false);
+                    return VecLeft;
                 }
                 break;
             case SOUTH:
                 if (playerDirection == Direction.EAST) {
-                    return left;
+                    setCannonSide(true, false);
+                    return VecLeft;
                 }
                 if (playerDirection == Direction.WEST){
-                    return right;
+                    setCannonSide(false, true);
+                    return VecRight;
                 }
                 break;
             case EAST:
                 if (playerDirection == Direction.NORTH) {
-                    return left;
+                    setCannonSide(true, false);
+                    return VecLeft;
                 }
                 if (playerDirection == Direction.SOUTH){
-                    return right;
+                    setCannonSide(false, true);
+                    return VecRight;
                 }
                 break;
             case WEST:
                 if (playerDirection == Direction.NORTH) {
-                    return right;
+                    setCannonSide(false, true);
+                    return VecRight;
                 }
                 if (playerDirection == Direction.SOUTH){
-                    return left;
+                    setCannonSide(true, false);
+                    return VecLeft;
                 }
                 break;
         }
+        setCannonSide(false,false);
         return null;
     }
 
+
+    
     public void shootCannon(boolean s) {
-        Vector3d vector3d = this.getShootVector();
+        Vector3d shootVector = this.getShootVector();
+        Vector3d forward = this.getForward();
         float speed = 5F;
+        float x0 = 0;
 
-        /*
-        double d1 = this.getDriver().getX() - this.getX();
-        double d2 = this.getDriver().getY(0.75) - this.getY();
-        double d3 = this.getDriver().getZ() - this.getZ();
-         */
-        double d1 = this.getX() + 0;
-        double d2 = this.getY() + 2.5;
-        double d3 = this.getZ() + 1.5;
+        if (shootVector == null){
+            return;
+        }
 
-        double d4 = this.getX() + 2.5;
-        double d5 = this.getY() + 2.5;
-        double d6 = this.getZ() + 0;
+        if (getLeftCannon()){
+            x0 = 2.1F; //rechst //links
+        }
 
-        LlamaSpitEntity fireballentity = new LlamaSpitEntity(this.level, d1, d2, d3,  d1, d2, d3);
-        fireballentity.shoot(vector3d.x(), vector3d.y(), vector3d.z(), speed, 10);
-        this.level.addFreshEntity(fireballentity);
+        if (getRightCannon()){
+            x0 = -2.1F; //rechst //links
+        }
+
+        float f0 = MathHelper.cos(this.yRot * ((float)Math.PI / 180F)) * x0;
+        float f1 = MathHelper.sin(this.yRot * ((float)Math.PI / 180F)) * x0;
+        float f2 =  -0.75F; // /-/vorne /+/zurück
+
+        double d1 = this.getX() - forward.x * (double) f2 + (double) f0;
+        double d2 = this.getY() - forward.y + 2.3D;//hoch
+        double d3 = this.getZ() - forward.z * (double) f2 + (double) f1;
+
+        CannonBall cannonBall = new CannonBall(this.level, d1,d2,d3, d1,d2,d3);
+        //LlamaSpitEntity
+        //cannonParticles(d1,d2,d3);
+        cannonBall.shoot(shootVector.x(), shootVector.y(), shootVector.z(), speed, 10);
+        this.level.addFreshEntity(cannonBall);
 
         this.level.playSound(null, this.getX(), this.getY() + 4, this.getZ(), SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 10.0F, 0.8F + 0.4F * this.random.nextFloat());
-
-        /*
-        LlamaSpitEntity fireballentity1 = new LlamaSpitEntity(this.level, d4, d5, d6,  d4, d5, d6);
-        fireballentity1.shoot(vector3d.x(), vector3d.y(), vector3d.z(), speed, 10);
-        this.level.addFreshEntity(fireballentity1);
-
-        this.level.playSound(null, this.getX(), this.getY() + 4, this.getZ(), SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 10.0F, 0.8F + 0.4F * this.random.nextFloat());
-        */
     }
 
     ////////////////////////////////////PARTICLE FUNCTIONS////////////////////////////////////

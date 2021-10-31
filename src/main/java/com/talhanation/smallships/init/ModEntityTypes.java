@@ -2,6 +2,7 @@ package com.talhanation.smallships.init;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.*;
+import com.talhanation.smallships.entities.projectile.CannonBall;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -71,15 +72,4 @@ public class ModEntityTypes {
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "dhow").toString()));
 
-/*
-    public static final RegistryObject<EntityType<CannonBall>> CANNON_BALL = ENTITY_TYPES.register("cannonball",
-            () -> EntityType.Builder.<CannonBall>of(CannonBall::new, EntityClassification.MISC)
-                    .sized(0.25F, 0.25F)
-                    .clientTrackingRange(4)
-                    .updateInterval(10)
-                    .setShouldReceiveVelocityUpdates(true)
-                    .build(new ResourceLocation(Main.MOD_ID, "cannonball").toString()));
-
-
- */
 }

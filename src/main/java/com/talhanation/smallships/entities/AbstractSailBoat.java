@@ -16,6 +16,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.WaterMobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -35,7 +36,11 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     private static final DataParameter<Boolean> IS_LEFT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
@@ -45,6 +50,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     private static final DataParameter<Boolean> LANTERN_LIT = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
     private static final DataParameter<String>  SAIL_COLOR = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.STRING);
     private static final DataParameter<Boolean> IS_FORWARD = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.BOOLEAN);
+    private static final DataParameter<Optional<UUID>> OWNER_UUID = EntityDataManager.defineId(AbstractSailBoat.class, DataSerializers.OPTIONAL_UUID);
 
     public AbstractSailBoat(EntityType<? extends TNBoatEntity> type, World world) {
         super(type, world);
@@ -111,6 +117,7 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         this.entityData.define(LANTERN_LIT, false);
         this.entityData.define(LANTERN_COUNT, 0);
         this.entityData.define(SAIL_COLOR, "white");
+        this.entityData.define(OWNER_UUID, Optional.empty());
     }
     ////////////////////////////////////SAVE DATA////////////////////////////////////
 
@@ -120,6 +127,9 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         nbt.putString("SailColor", getSailColor());
         nbt.putBoolean("LanternLit", getLanternState());
         nbt.putInt("LanternCount", getLanternCount());
+        if (this.getOwnerUUID() != null) {
+            nbt.putUUID("OwnerUUID", this.getOwnerUUID());
+        }
     }
 
     @Override
@@ -128,9 +138,25 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
         this.setSailColor(nbt.getString("SailColor"));
         this.setLanternState(nbt.getBoolean("LanternLit"));
         this.setLanternCount(nbt.getInt("LanternCount"));
+        //this.setOwnerUUID(nbt.getUUID("OwnerUUID"));
     }
 
     ////////////////////////////////////GET////////////////////////////////////
+
+    @Nullable
+    public LivingEntity getOwner() {
+        try {
+            UUID uuid = this.getOwnerUUID();
+            return uuid == null ? null : this.level.getPlayerByUUID(uuid);
+        } catch (IllegalArgumentException illegalargumentexception) {
+            return null;
+        }
+    }
+
+    @Nullable
+    public UUID getOwnerUUID() {
+        return this.entityData.get(OWNER_UUID).orElse(null);
+    }
 
     public int getMaxLanternCount(){
         return 2;
@@ -169,6 +195,10 @@ public abstract class AbstractSailBoat extends AbstractInventoryBoat {
     }
 
     ////////////////////////////////////SET////////////////////////////////////
+
+    public void setOwnerUUID(@Nullable UUID uuid) {
+        this.entityData.set(OWNER_UUID, Optional.ofNullable(uuid));
+    }
 
     public void setLanternCount(int count) {
         entityData.set(LANTERN_COUNT, count);

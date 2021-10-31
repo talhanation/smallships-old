@@ -25,7 +25,7 @@ public abstract class AbstractShipModel<T extends AbstractBannerUser> extends OB
                 matrixStack.mulPose(Vector3f.ZP.rotationDegrees(waveAngle));
             }
         }
-
+        light = light - 3;
 
 
         ship.renderBanner(matrixStack,buffer,light,partialTicks);
