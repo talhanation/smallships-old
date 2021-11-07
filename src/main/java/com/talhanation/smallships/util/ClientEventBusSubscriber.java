@@ -21,6 +21,7 @@ public class ClientEventBusSubscriber {
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.ROWBOAT_ENTITY.get(), RenderEntityRowBoat::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.BRIGG_ENTITY.get(), RenderEntityBrigg::new);
         RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.DHOW_ENTITY.get(), RenderEntityDhow::new);
+        RenderingRegistry.registerEntityRenderingHandler(ModEntityTypes.COG_PART.get(), RenderEntityCogPart::new);
     }
 
 }

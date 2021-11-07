@@ -2,7 +2,6 @@ package com.talhanation.smallships.init;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.*;
-import com.talhanation.smallships.entities.projectile.CannonBall;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.ResourceLocation;
@@ -71,5 +70,13 @@ public class ModEntityTypes {
                     .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
                     .build(new ResourceLocation(Main.MOD_ID, "dhow").toString()));
+
+    public static final RegistryObject<EntityType<CogEntityParts>> COG_PART = ENTITY_TYPES.register("cog_part",
+            () -> EntityType.Builder.<CogEntityParts>of(CogEntityParts::new, EntityClassification.MISC)
+                    .sized(2F, 1.25F)
+                    .clientTrackingRange(20)
+                    .setUpdateInterval(10)
+                    .setShouldReceiveVelocityUpdates(true)
+                    .build(new ResourceLocation(Main.MOD_ID, "cog_part").toString()));
 
 }

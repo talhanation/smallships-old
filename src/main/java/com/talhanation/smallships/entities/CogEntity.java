@@ -2,6 +2,7 @@ package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
 import com.talhanation.smallships.entities.sailboats.AbstractCogEntity;
+import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.inventory.CogContainer;
 import com.talhanation.smallships.items.ModItems;
 import com.talhanation.smallships.util.CogItemStackHandler;
@@ -20,10 +21,16 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.FMLPlayMessages;
 import net.minecraftforge.items.ItemStackHandler;
+
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class CogEntity extends AbstractCogEntity {
     public boolean Cargo_1;
@@ -32,6 +39,8 @@ public class CogEntity extends AbstractCogEntity {
     public boolean Cargo_4;
 
     private static final DataParameter<Integer> CARGO = EntityDataManager.defineId(AbstractCogEntity.class, DataSerializers.INT);
+    private static final DataParameter<Optional<UUID>> CHILD_UUID = EntityDataManager.defineId(CogEntity.class, DataSerializers.OPTIONAL_UUID);
+
 
     public CogEntity(EntityType<? extends AbstractCogEntity> entityType, World worldIn) {
         super(entityType, worldIn);
@@ -48,6 +57,25 @@ public class CogEntity extends AbstractCogEntity {
         else Cargo_3 = false;
         if (3 < this.getCargo()) Cargo_4 = true;
         else Cargo_4 = false;
+
+        if (!level.isClientSide) {
+            Entity child = getChild();
+            if (child == null) {
+                Entity partParent = this;
+                int segments = 3;
+                for (int i = 0; i < segments; i++) {
+                    CogEntityParts part = new CogEntityParts(ModEntityTypes.COG_PART, partParent, 0.9F, 180, 0);
+                    part.setParent(partParent);
+                    part.setBodyIndex(i);
+                    if (partParent == this) {
+                        this.setChildId(part.getUUID());
+                    }
+                    part.setInitialPartPos(this);
+                    partParent = part;
+                    level.addFreshEntity(part);
+                }
+            }
+        }
 
     }
 
@@ -241,6 +269,7 @@ public class CogEntity extends AbstractCogEntity {
     protected void defineSynchedData() {
         super.defineSynchedData();
         this.entityData.define(CARGO, 0);
+        this.entityData.define(CHILD_UUID, Optional.empty());
     }
 
     @Override
@@ -355,4 +384,28 @@ public class CogEntity extends AbstractCogEntity {
         return (getPassengers().size() < 5);
     }
 
+
+
+    public void collideWithNearbyEntities() {
+        List<Entity> entities = this.level.getEntities(this, this.getBoundingBox().inflate(0.20000000298023224D, 0.0D, 0.20000000298023224D));
+        entities.stream().filter(entity -> !(entity instanceof CogEntityParts) && entity.isPushable()).forEach(entity -> entity.canCollideWith(this));
+    }
+
+
+    @Nullable
+    public UUID getChildId() {
+        return this.entityData.get(CHILD_UUID).orElse(null);
+    }
+
+    public void setChildId(@Nullable UUID uniqueId) {
+        this.entityData.set(CHILD_UUID, Optional.ofNullable(uniqueId));
+    }
+
+    public Entity getChild() {
+        UUID id = getChildId();
+        if (id != null) {
+            return ((ServerWorld) level).getEntity(id);
+        }
+        return null;
+    }
 }

@@ -1,23 +1,17 @@
 package com.talhanation.smallships.entities;
 
 import com.talhanation.smallships.Main;
-import com.talhanation.smallships.entities.projectile.CannonBall;
+import com.talhanation.smallships.entities.projectile.CannonBallEntity;
 import com.talhanation.smallships.network.MessageShootCannon;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.projectile.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.Direction;
-import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
 
 public abstract class AbstractShipCannon extends AbstractShipDamage {
     private static final DataParameter<Integer> CANNON_COUNT = EntityDataManager.defineId(AbstractShipCannon.class, DataSerializers.INT);
@@ -150,6 +144,17 @@ public abstract class AbstractShipCannon extends AbstractShipDamage {
 
     
     public void shootCannon(boolean s) {
+
+
+        CannonBallEntity shellEntity = new CannonBallEntity(this.getDriver(), this.getDriver().level);
+        shellEntity.shootFromRotation(this.getDriver(), getDriver().xRot, getDriver().yRot, 0.0F, 1.5F, 0.0F);
+        double distance = 1.0D;
+        double x = -MathHelper.sin((float)(getDriver().getEyeY() / 180.0D * 3.1415927410125732D)) * distance;
+        double z = -MathHelper.cos((float)(getDriver().getEyeY() / 180.0D * 3.1415927410125732D)) * distance;
+        shellEntity.setPos(shellEntity.getX() + x, shellEntity.getY() - 1.0D, shellEntity.getZ() + z);
+        level.addFreshEntity(shellEntity);
+
+        /*
         Vector3d shootVector = this.getShootVector();
         Vector3d forward = this.getForward();
         float speed = 5F;
@@ -182,14 +187,15 @@ public abstract class AbstractShipCannon extends AbstractShipDamage {
         this.level.addFreshEntity(cannonBall);
 
         this.level.playSound(null, this.getX(), this.getY() + 4, this.getZ(), SoundEvents.GENERIC_EXPLODE, this.getSoundSource(), 10.0F, 0.8F + 0.4F * this.random.nextFloat());
+    */
     }
+
 
     ////////////////////////////////////PARTICLE FUNCTIONS////////////////////////////////////
 
 
 
     ////////////////////////////////////OTHER FUNCTIONS////////////////////////////////////
-
 
 
 }

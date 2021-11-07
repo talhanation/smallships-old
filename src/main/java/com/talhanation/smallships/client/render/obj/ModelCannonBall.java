@@ -1,7 +1,7 @@
 package com.talhanation.smallships.client.render.obj;
 
 import com.talhanation.smallships.Main;
-import com.talhanation.smallships.entities.projectile.CannonBall;
+import com.talhanation.smallships.entities.projectile.CannonBallEntity;
 import de.maxhenkel.corelib.client.obj.OBJEntityRenderer;
 import de.maxhenkel.corelib.client.obj.OBJModel;
 import de.maxhenkel.corelib.client.obj.OBJModelInstance;
@@ -16,20 +16,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ModelCannonBall extends OBJEntityRenderer<CannonBall> {
+public class ModelCannonBall extends OBJEntityRenderer<CannonBallEntity> {
 
     public ModelCannonBall(EntityRendererManager renderManager) {
         super(renderManager);
     }
 
     @Override
-    public List<OBJModelInstance<CannonBall>> getModels(CannonBall cannonBall) {
-        List<OBJModelInstance<CannonBall>> models = new ArrayList<>(MODELS);
+    public List<OBJModelInstance<CannonBallEntity>> getModels(CannonBallEntity cannonBall) {
+        List<OBJModelInstance<CannonBallEntity>> models = new ArrayList<>(MODELS);
         return models;
     }
 
 
-    private static final List<OBJModelInstance<CannonBall>> MODELS = Arrays.asList(
+    private static final List<OBJModelInstance<CannonBallEntity>> MODELS = Arrays.asList(
             new OBJModelInstance<>(
                     new OBJModel(
                             new ResourceLocation(Main.MOD_ID, "models/entity/cannonball.obj")

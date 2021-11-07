@@ -9,7 +9,7 @@ import com.talhanation.smallships.client.render.obj.ModelCannonBall;
 import com.talhanation.smallships.client.render.obj.ModelCog;
 import com.talhanation.smallships.config.SmallShipsConfig;
 import com.talhanation.smallships.entities.CogEntity;
-import com.talhanation.smallships.entities.projectile.CannonBall;
+import com.talhanation.smallships.entities.projectile.CannonBallEntity;
 import com.talhanation.smallships.init.ModEntityTypes;
 import com.talhanation.smallships.init.SoundInit;
 import com.talhanation.smallships.items.ModItems;
@@ -48,7 +48,7 @@ public class Main {
     public static KeyBinding LANTERN_KEY;
     public static KeyBinding CANNON_KEY;
     public static EntityType<CogEntity> COG_ENTITY;
-    public static EntityType<CannonBall> CANNON_BALL;
+    public static EntityType<CannonBallEntity> CANNON_BALL;
 
 
     public Main() {
@@ -137,13 +137,13 @@ public class Main {
         });
         event.getRegistry().register(COG_ENTITY);
 
-        CANNON_BALL = CommonRegistry.registerEntity(Main.MOD_ID, "cannon_ball", EntityClassification.MISC, CannonBall.class, builder -> {
+        CANNON_BALL = CommonRegistry.registerEntity(Main.MOD_ID, "cannon_ball", EntityClassification.MISC, CannonBallEntity.class, builder -> {
             builder
                     .setTrackingRange(4)
                     .setUpdateInterval(10)
                     .setShouldReceiveVelocityUpdates(true)
                     .sized(0.25F, 0.25F)
-                    .setCustomClientFactory(CannonBall::new);
+                    .setCustomClientFactory(CannonBallEntity::new);
         });
         event.getRegistry().register(COG_ENTITY);
     }
